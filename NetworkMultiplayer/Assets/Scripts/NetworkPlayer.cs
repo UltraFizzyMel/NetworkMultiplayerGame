@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 
 public class NetworkPlayer : NetworkBehaviour
@@ -27,12 +28,15 @@ public class NetworkPlayer : NetworkBehaviour
     public BucketController bucketController;
     public BoatLeakManager boatLeakManagerDeck;
     public BoatLeakManager boatLeakManagerCabin;
-    public float interactionDistance = 3f;
+    public float interactionDistance = 5f;
 
     public override void OnNetworkSpawn()
     {
         cc = GetComponent<CharacterController>();
         pi = GetComponent<PlayerInput>();
+        boatLeakManagerCabin = GameObject.Find("CabinWater").GetComponent<BoatLeakManager>();
+        boatLeakManagerDeck = GameObject.Find("DeckWater").GetComponent<BoatLeakManager>();
+        bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();//change when changing name of bucket gameobject
 
         if (!IsOwner)
         {
@@ -84,6 +88,7 @@ public class NetworkPlayer : NetworkBehaviour
                     boatLeakManagerDeck.currentWaterLevel -= bucketController.bucketCapacity;
                     if (boatLeakManagerDeck.currentWaterLevel < 0)
                         boatLeakManagerDeck.currentWaterLevel = 0;
+                    
                 }
                 else if (hit.collider.name == "CabinWater")
                 {
@@ -100,18 +105,20 @@ public class NetworkPlayer : NetworkBehaviour
                     boatLeakManagerDeck.currentWaterLevel += bucketController.bucketCapacity;
                     if (boatLeakManagerDeck.currentWaterLevel > boatLeakManagerDeck.maxWaterLevel)
                         boatLeakManagerDeck.currentWaterLevel = boatLeakManagerDeck.maxWaterLevel;
+                    bucketController.Empty();
                 }
                 else if (hit.collider.CompareTag("ShipCabin"))
                 {
                     boatLeakManagerCabin.currentWaterLevel += bucketController.bucketCapacity;
                     if (boatLeakManagerCabin.currentWaterLevel > boatLeakManagerCabin.maxWaterLevel) 
                         boatLeakManagerCabin.currentWaterLevel = boatLeakManagerCabin.maxWaterLevel;
+                    bucketController.Empty();
                 }
-                else if (hit.collider.CompareTag("OffBoat"))
+                else if (hit.collider.CompareTag("OffShip"))
                 {
-
+                    bucketController.Empty();
                 }
-                bucketController.Empty();
+                
             }
            
         }

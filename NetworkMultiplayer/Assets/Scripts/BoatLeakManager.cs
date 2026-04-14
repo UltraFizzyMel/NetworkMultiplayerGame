@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class BoatLeakManager : NetworkBehaviour
 {
@@ -15,16 +16,22 @@ public class BoatLeakManager : NetworkBehaviour
     public float leakInterval = 15f;
 
 
+    private void Start()
+    {
+        StartCoroutine(SpawnLeaks());
+    }
 
     // Update is called once per frame
     void Update()
     {
+        
+
         if (activeLeaks > 0)
         {
-            if (waterPlane.transform.position.y < maxWaterLevel)
+            if (currentWaterLevel < maxWaterLevel)
             {
-                
                 waterPlane.transform.Translate(Vector3.up * leakRate * activeLeaks * Time.deltaTime);
+                currentWaterLevel = waterPlane.transform.position.y;
             } 
         }
     }
@@ -41,11 +48,15 @@ public class BoatLeakManager : NetworkBehaviour
         while (true)
         {
             Instantiate(leakPrefab, transform.position, Quaternion.identity);
+            AddLeak();
             float time = Random.Range(leakInterval, leakInterval + 5);
 
             yield return new WaitForSeconds(time);
         }
     }
 
-
+    public void SetWaterLevel()
+    {
+        waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
+    }
 }

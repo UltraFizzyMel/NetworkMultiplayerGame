@@ -6,7 +6,7 @@ public class BucketController : NetworkBehaviour
     public bool isFull = false;
 
     public GameObject waterVisual;
-    public float bucketCapacity = 5f;
+    public float bucketCapacity = 0.5f;
 
     public void Fill()
     {
