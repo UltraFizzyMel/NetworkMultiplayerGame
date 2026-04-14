@@ -14,17 +14,33 @@ public class BoatLeakManager : NetworkBehaviour
 
     public GameObject leakPrefab;
     public float leakInterval = 15f;
+    public bool bucketUsed;
+    public bool bucketRebound;
+    public BucketController bucketController;
 
 
     private void Start()
     {
+        bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();
         StartCoroutine(SpawnLeaks());
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (bucketUsed) 
+        {
+            currentWaterLevel -= bucketController.bucketCapacity;
+            if(currentWaterLevel <= 0f ) { currentWaterLevel = 0f; }
+        }
+
+        if (bucketRebound)
+        {
+            currentWaterLevel += bucketController.bucketCapacity;
+            if (currentWaterLevel >= bucketController.bucketCapacity) { currentWaterLevel = bucketController.bucketCapacity; }
+        }
+
+        SetWaterLevel(currentWaterLevel);
 
         if (activeLeaks > 0)
         {
@@ -55,7 +71,9 @@ public class BoatLeakManager : NetworkBehaviour
         }
     }
 
-    public void SetWaterLevel()
+   // IEnumerator BucketCooldown()
+
+    public void SetWaterLevel(float currentWaterLevel)
     {
         waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
     }

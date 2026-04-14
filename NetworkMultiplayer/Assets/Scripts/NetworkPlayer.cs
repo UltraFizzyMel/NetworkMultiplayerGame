@@ -85,16 +85,12 @@ public class NetworkPlayer : NetworkBehaviour
             {
                 if (hit.collider.name == "DeckWater")
                 {
-                    boatLeakManagerDeck.currentWaterLevel -= bucketController.bucketCapacity;
-                    if (boatLeakManagerDeck.currentWaterLevel < 0)
-                        boatLeakManagerDeck.currentWaterLevel = 0;
+                    boatLeakManagerDeck.bucketUsed = true;
                     
                 }
                 else if (hit.collider.name == "CabinWater")
                 {
-                    boatLeakManagerCabin.currentWaterLevel -= bucketController.bucketCapacity;
-                    if (boatLeakManagerCabin.currentWaterLevel < 0)
-                        boatLeakManagerCabin.currentWaterLevel = 0;
+                    boatLeakManagerCabin.bucketUsed = true;
                 }
                 bucketController.Fill();
             }
@@ -102,16 +98,12 @@ public class NetworkPlayer : NetworkBehaviour
             {
                 if (hit.collider.CompareTag("ShipDeck"))
                 {
-                    boatLeakManagerDeck.currentWaterLevel += bucketController.bucketCapacity;
-                    if (boatLeakManagerDeck.currentWaterLevel > boatLeakManagerDeck.maxWaterLevel)
-                        boatLeakManagerDeck.currentWaterLevel = boatLeakManagerDeck.maxWaterLevel;
+                    boatLeakManagerDeck.bucketRebound = true;
                     bucketController.Empty();
                 }
                 else if (hit.collider.CompareTag("ShipCabin"))
                 {
-                    boatLeakManagerCabin.currentWaterLevel += bucketController.bucketCapacity;
-                    if (boatLeakManagerCabin.currentWaterLevel > boatLeakManagerCabin.maxWaterLevel) 
-                        boatLeakManagerCabin.currentWaterLevel = boatLeakManagerCabin.maxWaterLevel;
+                    boatLeakManagerCabin.bucketRebound = true;
                     bucketController.Empty();
                 }
                 else if (hit.collider.CompareTag("OffShip"))
