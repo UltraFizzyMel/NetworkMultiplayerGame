@@ -23,6 +23,12 @@ public class NetworkPlayer : NetworkBehaviour
 
     private float pitch;    //Current up/down camera rotation
 
+    [Header("Bucket Settings")]
+    public BucketController bucketController;
+    public BoatLeakManager boatLeakManagerDeck;
+    public BoatLeakManager boatLeakManagerCabin;
+    public float interactionDistance = 3f;
+
     public override void OnNetworkSpawn()
     {
         cc = GetComponent<CharacterController>();
@@ -61,5 +67,53 @@ public class NetworkPlayer : NetworkBehaviour
         pitch -= look.y;// pitch = rotate the pamera pivot up/down(invert look.y by subtracting)
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);//clamp camera so player doesnt turn over
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); // Apply pitch to the camera pivot only(keeps body upright)
+
+        TryScoop();
+    }
+
+
+    void TryScoop()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out hit, interactionDistance))
+        {
+            if (!bucketController.isFull)
+            {
+                if (hit.collider.name == "DeckWater")
+                {
+                    boatLeakManagerDeck.currentWaterLevel -= bucketController.bucketCapacity;
+                    if (boatLeakManagerDeck.currentWaterLevel < 0)
+                        boatLeakManagerDeck.currentWaterLevel = 0;
+                }
+                else if (hit.collider.name == "CabinWater")
+                {
+                    boatLeakManagerCabin.currentWaterLevel -= bucketController.bucketCapacity;
+                    if (boatLeakManagerCabin.currentWaterLevel < 0)
+                        boatLeakManagerCabin.currentWaterLevel = 0;
+                }
+                bucketController.Fill();
+            }
+            else
+            {
+                if (hit.collider.CompareTag("ShipDeck"))
+                {
+                    boatLeakManagerDeck.currentWaterLevel += bucketController.bucketCapacity;
+                    if (boatLeakManagerDeck.currentWaterLevel > boatLeakManagerDeck.maxWaterLevel)
+                        boatLeakManagerDeck.currentWaterLevel = boatLeakManagerDeck.maxWaterLevel;
+                }
+                else if (hit.collider.CompareTag("ShipCabin"))
+                {
+                    boatLeakManagerCabin.currentWaterLevel += bucketController.bucketCapacity;
+                    if (boatLeakManagerCabin.currentWaterLevel > boatLeakManagerCabin.maxWaterLevel) 
+                        boatLeakManagerCabin.currentWaterLevel = boatLeakManagerCabin.maxWaterLevel;
+                }
+                else if (hit.collider.CompareTag("OffBoat"))
+                {
+
+                }
+                bucketController.Empty();
+            }
+           
+        }
     }
 }

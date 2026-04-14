@@ -298,7 +298,7 @@ MonoBehaviour:
   cameraPivot: {fileID: 817989506291773441}
   playerCamera: {fileID: 4869700449901810185}
   moveSpeed: 5
-  lookSensitivity: 2
+  lookSensitivity: 0.3
   maxPitch: 80
 --- !u!114 &1738305578014034872
 MonoBehaviour:
