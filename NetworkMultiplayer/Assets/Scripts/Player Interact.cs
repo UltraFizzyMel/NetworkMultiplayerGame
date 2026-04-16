@@ -56,13 +56,13 @@ public class PlayerInteract : MonoBehaviour
 
                 if (hitInfo.collider.tag == "PickUp" || hitInfo.collider.tag == "Flashlight" || hitInfo.collider.tag == "Book" || hitInfo.collider.tag == "Chemical")
                 {
-                    if (networkPlayer.heldObject == null) //player must not be holding anything in order to pickup an object
+                   /* if (networkPlayer.heldObject == null) //player must not be holding anything in order to pickup an object
                     {
                         //playerUI.UpdateUItoE();
 
                         //updates onscreen text to match the prompt message of the interactable
                         playerUI.UpdateText(interactable.promptMessage);
-                    }
+                    }*/
 
                 }
                 else
