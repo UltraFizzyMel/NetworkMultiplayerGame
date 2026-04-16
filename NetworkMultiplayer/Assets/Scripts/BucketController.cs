@@ -4,6 +4,7 @@ using Unity.Netcode;
 public class BucketController : NetworkBehaviour
 {
     public bool isFull = false;
+    public bool isHoldingBucket;
 
     public GameObject waterVisual;
     public float bucketCapacity = 0.5f;

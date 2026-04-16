@@ -34,6 +34,7 @@ public class NetworkPlayer : NetworkBehaviour
     {
         cc = GetComponent<CharacterController>();
         pi = GetComponent<PlayerInput>();
+
         boatLeakManagerCabin = GameObject.Find("CabinWater").GetComponent<BoatLeakManager>();
         boatLeakManagerDeck = GameObject.Find("DeckWater").GetComponent<BoatLeakManager>();
         bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();//change when changing name of bucket gameobject
