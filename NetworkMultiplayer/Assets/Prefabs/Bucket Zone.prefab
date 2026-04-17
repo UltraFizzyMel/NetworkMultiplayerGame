@@ -157,6 +157,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d2ae22216f5b0d48a531c54f6ce62a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BucketZone
-  bucketPrefab: {fileID: 684193053435135429, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
+  objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
   bucketPlacement: {fileID: 1616730571923847228}
-  networkPlayer: {fileID: 0}

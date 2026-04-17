@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 385aaddeac9f89547b94faf8e7714723, type: 3}
   m_Name: Bucket
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPickUpSO
-  prefab: {fileID: 0}
-  sprite: {fileID: 0}
-  objectName: 
+  prefab: {fileID: 684193053435135429, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
+  objectName: Bucket
