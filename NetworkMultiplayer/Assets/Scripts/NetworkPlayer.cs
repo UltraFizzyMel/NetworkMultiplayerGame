@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using System;
 
 
 public class NetworkPlayer : NetworkBehaviour
@@ -20,6 +21,7 @@ public class NetworkPlayer : NetworkBehaviour
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
+    private InputAction interact;
     private CharacterController cc;
 
     private float pitch;    //Current up/down camera rotation
@@ -30,14 +32,16 @@ public class NetworkPlayer : NetworkBehaviour
     public BoatLeakManager boatLeakManagerCabin;
     public float interactionDistance = 5f;
 
+    public event EventHandler OnInteractAction;
+
     public override void OnNetworkSpawn()
     {
         cc = GetComponent<CharacterController>();
         pi = GetComponent<PlayerInput>();
 
-        boatLeakManagerCabin = GameObject.Find("CabinWater").GetComponent<BoatLeakManager>();
-        boatLeakManagerDeck = GameObject.Find("DeckWater").GetComponent<BoatLeakManager>();
-        bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();//change when changing name of bucket gameobject
+        //boatLeakManagerCabin = GameObject.Find("CabinWater").GetComponent<BoatLeakManager>();
+        //boatLeakManagerDeck = GameObject.Find("DeckWater").GetComponent<BoatLeakManager>();
+       // bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();//change when changing name of bucket gameobject
 
         if (!IsOwner)
         {
@@ -51,11 +55,21 @@ public class NetworkPlayer : NetworkBehaviour
         moveAction = pi.actions["Move"];
         lookAction = pi.actions["Look"];
         jumpAction = pi.actions["Jump"];
+        interact = pi.actions["Interact"];
         moveAction.Enable();
         lookAction.Enable();
         jumpAction.Enable();
+        interact.Enable();
 
         if (playerCamera) playerCamera.enabled = true;
+
+        interact.performed += Interact_performed;
+    }
+
+    private void Interact_performed(InputAction.CallbackContext obj)
+    {
+        // OnInteractAction?.Invoke(this, EventArgs.Empty);
+        HandleInteractions();
     }
 
     private void Update()
@@ -73,10 +87,28 @@ public class NetworkPlayer : NetworkBehaviour
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);//clamp camera so player doesnt turn over
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); // Apply pitch to the camera pivot only(keeps body upright)
 
-        TryScoop();
+        //TryScoop();
+        //HandleInteractions();
     }
 
+    private void HandleInteractions()
+    {
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        {
+            if(raycastHit.transform.TryGetComponent(out BucketZone bucketzone))
+            {
+                //Has BucketZone
+                bucketzone.Interact();
+                { Debug.Log("Interact!"); }
+            }
+            else
+            {
 
+            }
+        }
+        //else { Debug.Log("-"); }
+        
+    }
     void TryScoop()
     {
         RaycastHit hit;
@@ -109,7 +141,7 @@ public class NetworkPlayer : NetworkBehaviour
                 }
                 else if (hit.collider.CompareTag("OffShip"))
                 {
-                    bucketController.Empty();
+                   bucketController.Empty();
                 }
                 
             }
