@@ -31,7 +31,7 @@ public class NetworkPlayer : NetworkBehaviour
     public BoatLeakManager boatLeakManagerDeck;
     public BoatLeakManager boatLeakManagerCabin;
     public float interactionDistance = 5f;
-
+    public bool hasBucket;
     public event EventHandler OnInteractAction;
 
     public override void OnNetworkSpawn()
@@ -68,7 +68,7 @@ public class NetworkPlayer : NetworkBehaviour
 
     private void Interact_performed(InputAction.CallbackContext obj)
     {
-        // OnInteractAction?.Invoke(this, EventArgs.Empty);
+        OnInteractAction?.Invoke(this, EventArgs.Empty);
         HandleInteractions();
     }
 
@@ -97,9 +97,8 @@ public class NetworkPlayer : NetworkBehaviour
         {
             if(raycastHit.transform.TryGetComponent(out BucketZone bucketzone))
             {
-                //Has BucketZone
-                bucketzone.Interact();
-                { Debug.Log("Interact!"); }
+                //Has BucketZone               
+                    bucketzone.Interact();               
             }
             else
             {
