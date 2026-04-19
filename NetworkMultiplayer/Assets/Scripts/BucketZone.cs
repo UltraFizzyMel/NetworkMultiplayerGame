@@ -1,23 +1,25 @@
 using UnityEngine;
 
-public class BucketZone : MonoBehaviour
+public class BucketZone : MonoBehaviour, IObjectPickUpParent
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
     [SerializeField] private Transform bucketPlacement;
 
-    private ObjectPickUp objectPickUp;
+    [SerializeField] private ObjectPickUp objectPickUp;
     //[SerializeField] private NetworkPlayer networkPlayer;
     //[SerializeField] private BucketController bucketController;
-    public void Interact()
+    public void Interact(NetworkPlayer networkPlayer)
     {
         if (objectPickUp == null)
         {
-            Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketPlacement); //Instantiate object
-            objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
+            //Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketHoldPoint); //Instantiate object
+            //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
         }
         else
         {
-            Debug.Log(objectPickUp.GetBucketZone());
+            //Give the object to the player
+            objectPickUp.SetObjectPickUpParent(networkPlayer);
+
         }
     }
 

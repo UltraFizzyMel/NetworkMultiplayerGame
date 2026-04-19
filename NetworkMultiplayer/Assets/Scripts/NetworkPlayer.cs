@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using System;
 
 
-public class NetworkPlayer : NetworkBehaviour
+public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
 { 
     [Header("PlayerComponents")]
     [SerializeField] private Transform cameraPivot;     //empty child at head height
@@ -33,6 +33,10 @@ public class NetworkPlayer : NetworkBehaviour
     public float interactionDistance = 5f;
     public bool hasBucket;
     public event EventHandler OnInteractAction;
+
+    [Header("Interface settings")]
+    [SerializeField] private Transform bucketHoldPoint;
+    [SerializeField] private ObjectPickUp objectPickUp;
 
     public override void OnNetworkSpawn()
     {
@@ -98,7 +102,7 @@ public class NetworkPlayer : NetworkBehaviour
             if(raycastHit.transform.TryGetComponent(out BucketZone bucketzone))
             {
                 //Has BucketZone               
-                    bucketzone.Interact();               
+                    bucketzone.Interact(this);               
             }
             else
             {
@@ -146,5 +150,30 @@ public class NetworkPlayer : NetworkBehaviour
             }
            
         }
+    }
+
+    public Transform GetObjectPickUpTransform()
+    {
+        return bucketHoldPoint;
+    }
+
+    public void SetObjectPickUp(ObjectPickUp objectPickUp)
+    {
+        this.objectPickUp = objectPickUp;
+    }
+
+    public ObjectPickUp GetObjectPickUp()
+    {
+        return objectPickUp;
+    }
+
+    public void ClearObjectPickUp()
+    {
+        objectPickUp = null;
+    }
+
+    public bool HasObjectPickUp()
+    {
+        return objectPickUp != null;
     }
 }
