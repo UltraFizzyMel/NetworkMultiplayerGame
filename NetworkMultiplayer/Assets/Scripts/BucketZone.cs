@@ -10,28 +10,35 @@ public class BucketZone : Interactable, IObjectPickUpParent
     //[SerializeField] private BucketController bucketController;
     public override void Interact(NetworkPlayer networkPlayer)
     {
+        Debug.Log("Interact!!");
         if (!HasObjectPickUp())
         {
             //There is no pickup here
+            Debug.Log("No Pick-up");
             if (networkPlayer.HasObjectPickUp()) {
                 //Player has an object in their hands
                 networkPlayer.GetObjectPickUp().SetObjectPickUpParent(this);
+                Debug.Log("Carrying!!");
             }
             else {
-                //playernot carrying anything
+                //player not carrying anything
+                Debug.Log("Empty!!");
             }
         }
         else
         {
             //There is a pick-up here
+            Debug.Log("Pick-up!!");
             if (networkPlayer.HasObjectPickUp())
             {
                 //player is carrying something
+                Debug.Log("Carrying!!");
             }
             else
             {
                 //player not carrying pickup
                 objectPickUp.SetObjectPickUpParent(networkPlayer);
+                Debug.Log("Empty!!");
             }
         }
         //Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketHoldPoint); //Instantiate object

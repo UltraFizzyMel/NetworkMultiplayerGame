@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class ObjectPickUp : MonoBehaviour
@@ -6,16 +7,40 @@ public class ObjectPickUp : MonoBehaviour
 
     private IObjectPickUpParent objectPickUpParent;
 
+    private FollowTransform followTransform;
+
+
+    private void Awake()
+    {
+        followTransform = GetComponent<FollowTransform>();
+    }
+
     public ObjectPickUpSO GetObjectPickUpSO() { return objectPickUpSO; }
 
 
     public void SetObjectPickUpParent(IObjectPickUpParent objectPickUpParent)
-    { this.objectPickUpParent = objectPickUpParent;
-        if(this.objectPickUpParent != null)// clears the old bucket zone
+    {
+       // SetObjectPickUpParentServerRpc(objectPickUpParent.GetNetworkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetObjectPickUpParentServerRpc(NetworkObjectReference objectPickUpParentNetworkObjectReference)
+    {
+        
+    }
+
+    [ClientRpc]
+    private void SetObjectPickUpParentClientRPC(NetworkObjectReference objectPickUpParentNetworkObjectReference)
+    {
+        objectPickUpParentNetworkObjectReference.TryGet(out NetworkObject objectPickUpNetworkObject);
+        IObjectPickUpParent objectPickUpParent = objectPickUpNetworkObject.GetComponent<IObjectPickUpParent>();
+
+        this.objectPickUpParent = objectPickUpParent;
+        if (this.objectPickUpParent != null)// clears the old parent
         {
             this.objectPickUpParent.ClearObjectPickUp();
         }
-        this.objectPickUpParent = objectPickUpParent; //adds the new bucket zone
+        this.objectPickUpParent = objectPickUpParent; //adds the new parent
 
         //make sure the new location is empty before placing item there.
         if (objectPickUpParent.HasObjectPickUp())
@@ -24,9 +49,15 @@ public class ObjectPickUp : MonoBehaviour
         }
         objectPickUpParent.SetObjectPickUp(this);
 
-        transform.parent = objectPickUpParent.GetObjectPickUpTransform();
-        transform.localPosition = Vector3.zero;
+        followTransform.SetTargetTransform(objectPickUpParent.GetObjectPickUpTransform());
+        //transform.parent = objectPickUpParent.GetObjectPickUpTransform();
+        //transform.localPosition = Vector3.zero;
     }
 
     public IObjectPickUpParent GetObjectPickUpParent() { return objectPickUpParent; }
+
+   // public static ObjectPickUp SpawnObjectPickUp(ObjectPickUpSO objectPickUpSO, IObjectPickUpParent objectPickUpParent)
+   // {
+        
+    //}
 }
