@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class Interactab;e
+public class Interactable : MonoBehaviour
 {
-    
+
+    public virtual void Interact(NetworkPlayer networkPlayer)
+    { }
+
 }
