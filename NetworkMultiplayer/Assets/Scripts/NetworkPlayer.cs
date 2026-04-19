@@ -99,10 +99,10 @@ public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
     {
         if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
         {
-            if(raycastHit.transform.TryGetComponent(out BucketZone bucketzone))
+            if(raycastHit.transform.TryGetComponent(out Interactable interactable))
             {
-                //Has BucketZone               
-                    bucketzone.Interact(this);               
+                //Has interactable              
+                    interactable.Interact(this);               
             }
             else
             {

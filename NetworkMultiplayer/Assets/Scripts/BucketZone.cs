@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BucketZone : MonoBehaviour, IObjectPickUpParent
+public class BucketZone : Interactable, IObjectPickUpParent
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
     [SerializeField] private Transform bucketPlacement;
@@ -8,19 +8,34 @@ public class BucketZone : MonoBehaviour, IObjectPickUpParent
     [SerializeField] private ObjectPickUp objectPickUp;
     //[SerializeField] private NetworkPlayer networkPlayer;
     //[SerializeField] private BucketController bucketController;
-    public void Interact(NetworkPlayer networkPlayer)
+    public override void Interact(NetworkPlayer networkPlayer)
     {
-        if (objectPickUp == null)
+        if (!HasObjectPickUp())
         {
-            //Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketHoldPoint); //Instantiate object
-            //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
+            //There is no pickup here
+            if (networkPlayer.HasObjectPickUp()) {
+                //Player has an object in their hands
+                networkPlayer.GetObjectPickUp().SetObjectPickUpParent(this);
+            }
+            else {
+                //playernot carrying anything
+            }
         }
         else
         {
-            //Give the object to the player
-            objectPickUp.SetObjectPickUpParent(networkPlayer);
-
+            //There is a pick-up here
+            if (networkPlayer.HasObjectPickUp())
+            {
+                //player is carrying something
+            }
+            else
+            {
+                //player not carrying pickup
+                objectPickUp.SetObjectPickUpParent(networkPlayer);
+            }
         }
+        //Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketHoldPoint); //Instantiate object
+        //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
     }
 
     public Transform GetObjectPickUpTransform()
