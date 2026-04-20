@@ -20,7 +20,7 @@ public class ObjectPickUp : MonoBehaviour
 
     public void SetObjectPickUpParent(IObjectPickUpParent objectPickUpParent)
     {
-       // SetObjectPickUpParentServerRpc(objectPickUpParent.GetNetworkObject());
+        SetObjectPickUpParentServerRpc(objectPickUpParent.GetNetworkObject());
     }
 
     [ServerRpc(RequireOwnership = false)]

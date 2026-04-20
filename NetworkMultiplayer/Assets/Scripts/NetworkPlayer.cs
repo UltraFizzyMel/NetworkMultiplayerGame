@@ -109,7 +109,7 @@ public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
 
             }
         }
-        //else { Debug.Log("-"); }
+        
         
     }
     void TryScoop()
