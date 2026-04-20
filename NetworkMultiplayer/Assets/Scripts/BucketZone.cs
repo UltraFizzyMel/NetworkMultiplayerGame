@@ -5,9 +5,7 @@ using UnityEngine;
 public class BucketZone : Interactable, IObjectPickUpParent
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
-    [SerializeField] private Transform bucketPlacement;
-
-    [SerializeField] private ObjectPickUp objectPickUp;
+    
     //[SerializeField] private NetworkPlayer networkPlayer;
     //[SerializeField] private BucketController bucketController;
 
@@ -43,7 +41,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
             else
             {
                 //player not carrying pickup
-                objectPickUp.SetObjectPickUpParent(networkPlayer);
+                GetObjectPickUp().SetObjectPickUpParent(networkPlayer);
                 ClearObjectPickUp();
                 Debug.Log("Empty!!");
             }
@@ -52,30 +50,4 @@ public class BucketZone : Interactable, IObjectPickUpParent
         //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
     }
 
-    public Transform GetObjectPickUpTransform()
-    {
-        return bucketPlacement;
-    }
-
-    public void SetObjectPickUp(ObjectPickUp objectPickUp)
-    {
-        this.objectPickUp = objectPickUp;
-    }
-
-    public ObjectPickUp GetObjectPickUp()
-    {
-        return objectPickUp;
-    }
-
-   
-    public void ClearObjectPickUp()
-    {
-        objectPickUp = null;
-    }
-
-    public bool HasObjectPickUp() {
-        return objectPickUp != null;
-    }
-
-    public NetworkObject GetNetworkObject() { return NetworkObject; }
 }
