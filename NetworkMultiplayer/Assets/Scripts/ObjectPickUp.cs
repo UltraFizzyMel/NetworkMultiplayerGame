@@ -1,7 +1,8 @@
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class ObjectPickUp : MonoBehaviour
+public class ObjectPickUp : NetworkBehaviour
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
 
@@ -13,6 +14,7 @@ public class ObjectPickUp : MonoBehaviour
     private void Awake()
     {
         followTransform = GetComponent<FollowTransform>();
+        //SpawnObjectPickUp(objectPickUpSO, objectPickUpParent);
     }
 
     public ObjectPickUpSO GetObjectPickUpSO() { return objectPickUpSO; }
@@ -23,10 +25,10 @@ public class ObjectPickUp : MonoBehaviour
         SetObjectPickUpParentServerRpc(objectPickUpParent.GetNetworkObject());
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetObjectPickUpParentServerRpc(NetworkObjectReference objectPickUpParentNetworkObjectReference)
     {
-       
+        SetObjectPickUpParentClientRpc(objectPickUpParentNetworkObjectReference);
     }
 
     [ClientRpc]
@@ -35,10 +37,11 @@ public class ObjectPickUp : MonoBehaviour
         objectPickUpParentNetworkObjectReference.TryGet(out NetworkObject objectPickUpNetworkObject);
         IObjectPickUpParent objectPickUpParent = objectPickUpNetworkObject.GetComponent<IObjectPickUpParent>();
 
-        this.objectPickUpParent = objectPickUpParent;
+        
         if (this.objectPickUpParent != null)// clears the old parent
         {
             this.objectPickUpParent.ClearObjectPickUp();
+            Debug.Log("Clearing Parent");
         }
         this.objectPickUpParent = objectPickUpParent; //adds the new parent
 
@@ -49,6 +52,7 @@ public class ObjectPickUp : MonoBehaviour
         }
         objectPickUpParent.SetObjectPickUp(this);
 
+        Debug.Log("Set transform Parent");
         followTransform.SetTargetTransform(objectPickUpParent.GetObjectPickUpTransform());
         //transform.parent = objectPickUpParent.GetObjectPickUpTransform();
         //transform.localPosition = Vector3.zero;

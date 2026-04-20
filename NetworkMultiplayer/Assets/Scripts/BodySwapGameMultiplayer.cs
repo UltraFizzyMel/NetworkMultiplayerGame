@@ -20,7 +20,7 @@ public class BodySwapGameMultiplayer : NetworkBehaviour
        SpawnObjectPickUpServerRpc(GetObjectPickUpSOIndex(objectPickUpSO), objectPickUpParent.GetNetworkObject());
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SpawnObjectPickUpServerRpc(int objectPickUpSOIndex, NetworkObjectReference objectPickUpParentNetworkObjectReference)
     {
         ObjectPickUpSO objectPickUpSO = GetObjectPickUpSOFromIndex(objectPickUpSOIndex);

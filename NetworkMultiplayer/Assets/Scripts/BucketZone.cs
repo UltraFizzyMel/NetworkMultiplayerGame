@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,6 +10,10 @@ public class BucketZone : Interactable, IObjectPickUpParent
     [SerializeField] private ObjectPickUp objectPickUp;
     //[SerializeField] private NetworkPlayer networkPlayer;
     //[SerializeField] private BucketController bucketController;
+
+
+
+
     public override void Interact(NetworkPlayer networkPlayer)
     {
         Debug.Log("Interact!!");
@@ -39,6 +44,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
             {
                 //player not carrying pickup
                 objectPickUp.SetObjectPickUpParent(networkPlayer);
+                ClearObjectPickUp();
                 Debug.Log("Empty!!");
             }
         }
@@ -61,6 +67,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         return objectPickUp;
     }
 
+   
     public void ClearObjectPickUp()
     {
         objectPickUp = null;
@@ -70,5 +77,5 @@ public class BucketZone : Interactable, IObjectPickUpParent
         return objectPickUp != null;
     }
 
-    public NetworkObject GetNetworkObject() { return null; }
+    public NetworkObject GetNetworkObject() { return NetworkObject; }
 }

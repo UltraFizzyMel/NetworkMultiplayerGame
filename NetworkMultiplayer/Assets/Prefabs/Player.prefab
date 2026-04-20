@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 817989506291773441}
-  - component: {fileID: 8824348482878683703}
   - component: {fileID: 4869700449901810185}
   - component: {fileID: 8060206436547983554}
   m_Layer: 0
@@ -34,14 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6791297429807195886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &8824348482878683703
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5934902848014278182}
-  m_Enabled: 1
 --- !u!20 &4869700449901810185
 Camera:
   m_ObjectHideFlags: 0
@@ -301,7 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2305843624
+  GlobalObjectIdHash: 1912305240
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
