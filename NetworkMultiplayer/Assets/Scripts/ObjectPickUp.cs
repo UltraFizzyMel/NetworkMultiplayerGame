@@ -56,8 +56,8 @@ public class ObjectPickUp : MonoBehaviour
 
     public IObjectPickUpParent GetObjectPickUpParent() { return objectPickUpParent; }
 
-   // public static ObjectPickUp SpawnObjectPickUp(ObjectPickUpSO objectPickUpSO, IObjectPickUpParent objectPickUpParent)
-   // {
-        
-    //}
+    public static void SpawnObjectPickUp(ObjectPickUpSO objectPickUpSO, IObjectPickUpParent objectPickUpParent)
+    {
+        BodySwapGameMultiplayer.Instance.SpawnObjectPickUp(objectPickUpSO, objectPickUpParent);
+    }
 }

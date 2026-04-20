@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class BucketZone : Interactable, IObjectPickUpParent
@@ -68,4 +69,6 @@ public class BucketZone : Interactable, IObjectPickUpParent
     public bool HasObjectPickUp() {
         return objectPickUp != null;
     }
+
+    public NetworkObject GetNetworkObject() { return null; }
 }

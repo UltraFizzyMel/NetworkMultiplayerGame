@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IObjectPickUpParent
@@ -15,5 +16,5 @@ public interface IObjectPickUpParent
 
     public bool HasObjectPickUp();
     
-
+    public NetworkObject GetNetworkObject();
 }

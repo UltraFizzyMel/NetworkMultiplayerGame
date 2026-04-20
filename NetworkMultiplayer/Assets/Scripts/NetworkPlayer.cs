@@ -176,4 +176,9 @@ public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
     {
         return objectPickUp != null;
     }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
 }
