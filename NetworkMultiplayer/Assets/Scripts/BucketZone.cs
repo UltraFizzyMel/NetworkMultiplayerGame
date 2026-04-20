@@ -29,7 +29,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         else
         {
             //There is a pick-up here
-            Debug.Log("Pick-up!!");
+            Debug.Log("There is a Pick-up!!");
             if (networkPlayer.HasObjectPickUp())
             {
                 //player is carrying something

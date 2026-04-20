@@ -26,11 +26,11 @@ public class ObjectPickUp : MonoBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetObjectPickUpParentServerRpc(NetworkObjectReference objectPickUpParentNetworkObjectReference)
     {
-        
+       
     }
 
     [ClientRpc]
-    private void SetObjectPickUpParentClientRPC(NetworkObjectReference objectPickUpParentNetworkObjectReference)
+    private void SetObjectPickUpParentClientRpc(NetworkObjectReference objectPickUpParentNetworkObjectReference)
     {
         objectPickUpParentNetworkObjectReference.TryGet(out NetworkObject objectPickUpNetworkObject);
         IObjectPickUpParent objectPickUpParent = objectPickUpNetworkObject.GetComponent<IObjectPickUpParent>();

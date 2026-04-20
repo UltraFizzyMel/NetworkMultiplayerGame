@@ -112,7 +112,7 @@ public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
         
         
     }
-    void TryScoop()
+   /* void TryScoop()
     {
         RaycastHit hit;
         if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out hit, interactionDistance))
@@ -150,7 +150,7 @@ public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
             }
            
         }
-    }
+    }*/
 
     public Transform GetObjectPickUpTransform()
     {
