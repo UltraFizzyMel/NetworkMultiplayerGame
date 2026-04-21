@@ -2,9 +2,10 @@ using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
-public class Player : NetworkBehaviour
+public class Player : NetworkBehaviour, IObjectPickUpParent
 {
     [Header("Player Components")]
     [SerializeField] private Transform cameraPivot;
@@ -18,9 +19,22 @@ public class Player : NetworkBehaviour
     private PlayerInput pi;
     private InputAction moveAction;
     private InputAction lookAction;
+    private InputAction interact;
     private CharacterController cc;
 
     private float pitch;
+
+    [Header("Bucket Settings")]
+    public BucketController bucketController;
+    public BoatLeakManager boatLeakManagerDeck;
+    public BoatLeakManager boatLeakManagerCabin;
+    public float interactionDistance = 5f;
+    public bool hasBucket;
+    public event EventHandler OnInteractAction;
+
+    [Header("Interface settings")]
+    [SerializeField] private Transform bucketHoldPoint;
+    [SerializeField] private ObjectPickUp objectPickUp;
 
     public override void OnNetworkSpawn()
     {
@@ -47,8 +61,10 @@ public class Player : NetworkBehaviour
         
         moveAction = pi.actions["Move"];
         lookAction = pi.actions["Look"];
+        interact = pi.actions["Interact"];
         moveAction.Enable();
         lookAction.Enable();
+        interact.Enable();
 
         if (playerCamera)
             playerCamera.enabled = true; //start off
@@ -59,6 +75,13 @@ public class Player : NetworkBehaviour
         //controllingClientId.OnValueChanged += OnControlChanged;
 
         //OnControlChanged(0, controllingClientId.Value);
+        interact.performed += Interact_performed;
+    }
+
+    private void Interact_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAction?.Invoke(this, EventArgs.Empty);
+        HandleInteractions();
     }
 
     private void Update()
@@ -115,7 +138,23 @@ public class Player : NetworkBehaviour
         cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }*/
 
-    [ServerRpc]
+    private void HandleInteractions()
+    {
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        {
+            if (raycastHit.transform.TryGetComponent(out Interactable interactable))
+            {
+                //Has interactable              
+                interactable.Interact(this);
+            }
+            else
+            {
+
+            }
+        }
+    }
+
+        [ServerRpc]
     private void MoveServerRpc(Vector2 input)
     {
         Vector3 move =
@@ -137,5 +176,36 @@ public class Player : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         PlayerRegistry.Unregister(this);
+    }
+
+
+    public Transform GetObjectPickUpTransform()
+    {
+        return bucketHoldPoint;
+    }
+
+    public void SetObjectPickUp(ObjectPickUp objectPickUp)
+    {
+        this.objectPickUp = objectPickUp;
+    }
+
+    public ObjectPickUp GetObjectPickUp()
+    {
+        return objectPickUp;
+    }
+
+    public void ClearObjectPickUp()
+    {
+        objectPickUp = null;
+    }
+
+    public bool HasObjectPickUp()
+    {
+        return objectPickUp != null;
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
     }
 }

@@ -6,22 +6,22 @@ public class BucketZone : Interactable, IObjectPickUpParent
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
     
-    //[SerializeField] private NetworkPlayer networkPlayer;
+    //[SerializeField] private Player player;
     //[SerializeField] private BucketController bucketController;
 
 
 
 
-    public override void Interact(NetworkPlayer networkPlayer)
+    public override void Interact(Player player)
     {
         Debug.Log("Interact!!");
         if (!HasObjectPickUp())
         {
             //There is no pickup here
             Debug.Log("No Pick-up");
-            if (networkPlayer.HasObjectPickUp()) {
+            if (player.HasObjectPickUp()) {
                 //Player has an object in their hands
-                networkPlayer.GetObjectPickUp().SetObjectPickUpParent(this);
+                player.GetObjectPickUp().SetObjectPickUpParent(this);
                 Debug.Log("Carrying!!");
             }
             else {
@@ -33,7 +33,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         {
             //There is a pick-up here
             Debug.Log("There is a Pick-up!!");
-            if (networkPlayer.HasObjectPickUp())
+            if (player.HasObjectPickUp())
             {
                 //player is carrying something
                 Debug.Log("Carrying!!");
@@ -41,7 +41,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
             else
             {
                 //player not carrying pickup
-                GetObjectPickUp().SetObjectPickUpParent(networkPlayer);
+                GetObjectPickUp().SetObjectPickUpParent(player);
                 ClearObjectPickUp();
                 Debug.Log("Empty!!");
             }

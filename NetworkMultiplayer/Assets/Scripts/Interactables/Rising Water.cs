@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class RisingWater : Interactable
 {
-    public override void Interact(NetworkPlayer networkPlayer)
+    public override void Interact(Player player)
     {
-        if (networkPlayer.HasObjectPickUp())
+        if (player.HasObjectPickUp())
         {
            GetObjectPickUp();
         }

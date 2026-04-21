@@ -102,7 +102,7 @@ public class NetworkPlayer : NetworkBehaviour, IObjectPickUpParent
             if(raycastHit.transform.TryGetComponent(out Interactable interactable))
             {
                 //Has interactable              
-                    interactable.Interact(this);               
+                    //interactable.Interact(this);               
             }
             else
             {
