@@ -20,6 +20,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction interact;
+    private InputAction interactAlternate;
     private CharacterController cc;
 
     private float pitch;
@@ -31,6 +32,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     public float interactionDistance = 5f;
     public bool hasBucket;
     public event EventHandler OnInteractAction;
+    public event EventHandler OnInteractAlternateAction;
 
     [Header("Interface settings")]
     [SerializeField] private Transform bucketHoldPoint;
@@ -62,9 +64,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         moveAction = pi.actions["Move"];
         lookAction = pi.actions["Look"];
         interact = pi.actions["Interact"];
+        interactAlternate = pi.actions["InteractAlternate"];
         moveAction.Enable();
         lookAction.Enable();
         interact.Enable();
+        interactAlternate.Enable();
 
         if (playerCamera)
             playerCamera.enabled = true; //start off
@@ -76,12 +80,25 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         //OnControlChanged(0, controllingClientId.Value);
         interact.performed += Interact_performed;
+        interact.canceled += Interact_canceled;
+        interactAlternate.performed += InteractAlternate_performed;
+    }
+
+    private void InteractAlternate_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAlternateAction?.Invoke(this, EventArgs.Empty);
+        HandleInteractionsAlternate();
     }
 
     private void Interact_performed(InputAction.CallbackContext obj)
     {
         OnInteractAction?.Invoke(this, EventArgs.Empty);
         HandleInteractions();
+    }
+    private void Interact_canceled(InputAction.CallbackContext obj)
+    {
+        //OnInteractAction?.Invoke(this, EventArgs.Empty);
+        //HandleInteractions();
     }
 
     private void Update()
@@ -154,7 +171,23 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         }
     }
 
-        [ServerRpc]
+    private void HandleInteractionsAlternate()
+    {
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        {
+            if (raycastHit.transform.TryGetComponent(out Interactable interactable))
+            {
+                //Has interactable              
+                interactable.InteractAlternate(this);
+            }
+            else
+            {
+
+            }
+        }
+    }
+
+    [ServerRpc]
     private void MoveServerRpc(Vector2 input)
     {
         Vector3 move =

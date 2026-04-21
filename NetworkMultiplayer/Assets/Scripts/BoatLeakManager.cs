@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public class BoatLeakManager : NetworkBehaviour
 {
@@ -18,6 +19,9 @@ public class BoatLeakManager : NetworkBehaviour
     public bool bucketUsed;
     public bool bucketRebound;
     public BucketController bucketController;
+    private Leak leak;
+    [SerializeField] private List<LeakLocations> leakLocationsList;
+    private LeakLocations leakLocation;
 
 
     private void Start()
@@ -67,15 +71,32 @@ public class BoatLeakManager : NetworkBehaviour
             float time = Random.Range(leakInterval, leakInterval + 5);
 
             yield return new WaitForSeconds(time);
-            Instantiate(leakPrefab, transform.position, Quaternion.identity);
+            GameObject leakInstance = Instantiate(leakPrefab, PickRandomSurface(), Quaternion.identity/*, leakLocation.gameObject.transform*/);// create a leak
+            leak =leakInstance.GetComponent<Leak>();
+            leak.boatLeakManager = this; // Connect the leak to this leak manaager
+
             AddLeak();
         }
     }
 
    // IEnumerator BucketCooldown()
 
+
+
     public void SetWaterLevel(float currentWaterLevel)
     {
         waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
+    }
+
+    private Vector3 PickRandomSurface()
+    {
+        
+        if (leakLocationsList.Count > 0)
+        {
+            int randomIndex = Random.Range(0, leakLocationsList.Count);
+            leakLocation = leakLocationsList[randomIndex];
+                
+        }
+        return leakLocation.FindRandomLeakLocation();
     }
 }

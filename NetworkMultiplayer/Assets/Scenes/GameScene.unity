@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 173300365}
   - component: {fileID: 173300364}
   - component: {fileID: 173300363}
+  - component: {fileID: 173300366}
   m_Layer: 0
   m_Name: Cube (4)
   m_TagString: Untagged
@@ -231,6 +232,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 173300361}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &173300366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173300361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c4be93d64892ff4da6db2db953e0804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakLocations
+  hasVariableX: 0
+  hasVariableZ: 1
+  usesMaxX: 0
+  usesMaxZ: 0
+  boundsAdjustment: 1
+  surfaceAdjustment: 0.01
+  bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!1 &182586966
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,6 +792,7 @@ GameObject:
   - component: {fileID: 441713765}
   - component: {fileID: 441713764}
   - component: {fileID: 441713763}
+  - component: {fileID: 441713766}
   m_Layer: 0
   m_Name: Cube (8)
   m_TagString: Untagged
@@ -870,6 +893,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 441713761}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &441713766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441713761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c4be93d64892ff4da6db2db953e0804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakLocations
+  hasVariableX: 1
+  hasVariableZ: 0
+  usesMaxX: 0
+  usesMaxZ: 0
+  boundsAdjustment: 1
+  surfaceAdjustment: 0.01
+  bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!1 &456731611
 GameObject:
   m_ObjectHideFlags: 0
@@ -1026,6 +1070,7 @@ GameObject:
   - component: {fileID: 683359586}
   - component: {fileID: 683359585}
   - component: {fileID: 683359584}
+  - component: {fileID: 683359587}
   m_Layer: 0
   m_Name: Cube (9)
   m_TagString: Untagged
@@ -1126,6 +1171,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683359582}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &683359587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683359582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c4be93d64892ff4da6db2db953e0804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakLocations
+  hasVariableX: 0
+  hasVariableZ: 1
+  usesMaxX: 0
+  usesMaxZ: 0
+  boundsAdjustment: 1
+  surfaceAdjustment: 0.01
+  bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!1001 &726013717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1543,6 +1609,7 @@ GameObject:
   - component: {fileID: 898728416}
   - component: {fileID: 898728415}
   - component: {fileID: 898728414}
+  - component: {fileID: 898728417}
   m_Layer: 0
   m_Name: Cube (7)
   m_TagString: Untagged
@@ -1643,6 +1710,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898728412}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &898728417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898728412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c4be93d64892ff4da6db2db953e0804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeakLocations
+  hasVariableX: 1
+  hasVariableZ: 0
+  usesMaxX: 1
+  usesMaxZ: 0
+  boundsAdjustment: 1
+  surfaceAdjustment: 0.01
+  bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!1 &914811955
 GameObject:
   m_ObjectHideFlags: 0
@@ -2632,6 +2720,8 @@ MonoBehaviour:
   bucketUsed: 0
   bucketRebound: 0
   bucketController: {fileID: 0}
+  leakLocationsList:
+  - {fileID: 173300366}
 --- !u!114 &1474814222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3396,10 +3486,14 @@ MonoBehaviour:
   activeLeaks: 0
   waterPlane: {fileID: 1901160221}
   leakPrefab: {fileID: 3135551839727440796, guid: 6726fb71c24d06e4abfb04d721e517f3, type: 3}
-  leakInterval: 15
+  leakInterval: 1
   bucketUsed: 0
   bucketRebound: 0
   bucketController: {fileID: 0}
+  leakLocationsList:
+  - {fileID: 898728417}
+  - {fileID: 441713766}
+  - {fileID: 683359587}
 --- !u!114 &1901160224
 MonoBehaviour:
   m_ObjectHideFlags: 0
