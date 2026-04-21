@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class RisingWater : Interactable
 {
+    [SerializeField] private BucketController bucketController;
     public override void Interact(Player player)
     {
+        
         if (player.HasObjectPickUp())
         {
             //The player is holding something
-           if(GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
+           if(player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
            {
                 //The player has a bucket
                 if (bucketController.isFull)

@@ -64,11 +64,11 @@ public class BoatLeakManager : NetworkBehaviour
     {
         while (true)
         {
-            Instantiate(leakPrefab, transform.position, Quaternion.identity);
-            AddLeak();
             float time = Random.Range(leakInterval, leakInterval + 5);
 
             yield return new WaitForSeconds(time);
+            Instantiate(leakPrefab, transform.position, Quaternion.identity);
+            AddLeak();
         }
     }
 
