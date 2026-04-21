@@ -6,10 +6,21 @@ public class RisingWater : Interactable
     {
         if (player.HasObjectPickUp())
         {
-           GetObjectPickUp();
+            //The player is holding something
+           if(GetObjectPickUp().GetComponent<BucketController>())
+           {
+                //The player has a bucket
+           }
+           else
+           {
+                //The player does not have a bucket
+                return;
+           }
+            
         }
         else
         {
+            // The player is not holding something
             return;
         }
     }

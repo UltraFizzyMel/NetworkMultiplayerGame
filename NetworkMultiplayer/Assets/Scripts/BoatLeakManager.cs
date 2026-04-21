@@ -8,6 +8,7 @@ public class BoatLeakManager : NetworkBehaviour
     [Header("Water Settings")]
     public float currentWaterLevel = 0f;
     public float maxWaterLevel = 100f;
+    public float minWaterLevel = 0f;
     public float leakRate = 0.01f;
     public int activeLeaks = 0;
     public GameObject waterPlane;

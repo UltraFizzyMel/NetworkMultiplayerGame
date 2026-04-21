@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 924605314
+  GlobalObjectIdHash: 1544486101
   InScenePlacedSourceGlobalObjectIdHash: 2100032062
   DeferredDespawnTick: 0
   Ownership: 1
@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4137311016
+  GlobalObjectIdHash: 1985229350
   InScenePlacedSourceGlobalObjectIdHash: 2100032062
   DeferredDespawnTick: 0
   Ownership: 1
@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde0eb7af4926ce4d9d39cbee82e7b55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPickUp
+  ShowTopMostFoldoutHeaderGroup: 1
   objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
 --- !u!114 &5112539710504793491
 MonoBehaviour:
