@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Leak : Interactable
@@ -61,6 +62,11 @@ public class Leak : Interactable
        
     }
 
+    /*[ServerRpc(RequireOwnership = false)]
+    public void RequestDestroyServerRpc(NetworkObjectReference objRef)
+    {
+        if (objRef.TryGet(out NetworkObject networkObject)) { networkObject.Despawn(); }
+    }*/
     public void DestroySelf()
     {
         boatLeakManager.RepairLeak();

@@ -27,7 +27,11 @@ public class BoatLeakManager : NetworkBehaviour
     private void Start()
     {
         bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();
-        StartCoroutine(SpawnLeaks());
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        RequestLeakSpawnServerRpc();
     }
 
     // Update is called once per frame
@@ -64,6 +68,12 @@ public class BoatLeakManager : NetworkBehaviour
     public void RepairLeak() 
     { activeLeaks = Mathf.Max(0, activeLeaks - 1); }
 
+    [ServerRpc]
+    public void RequestLeakSpawnServerRpc()
+    {
+        StartCoroutine(SpawnLeaks());
+    }
+
     IEnumerator SpawnLeaks()
     {
         while (true)
@@ -73,6 +83,7 @@ public class BoatLeakManager : NetworkBehaviour
             yield return new WaitForSeconds(time);
             GameObject leakInstance = Instantiate(leakPrefab, PickRandomSurface(), leakLocation.SetLeakRotation()/*, leakLocation.gameObject.transform*/);// create a leak
             leak =leakInstance.GetComponent<Leak>();
+            leakInstance.GetComponent<NetworkObject>().Spawn();
             leak.boatLeakManager = this; // Connect the leak to this leak manaager
 
             AddLeak();
