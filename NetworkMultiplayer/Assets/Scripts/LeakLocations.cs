@@ -43,7 +43,7 @@ public class LeakLocations : MonoBehaviour
         float X = 0;
         if (hasVariableX)
         {
-            if (usesMaxZ)
+            if (usesMaxX)
             { Z = this.transform.position.z + zAdjustment; }
             else { Z = this.transform.position.z - zAdjustment; }
 
@@ -52,7 +52,7 @@ public class LeakLocations : MonoBehaviour
         }
         else if (hasVariableZ)
         {
-            if (usesMaxX)
+            if (usesMaxZ)
             { X = this.transform.position.x + xAdjustment; }
             else { X = this.transform.position.x - xAdjustment; }
 
