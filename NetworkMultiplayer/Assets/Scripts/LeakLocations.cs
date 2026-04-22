@@ -8,12 +8,19 @@ public class LeakLocations : MonoBehaviour
 
     [SerializeField] private bool usesMaxX;
     [SerializeField] private bool usesMaxZ;
-    [SerializeField] private float boundsAdjustment = 1f;//adjustment to prevent leak from appearing as if off the surface
-    [SerializeField] private float surfaceAdjustment = 0.01f;//Adjustment to place leak above the surface
 
-    [SerializeField] Bounds bounds;
+    [SerializeField] private float xAdjustment;
+    [SerializeField] private float yAdjustment;
+    [SerializeField] private float zAdjustment;
+    //[SerializeField] private float boundsAdjustment = 1f;//adjustment to prevent leak from appearing as if off the surface
+    //[SerializeField] private float surfaceAdjustment = 0.01f;//Adjustment to place leak above the surface
+
+
+
+    // [SerializeField] Bounds leakBounds;
     private Vector3 randomSpawnPosition;
-    private Renderer renderer;
+   // private Renderer renderer;
+    
 
 
     public void Start()
@@ -23,47 +30,91 @@ public class LeakLocations : MonoBehaviour
 
     public void GetLeakSurface()
     {
-        renderer = GetComponent<Renderer>();
-        Debug.Log(renderer);
-        if (renderer != null) return;
-        bounds = renderer.localBounds;
+        //renderer = GetComponent<Renderer>();
+        //Debug.Log(renderer);
+        //if (renderer != null) return;
+        //leakBounds = renderer.bounds;
     }
 
     public Vector3 FindRandomLeakLocation()
     {
+        
         float Z = 0;
+        float X = 0;
+        if (hasVariableX)
+        {
+            if (usesMaxZ)
+            { Z = this.transform.position.z + zAdjustment; }
+            else { Z = this.transform.position.z - zAdjustment; }
+
+            X = Random.Range((this.transform.position.x - xAdjustment), (this.transform.position.x + xAdjustment));
+
+        }
+        else if (hasVariableZ)
+        {
+            if (usesMaxX)
+            { X = this.transform.position.x + xAdjustment; }
+            else { X = this.transform.position.x - xAdjustment; }
+
+            Z = Random.Range((this.transform.position.z - zAdjustment), (this.transform.position.z + zAdjustment));
+        }
+        float randomY = Random.Range((this.transform.position.y - yAdjustment), (this.transform.position.y + yAdjustment));
+        Debug.Log(randomY);
+        
+        randomSpawnPosition = new Vector3(X, randomY, Z);
+        return randomSpawnPosition;
+    }
+
+    public Quaternion SetLeakRotation()
+    {
+        float y;
+        if (hasVariableX)
+        { if (usesMaxX)
+            { y = 0; }
+            else
+            { y = 180; }
+        }
+        else
+        { if (usesMaxZ)
+            { y = 90; }
+            else
+            { y = 270; }
+        }
+
+
+            return Quaternion.Euler(90, y, 0); 
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Gizmos.DrawWireCube(renderer.bounds.center, renderer.bounds.size);
+        { Gizmos.DrawWireCube(this.transform.position - new Vector3(0,0,0), new Vector3(xAdjustment, yAdjustment, zAdjustment)); }
+
+    }
+
+
+
+    /*float Z = 0;
         float X = 0;
         if (hasVariableX) 
         { 
             if (usesMaxZ)
-            { Z = bounds.max.z + surfaceAdjustment; }
-            else { Z = bounds.min.z - surfaceAdjustment; }
+            { Z = leakBounds.max.z + surfaceAdjustment; }
+            else { Z = leakBounds.min.z - surfaceAdjustment; }
 
-            X = Random.Range(((bounds.min.x) + boundsAdjustment), (bounds.max.x - boundsAdjustment));
+            X = Random.Range(((leakBounds.min.x) + boundsAdjustment), (leakBounds.max.x - boundsAdjustment));
             
         }
         else if (hasVariableZ) 
         {
             if (usesMaxX)
-            { X = bounds.max.x + surfaceAdjustment; }
-            else { X = bounds.min.x - surfaceAdjustment; }
+            { X = leakBounds.max.x + surfaceAdjustment; }
+            else { X = leakBounds.min.x - surfaceAdjustment; }
 
-            Z = Random.Range(((bounds.min.z) + boundsAdjustment), (bounds.max.z - boundsAdjustment));
+            Z = Random.Range(((leakBounds.min.z) + boundsAdjustment), (leakBounds.max.z - boundsAdjustment));
         }
         
-        float randomY = Random.Range(((bounds.min.y) + boundsAdjustment), (bounds.max.y - boundsAdjustment));
-
-        Debug.Log(randomY);
-        Debug.Log(Z);
-        Debug.Log(Z);
-        randomSpawnPosition = new Vector3(X, randomY, Z);
-        return randomSpawnPosition;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireCube(renderer.bounds.center, renderer.bounds.size);
-    }
-
+        float randomY = Random.Range(((leakBounds.min.y) + boundsAdjustment), (leakBounds.max.y - boundsAdjustment));
+        */
 
 }

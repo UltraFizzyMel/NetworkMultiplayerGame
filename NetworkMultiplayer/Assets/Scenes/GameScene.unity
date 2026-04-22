@@ -248,11 +248,9 @@ MonoBehaviour:
   hasVariableZ: 1
   usesMaxX: 0
   usesMaxZ: 0
-  boundsAdjustment: 1
-  surfaceAdjustment: 0.01
-  bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+  xAdjustment: 1
+  yAdjustment: 1
+  zAdjustment: 1
 --- !u!1 &182586966
 GameObject:
   m_ObjectHideFlags: 0
@@ -909,11 +907,9 @@ MonoBehaviour:
   hasVariableZ: 0
   usesMaxX: 0
   usesMaxZ: 0
-  boundsAdjustment: 1
-  surfaceAdjustment: 0.01
-  bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+  xAdjustment: 10
+  yAdjustment: 1
+  zAdjustment: 0.3
 --- !u!1 &456731611
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,11 +1183,9 @@ MonoBehaviour:
   hasVariableZ: 1
   usesMaxX: 0
   usesMaxZ: 0
-  boundsAdjustment: 1
-  surfaceAdjustment: 0.01
-  bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+  xAdjustment: 0.5
+  yAdjustment: 1
+  zAdjustment: 8
 --- !u!1001 &726013717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1726,11 +1720,9 @@ MonoBehaviour:
   hasVariableZ: 0
   usesMaxX: 1
   usesMaxZ: 0
-  boundsAdjustment: 1
-  surfaceAdjustment: 0.01
-  bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+  xAdjustment: 13
+  yAdjustment: 1
+  zAdjustment: 0.3
 --- !u!1 &914811955
 GameObject:
   m_ObjectHideFlags: 0
