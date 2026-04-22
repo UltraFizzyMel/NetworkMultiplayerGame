@@ -88,7 +88,7 @@ public class LeakLocations : MonoBehaviour
     private void OnDrawGizmos()
     {
         //Gizmos.DrawWireCube(renderer.bounds.center, renderer.bounds.size);
-        { Gizmos.DrawWireCube(this.transform.position - new Vector3(0,0,0), new Vector3(xAdjustment, yAdjustment, zAdjustment)); }
+        { Gizmos.DrawWireCube(this.transform.position - new Vector3(0,0,0), (new Vector3(xAdjustment, yAdjustment, zAdjustment))*2); }
 
     }
 

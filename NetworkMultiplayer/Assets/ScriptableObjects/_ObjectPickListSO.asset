@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPickUpListSO
   objectPickUpSOList:
   - {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
+  - {fileID: 11400000, guid: 082e1c46b39d99146930e04fb21acce7, type: 2}

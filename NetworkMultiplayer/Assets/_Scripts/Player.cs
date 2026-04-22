@@ -97,8 +97,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     }
     private void Interact_canceled(InputAction.CallbackContext obj)
     {
-        //OnInteractAction?.Invoke(this, EventArgs.Empty);
-        //HandleInteractions();
+        OnInteractAction?.Invoke(this, EventArgs.Empty);
+        HandleCancel();
     }
 
     private void Update()
@@ -163,6 +163,22 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             {
                 //Has interactable              
                 interactable.Interact(this);
+            }
+            else
+            {
+
+            }
+        }
+    }
+
+    private void HandleCancel()
+    {
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        {
+            if (raycastHit.transform.TryGetComponent(out Interactable interactable))
+            {
+                //Has interactable              
+                interactable.Cancel(this);
             }
             else
             {

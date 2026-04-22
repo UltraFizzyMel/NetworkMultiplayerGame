@@ -13,6 +13,9 @@ public class Interactable : NetworkBehaviour, IObjectPickUpParent
     public virtual void InteractAlternate(Player player)
     { }
 
+    public virtual void Cancel(Player player)
+    { }
+
     public Transform GetObjectPickUpTransform()
     {
         return bucketPlacement;
