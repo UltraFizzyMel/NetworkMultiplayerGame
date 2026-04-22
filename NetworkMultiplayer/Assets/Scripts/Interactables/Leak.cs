@@ -25,16 +25,6 @@ public class Leak : Interactable
         else { if (fixingProgress > 0) { progress = decayProgess; } }
         fixingProgress += progress * Time.deltaTime;
         OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs { progressNormalized = fixingProgress/fixingProgressMax });
-
-        if (fixingProgress <= 0f)
-        {
-            leakUI.SetActive(false);
-            return;
-        }
-        else if (fixingProgress > 0f) {
-            leakUI.SetActive(true);
-        }
-
         
         if (fixingProgress >= fixingProgressMax)
         {

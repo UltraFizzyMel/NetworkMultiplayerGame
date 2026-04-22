@@ -33,6 +33,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     public bool hasBucket;
     public event EventHandler OnInteractAction;
     public event EventHandler OnInteractAlternateAction;
+    public Interactable lastInteractable;
 
     [Header("Interface settings")]
     [SerializeField] private Transform bucketHoldPoint;
@@ -82,6 +83,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         interact.performed += Interact_performed;
         interact.canceled += Interact_canceled;
         interactAlternate.performed += InteractAlternate_performed;
+        
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -163,6 +165,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             {
                 //Has interactable              
                 interactable.Interact(this);
+                lastInteractable = interactable;
             }
             else
             {
@@ -173,7 +176,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private void HandleCancel()
     {
-        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        lastInteractable.Cancel(this);
+        /*if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
         {
             if (raycastHit.transform.TryGetComponent(out Interactable interactable))
             {
@@ -184,7 +188,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             {
 
             }
-        }
+        }*/
     }
 
     private void HandleInteractionsAlternate()
