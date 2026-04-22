@@ -15,7 +15,7 @@ public class OffBoat : Interactable
                 //The player has a bucket
                 if (bucketController.isFull)
                 {
-                    Debug.Log("Player has full Bucket");
+                    Debug.Log("Player Bucket Emptied");
                     bucketController.isFull = false;
                     
                 }

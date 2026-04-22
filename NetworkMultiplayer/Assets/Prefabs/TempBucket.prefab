@@ -188,7 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1985229350
+  GlobalObjectIdHash: 2100032062
   InScenePlacedSourceGlobalObjectIdHash: 2100032062
   DeferredDespawnTick: 0
   Ownership: 1
@@ -217,7 +217,7 @@ MonoBehaviour:
   isFull: 0
   isHoldingBucket: 0
   waterVisual: {fileID: 3527274937816570690}
-  bucketCapacity: 5
+  bucketCapacity: 0.2
 --- !u!114 &5383292609615484210
 MonoBehaviour:
   m_ObjectHideFlags: 0

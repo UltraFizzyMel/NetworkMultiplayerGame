@@ -4,6 +4,7 @@ using UnityEngine;
 public class RisingWater : Interactable
 {
     [SerializeField] private BucketController bucketController;
+    [SerializeField] private BoatLeakManager DeckManager;
     public override void Interact(Player player)
     {
         
@@ -20,10 +21,10 @@ public class RisingWater : Interactable
                 }
                 else
                 {
-                    this.TryGetComponent<BoatLeakManager>(out BoatLeakManager boatLeakManager);
-                    boatLeakManager.currentWaterLevel -= bucketController.bucketCapacity;
+                    TryGetComponent<BoatLeakManager>(out BoatLeakManager boatLeakManager);
+                    DeckManager.RemoveWater(bucketController.bucketCapacity);
                     bucketController.isFull = true;
-                    Debug.Log("Player has empty Bucket");
+                    Debug.Log("Player bucket has been Filled");
                 }
            }
            else

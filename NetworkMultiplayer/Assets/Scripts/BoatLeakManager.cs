@@ -88,6 +88,13 @@ public class BoatLeakManager : NetworkBehaviour
         waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
     }
 
+    public void RemoveWater(float bucketCapacity)
+    {
+        currentWaterLevel = currentWaterLevel - bucketCapacity;
+        if (currentWaterLevel <= 0f) { currentWaterLevel = 0f; }
+        waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
+    }
+
     private Vector3 PickRandomSurface()
     {
         

@@ -3389,7 +3389,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1748155467
 Transform:
   m_ObjectHideFlags: 0
@@ -3422,7 +3422,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -3968,6 +3968,7 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   bucketController: {fileID: 0}
+  DeckManager: {fileID: 1901160223}
 --- !u!1 &2049060617
 GameObject:
   m_ObjectHideFlags: 0
