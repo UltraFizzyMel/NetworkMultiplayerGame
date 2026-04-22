@@ -1,38 +1,38 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class RisingWater : Interactable
+public class OffBoat : Interactable
 {
     [SerializeField] private BucketController bucketController;
+    [SerializeField] private BoatLeakManager boatLeakManager;
     public override void Interact(Player player)
     {
-        
+
         if (player.HasObjectPickUp())
         {
             //The player is holding something
-           if(player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
-           {
+            if (player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
+            {
                 //The player has a bucket
                 if (bucketController.isFull)
                 {
                     Debug.Log("Player has full Bucket");
-                    return;
+                    bucketController.isFull = false;
+                    
                 }
                 else
                 {
-                    this.TryGetComponent<BoatLeakManager>(out BoatLeakManager boatLeakManager);
-                    boatLeakManager.currentWaterLevel -= bucketController.bucketCapacity;
-                    bucketController.isFull = true;
+                    
+                   
                     Debug.Log("Player has empty Bucket");
                 }
-           }
-           else
-           {
+            }
+            else
+            {
                 //The player does not have a bucket
                 Debug.Log("Player has no bucket");
                 return;
-           }
-            
+            }
+
         }
         else
         {
