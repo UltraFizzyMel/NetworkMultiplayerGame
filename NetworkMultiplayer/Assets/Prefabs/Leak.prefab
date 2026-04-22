@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3284568477
+  GlobalObjectIdHash: 1920098741
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -135,6 +135,10 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   boatLeakManager: {fileID: 0}
+  fixingProgressMax: 5
+  fixingProgress: 0
+  decayProgess: -1
+  fixingRate: 1.5
   leakUI: {fileID: 7250991559563576684}
 --- !u!64 &8037910324204296399
 MeshCollider:
@@ -169,6 +173,7 @@ GameObject:
   - component: {fileID: 1370724026215442231}
   - component: {fileID: 4425325853252984060}
   - component: {fileID: 8617202121422369270}
+  - component: {fileID: 7883624595846129408}
   m_Layer: 5
   m_Name: Bar Background
   m_TagString: Untagged
@@ -185,7 +190,7 @@ RectTransform:
   m_GameObject: {fileID: 3457420744544508091}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.05, y: 1.05, z: 1.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 9004912783289555965}
@@ -233,6 +238,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7883624595846129408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3457420744544508091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 0.1, y: -0.1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &3476799689822772700
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,7 +278,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3476799689822772700}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -320,6 +340,7 @@ GameObject:
   - component: {fileID: 39316591620478115}
   - component: {fileID: 1650272561718199796}
   - component: {fileID: 7128668523584662258}
+  - component: {fileID: 4165629486323035207}
   m_Layer: 5
   m_Name: FixProgressUI
   m_TagString: Untagged
@@ -411,3 +432,17 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &4165629486323035207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7250991559563576684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43bc1470cd252d64f9ee6ccb69c6bed5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressBarUI
+  leak: {fileID: 8118205953547141316}
+  barImage: {fileID: 1114918836923350176}

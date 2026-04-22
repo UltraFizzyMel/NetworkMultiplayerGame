@@ -1,13 +1,20 @@
+using System;
 using UnityEngine;
 
 public class Leak : Interactable
 {
     public BoatLeakManager boatLeakManager;
 
-    private float fixingProgressMax = 5f;
-    private float fixingProgress = 0f;
-    private float decayProgess = -0.3f;
-    private float fixingRate = 0.5f;
+    public event EventHandler<OnProgressChangedEventArgs> OnProgressChanged;
+    public class OnProgressChangedEventArgs : EventArgs
+    {
+        public float progressNormalized;
+    }
+
+    [SerializeField] private float fixingProgressMax = 5f;
+    [SerializeField] private float fixingProgress = 0f;
+    [SerializeField] private float decayProgess = -0.3f;
+    [SerializeField] private float fixingRate = 0.5f;
     private bool isFixing;
     [SerializeField] private GameObject leakUI;
 
@@ -17,6 +24,7 @@ public class Leak : Interactable
         if (isFixing) { progress = fixingRate; }
         else { if (fixingProgress > 0) { progress = decayProgess; } }
         fixingProgress += progress * Time.deltaTime;
+        OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs { progressNormalized = fixingProgress/fixingProgressMax });
 
         if (fixingProgress <= 0f)
         {
@@ -26,6 +34,12 @@ public class Leak : Interactable
         else if (fixingProgress > 0f) {
             leakUI.SetActive(true);
         }
+
+        
+        if (fixingProgress >= fixingProgressMax)
+        {
+            DestroySelf();
+        }
     }
 
     public override void Interact(Player player)
@@ -33,16 +47,12 @@ public class Leak : Interactable
 
         if (player.HasObjectPickUp())
         {
+            //The player is holding something
             if (player.GetObjectPickUp().TryGetComponent<TapeController>(out TapeController tapeController))
             {
+                //The player is holding tape
                 isFixing = true;
                 Debug.Log("Fixing");
-            }
-            
-            //The player is holding something
-            if(fixingProgress >= fixingProgressMax)
-            {
-                DestroySelf();
             }
             
 
