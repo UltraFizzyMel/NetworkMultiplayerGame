@@ -53,16 +53,9 @@ public class BoatLeakManager : NetworkBehaviour
         if (IsSpawned)
         { 
         WaterLevelServerRpc();
+        RisingWaterServerRpc();
         }
-
-        if (activeLeaks > 0)
-        {
-            if (currentWaterLevel < maxWaterLevel)
-            {
-                waterPlane.transform.Translate(Vector3.up * leakRate * activeLeaks * Time.deltaTime);
-                currentWaterLevel = waterPlane.transform.position.y;
-            }
-        }
+        
     }
 
     // used when a leak is spawned
@@ -72,10 +65,12 @@ public class BoatLeakManager : NetworkBehaviour
     public void RepairLeak()
     { activeLeaks = Mathf.Max(0, activeLeaks - 1); }
 
+    //[ServerRpc]
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void RequestLeakSpawnServerRpc()
     {
-        RequestLeakSpawnClientRpc();
+        //RequestLeakSpawnClientRpc();
+        StartCoroutine(SpawnLeaks());
     }
 
     [ClientRpc]
@@ -119,6 +114,30 @@ public class BoatLeakManager : NetworkBehaviour
     public void SetWaterLevel(float currentWaterLevel)
     {
         waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
+    }
+
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RisingWaterServerRpc()
+    {
+        RisingWaterClientRpc();
+    }
+
+    [ClientRpc]
+    public void RisingWaterClientRpc()
+    {
+        RisingWater();
+    }
+    public void RisingWater()
+    {
+        if (activeLeaks > 0)
+        {
+            if (currentWaterLevel < maxWaterLevel)
+            {
+                waterPlane.transform.Translate(Vector3.up * leakRate * activeLeaks * Time.deltaTime);
+                currentWaterLevel = waterPlane.transform.position.y;
+            }
+        }
     }
 
     public void RemoveWater(float bucketCapacity)

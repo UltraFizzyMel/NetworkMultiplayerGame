@@ -321,7 +321,7 @@ MonoBehaviour:
   cameraPivot: {fileID: 817989506291773441}
   playerCamera: {fileID: 4869700449901810185}
   moveSpeed: 5
-  lookSensitivity: 0.3
+  lookSensitivity: 0.2
   maxPitch: 80
   bucketController: {fileID: 0}
   boatLeakManagerDeck: {fileID: 0}
