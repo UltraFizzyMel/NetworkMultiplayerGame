@@ -32,15 +32,16 @@ public class BoatLeakManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         RequestLeakSpawnServerRpc();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (bucketUsed) 
+        if (bucketUsed)
         {
             currentWaterLevel -= bucketController.bucketCapacity;
-            if(currentWaterLevel <= 0f ) { currentWaterLevel = 0f; }
+            if (currentWaterLevel <= 0f) { currentWaterLevel = 0f; }
         }
 
         if (bucketRebound)
@@ -49,7 +50,10 @@ public class BoatLeakManager : NetworkBehaviour
             if (currentWaterLevel >= bucketController.bucketCapacity) { currentWaterLevel = bucketController.bucketCapacity; }
         }
 
-        SetWaterLevel(currentWaterLevel);
+        if (IsSpawned)
+        { 
+        WaterLevelServerRpc();
+        }
 
         if (activeLeaks > 0)
         {
@@ -57,7 +61,7 @@ public class BoatLeakManager : NetworkBehaviour
             {
                 waterPlane.transform.Translate(Vector3.up * leakRate * activeLeaks * Time.deltaTime);
                 currentWaterLevel = waterPlane.transform.position.y;
-            } 
+            }
         }
     }
 
@@ -65,13 +69,31 @@ public class BoatLeakManager : NetworkBehaviour
     public void AddLeak()
     { activeLeaks++; }
 
-    public void RepairLeak() 
+    public void RepairLeak()
     { activeLeaks = Mathf.Max(0, activeLeaks - 1); }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void RequestLeakSpawnServerRpc()
     {
+        RequestLeakSpawnClientRpc();
+    }
+
+    [ClientRpc]
+    public void RequestLeakSpawnClientRpc()
+    {
         StartCoroutine(SpawnLeaks());
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void WaterLevelServerRpc()
+    {
+        WaterLevelClientRpc();
+    }
+
+    [ClientRpc]
+    public void WaterLevelClientRpc()
+    {
+        SetWaterLevel(currentWaterLevel);
     }
 
     IEnumerator SpawnLeaks()

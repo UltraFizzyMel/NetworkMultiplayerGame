@@ -29,7 +29,7 @@ public class Leak : Interactable
         
         if (fixingProgress >= fixingProgressMax)
         {
-            DestroySelf();
+           RequestDestroyServerRpc();
         }
     }
 
@@ -62,13 +62,21 @@ public class Leak : Interactable
        
     }
 
-    /*[ServerRpc(RequireOwnership = false)]
-    public void RequestDestroyServerRpc(NetworkObjectReference objRef)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RequestDestroyServerRpc()
     {
-        if (objRef.TryGet(out NetworkObject networkObject)) { networkObject.Despawn(); }
-    }*/
+        RequestDestroyClientRpc();
+    }
+
+    [ClientRpc]
+    public void RequestDestroyClientRpc()
+    {
+        DestroySelf();
+    }
+
     public void DestroySelf()
     {
+        if (boatLeakManager == null || gameObject == null) return;
         boatLeakManager.RepairLeak();
         Destroy(gameObject);
     }

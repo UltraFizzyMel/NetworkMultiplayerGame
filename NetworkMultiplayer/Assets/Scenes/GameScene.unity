@@ -554,6 +554,77 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
+--- !u!1 &282198910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 282198911}
+  - component: {fileID: 282198913}
+  - component: {fileID: 282198912}
+  m_Layer: 0
+  m_Name: OffBoat (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &282198911
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282198910}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 441713762}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &282198912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282198910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f0e0a6ba0d7df418904e70b3182d74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OffBoat
+  ShowTopMostFoldoutHeaderGroup: 1
+  bucketPlacement: {fileID: 0}
+  objectPickUp: {fileID: 0}
+  bucketController: {fileID: 0}
+  boatLeakManager: {fileID: 0}
+--- !u!65 &282198913
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282198910}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1.3895701}
+  m_Center: {x: 0, y: 2.4737631e-15, z: -1.0348147}
 --- !u!1 &327888038
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +881,8 @@ Transform:
   m_LocalPosition: {x: 6.245, y: 0.72, z: 4.56}
   m_LocalScale: {x: 14.19, y: 0.20000003, z: 1.25}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 282198911}
   m_Father: {fileID: 1082393338}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!65 &441713763
@@ -1157,7 +1229,8 @@ Transform:
   m_LocalPosition: {x: 13.24, y: 0.72, z: 0.15}
   m_LocalScale: {x: 9, y: 0.20000003, z: 1.25}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1644770523}
   m_Father: {fileID: 1082393338}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 90}
 --- !u!65 &683359584
@@ -3259,6 +3332,77 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532033792}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1644770522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1644770523}
+  - component: {fileID: 1644770525}
+  - component: {fileID: 1644770524}
+  m_Layer: 0
+  m_Name: OffBoat (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1644770523
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644770522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 683359583}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1644770524
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644770522}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 0.9464218}
+  m_Center: {x: 0, y: 0, z: -0.92167896}
+--- !u!114 &1644770525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644770522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f0e0a6ba0d7df418904e70b3182d74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OffBoat
+  ShowTopMostFoldoutHeaderGroup: 1
+  bucketPlacement: {fileID: 0}
+  objectPickUp: {fileID: 0}
+  bucketController: {fileID: 0}
+  boatLeakManager: {fileID: 0}
 --- !u!1 &1646220753
 GameObject:
   m_ObjectHideFlags: 0
