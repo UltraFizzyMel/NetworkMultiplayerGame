@@ -130,6 +130,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f);
+        ApplyGravity();
     }
 
     [ClientRpc]
@@ -210,10 +211,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     }
      private void ApplyGravity()
     {
-       /*& if (cc.isGrounded && velocity.y < 0)
+       if (cc.isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
-        velocity.y*/
+        velocity.y += gravity * Time.deltaTime;
+        cc.Move(velocity * Time.deltaTime);
     }
 
     [ServerRpc]
