@@ -22,7 +22,7 @@ public class RisingWater : Interactable
                 else
                 {
                     TryGetComponent<BoatLeakManager>(out BoatLeakManager boatLeakManager);
-                    DeckManager.RemoveWater(bucketController.bucketCapacity);
+                    DeckManager.RemoveWaterServerRpc(bucketController.bucketCapacity);
                     bucketController.isFull = true;
                     Debug.Log("Player bucket has been Filled");
                 }

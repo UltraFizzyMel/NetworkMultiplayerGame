@@ -15,6 +15,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float lookSensitivity = 2f;
     [SerializeField] private float maxPitch = 80f;
+    [SerializeField] private float gravity = -9.81f;
+    private Vector3 velocity;
 
     private PlayerInput pi;
     private InputAction moveAction;
@@ -205,6 +207,13 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
             }
         }
+    }
+     private void ApplyGravity()
+    {
+       /*& if (cc.isGrounded && velocity.y < 0)
+            velocity.y = -2f;
+
+        velocity.y*/
     }
 
     [ServerRpc]

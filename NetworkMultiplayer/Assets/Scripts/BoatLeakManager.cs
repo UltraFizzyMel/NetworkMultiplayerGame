@@ -38,7 +38,7 @@ public class BoatLeakManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (bucketUsed)
+       /* if (bucketUsed)
         {
             currentWaterLevel -= bucketController.bucketCapacity;
             if (currentWaterLevel <= 0f) { currentWaterLevel = 0f; }
@@ -48,7 +48,7 @@ public class BoatLeakManager : NetworkBehaviour
         {
             currentWaterLevel += bucketController.bucketCapacity;
             if (currentWaterLevel >= bucketController.bucketCapacity) { currentWaterLevel = bucketController.bucketCapacity; }
-        }
+        }*/
 
         if (IsSpawned)
         { 
@@ -73,11 +73,11 @@ public class BoatLeakManager : NetworkBehaviour
         StartCoroutine(SpawnLeaks());
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     public void RequestLeakSpawnClientRpc()
     {
         StartCoroutine(SpawnLeaks());
-    }
+    }*/
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void WaterLevelServerRpc()
@@ -138,6 +138,19 @@ public class BoatLeakManager : NetworkBehaviour
                 currentWaterLevel = waterPlane.transform.position.y;
             }
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RemoveWaterServerRpc(float bucketCapacity)
+    {
+        //RequestLeakSpawnClientRpc();
+        RemoveWaterClientRpc(bucketCapacity);
+    }
+
+    [ClientRpc]
+    public void RemoveWaterClientRpc(float bucketCapacity)
+    {
+        RemoveWater(bucketCapacity);
     }
 
     public void RemoveWater(float bucketCapacity)

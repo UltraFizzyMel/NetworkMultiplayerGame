@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class ProgressBarUI : MonoBehaviour
+public class ProgressBarUI : NetworkBehaviour
 {
     [SerializeField] private Leak leak;
     [SerializeField] private Image barImage;
