@@ -13,24 +13,21 @@ public class Generator : Interactable
     }
 
     [SerializeField] private float fuelMax = 5f;
-    [SerializeField] private float fuelingProgress = 0f;
+    //[SerializeField] private float fuelingProgress = 0f;
     [SerializeField] private float fuelDecayProgess = -0.3f;
     [SerializeField] private float fuelRate = 0.5f;
     private bool isFueling;
     [SerializeField] private GameObject fuelUI;
 
+    public NetworkVariable<float> fuelingProgress = new NetworkVariable<float>(
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
     public void Update()
     {
-        float fuelChange = 0;
-        if (isFueling) { fuelChange = fuelRate; }
-        else { if (fuelingProgress > 0) { fuelChange = fuelDecayProgess; } }
-        fuelingProgress += fuelChange * Time.deltaTime;
-        OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress / fuelMax });
-
-        if (fuelingProgress >= fuelMax)
-        {
-            return;
-        }
+        if (IsSpawned) { GeneratorServerRpc(); }
     }
 
     public override void Interact(Player player)
@@ -56,5 +53,24 @@ public class Generator : Interactable
         isFueling = false;
 
     }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void GeneratorServerRpc()
+    {
+        float fuelChange = 0;
+        if (isFueling)
+        {
+            if (fuelingProgress.Value < fuelMax) { fuelChange = fuelRate; }
+        }
+        else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }
+        fuelingProgress.Value += fuelChange * Time.deltaTime;
+        OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress.Value / fuelMax });
+
+        if (fuelingProgress.Value >= fuelMax)
+        {
+            return;
+        }
+    }
+
 
 }

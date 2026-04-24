@@ -229,7 +229,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         move.y = 0f;
         move.Normalize();
 
-        cc.Move(move * moveSpeed * Time.deltaTime);
+        cc.Move(moveSpeed * Time.deltaTime * move);
     }
 
     [ServerRpc]

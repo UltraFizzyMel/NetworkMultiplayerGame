@@ -38,18 +38,7 @@ public class BoatLeakManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-       /* if (bucketUsed)
-        {
-            currentWaterLevel -= bucketController.bucketCapacity;
-            if (currentWaterLevel <= 0f) { currentWaterLevel = 0f; }
-        }
-
-        if (bucketRebound)
-        {
-            currentWaterLevel += bucketController.bucketCapacity;
-            if (currentWaterLevel >= bucketController.bucketCapacity) { currentWaterLevel = bucketController.bucketCapacity; }
-        }*/
-
+        if (!IsServer) return;
         if (IsSpawned)
         { 
         WaterLevelServerRpc();
@@ -89,7 +78,7 @@ public class BoatLeakManager : NetworkBehaviour
     [ClientRpc]
     public void WaterLevelClientRpc()
     {
-        SetWaterLevel(currentWaterLevel);
+        //SetWaterLevel(currentWaterLevel);
     }
 
     IEnumerator SpawnLeaks()
@@ -135,7 +124,7 @@ public class BoatLeakManager : NetworkBehaviour
         {
             if (currentWaterLevel < maxWaterLevel)
             {
-                waterPlane.transform.Translate(Vector3.up * leakRate * activeLeaks * Time.deltaTime);
+                waterPlane.transform.Translate(activeLeaks * leakRate * Time.deltaTime * Vector3.up);
                 currentWaterLevel = waterPlane.transform.position.y;
             }
         }
