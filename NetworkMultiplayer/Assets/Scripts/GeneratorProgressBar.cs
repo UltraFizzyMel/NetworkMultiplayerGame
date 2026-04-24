@@ -10,28 +10,28 @@ public class GeneratorProgressBar : MonoBehaviour
     private void OnEnable()
     {
         if (generator != null)
-           generator.OnFuelChanged += Generator_OnFuelChanged;
+           generator.fuelingProgress.OnValueChanged += Generator_OnFuelChanged;
         barImage.fillAmount = 0f;
     }
 
     private void OnDisable()
     {
         if (generator != null)
-            generator.OnFuelChanged -= Generator_OnFuelChanged;
+            generator.fuelingProgress.OnValueChanged -= Generator_OnFuelChanged;
     }
 
-    private void Generator_OnFuelChanged(object sender, Generator.OnFuelChangedEventArgs e)
+    private void Generator_OnFuelChanged(float previousValue, float newValue)
     {
-        barImage.fillAmount = e.fuelNormalized;// The fill amount is equal to the normalized fuel value, It has to be normalized as the fill amount is a float from 0f-1f
-
-        if (e.fuelNormalized <= 0f || e.fuelNormalized == 1f)
+        //barImage.fillAmount = e.fuelNormalized;// The fill amount is equal to the normalized fuel value, It has to be normalized as the fill amount is a float from 0f-1f
+        barImage.fillAmount = newValue/ generator.fuelMax;
+        /*if (e.fuelNormalized <= 0f || e.fuelNormalized == 1f)
         {
             //Hide();
         }
         else
         {
             Show();
-        }
+        }*/
 
     }
 

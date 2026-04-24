@@ -12,7 +12,7 @@ public class Generator : Interactable
         public float fuelNormalized;
     }
 
-    [SerializeField] private float fuelMax = 5f;// The maxium amount of fuel
+    [SerializeField] public float fuelMax = 5f;// The maxium amount of fuel
     [SerializeField] private float fuelDecayProgess = -0.3f;//rate at which fuel bar will decrease
     [SerializeField] private float fuelRate = 0.5f;//rate at which fuel bar will increase
     [SerializeField] private GameObject fuelUI;
@@ -69,7 +69,7 @@ public class Generator : Interactable
         }
         else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }// While player is not fueling generator the fuel level goes down until it reaches 0
         fuelingProgress.Value += fuelChange * Time.deltaTime;// The current fuel level changes over time based on the if-else statement above
-        OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress.Value / fuelMax });
+        //OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress.Value / fuelMax });
 
         if (fuelingProgress.Value >= fuelMax)
         {
