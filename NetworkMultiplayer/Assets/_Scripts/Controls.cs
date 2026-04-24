@@ -211,7 +211,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""fe65e044-0b87-4d8d-89b0-42258c536810"",
                     ""path"": ""<Keyboard>/e"",
-                    ""interactions"": ""Hold,Press(behavior=2)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Interact"",
