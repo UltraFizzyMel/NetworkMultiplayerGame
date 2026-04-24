@@ -63,13 +63,13 @@ public class Generator : Interactable
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void GeneratorServerRpc()
     {
-        float fuelChange = 0;
-        if (isFueling.Value)
+        float fuelChange = 0;//The value of the fuel change
+        if (isFueling.Value) // The player is fueling the generator
         {
-            if (fuelingProgress.Value < fuelMax) { fuelChange = fuelRate; }
+            if (fuelingProgress.Value < fuelMax) { fuelChange = fuelRate; }// if the current fuel level is less than max fuel then the fuel rate will be positive
         }
-        else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }
-        fuelingProgress.Value += fuelChange * Time.deltaTime;
+        else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }// While player is not fueling generator the fuel level goes down until it reaches 0
+        fuelingProgress.Value += fuelChange * Time.deltaTime;// The current fuel level changes over time based on the if-else statement above
         OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress.Value / fuelMax });
 
         if (fuelingProgress.Value >= fuelMax)
