@@ -28,7 +28,7 @@ public class GeneratorProgressBar : MonoBehaviour
 
     private void Generator_OnFuelChanged(object sender, Generator.OnFuelChangedEventArgs e)
     {
-        barImage.fillAmount = e.fuelNormalized;
+        barImage.fillAmount = e.fuelNormalized;// The fill amount is equal to the normalized fuel value, It has to be normalized as the fill amount is a float from 0f-1f
 
         if (e.fuelNormalized <= 0f || e.fuelNormalized == 1f)
         {

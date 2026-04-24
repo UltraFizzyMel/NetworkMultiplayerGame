@@ -31,7 +31,9 @@ public class BoatLeakManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        RequestLeakSpawnServerRpc();
+        if (!IsServer) return;
+        StartCoroutine(SpawnLeaks());
+        //RequestLeakSpawnServerRpc();
         
     }
 
