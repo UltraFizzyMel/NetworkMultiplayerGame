@@ -82,7 +82,8 @@ public class BoatLeakManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void WaterLevelServerRpc()
     {
-        WaterLevelClientRpc();
+       // WaterLevelClientRpc();
+        SetWaterLevel(currentWaterLevel);
     }
 
     [ClientRpc]
