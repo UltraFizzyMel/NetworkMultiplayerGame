@@ -1433,7 +1433,7 @@ GameObject:
   - component: {fileID: 718791435}
   - component: {fileID: 718791434}
   - component: {fileID: 718791433}
-  - component: {fileID: 718791432}
+  - component: {fileID: 718791436}
   m_Layer: 5
   m_Name: FixProgressUI
   m_TagString: Untagged
@@ -1462,21 +1462,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.522, y: 0.313}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &718791432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 718791430}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43bc1470cd252d64f9ee6ccb69c6bed5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ProgressBarUI
-  ShowTopMostFoldoutHeaderGroup: 1
-  leak: {fileID: 0}
-  barImage: {fileID: 1686996791}
 --- !u!114 &718791433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1540,6 +1525,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &718791436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718791430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06e5bc03502bbf7478655c72bcbda09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GeneratorProgressBar
+  generator: {fileID: 934986552}
+  barImage: {fileID: 1686996791}
 --- !u!1001 &726013717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2309,7 +2308,7 @@ MonoBehaviour:
   fuelingProgress: 0
   fuelDecayProgess: -0.3
   fuelRate: 0.5
-  fuelUI: {fileID: 0}
+  fuelUI: {fileID: 718791430}
 --- !u!1 &992192857
 GameObject:
   m_ObjectHideFlags: 0
@@ -3834,7 +3833,7 @@ MonoBehaviour:
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 3
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -4384,6 +4383,14 @@ PrefabInstance:
     - target: {fileID: 4867936552298500749, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+      propertyPath: leakRate
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+      propertyPath: maxWaterLevel
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'
