@@ -31,6 +31,7 @@ public class Generator : Interactable
 
     public void Update()
     {
+        if (!IsServer) return;
         if (IsSpawned) { GeneratorServerRpc(); }
     }
 
