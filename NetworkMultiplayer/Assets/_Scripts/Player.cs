@@ -179,7 +179,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private void HandleCancel()
     {
-        lastInteractable.Cancel(this);
+        if (lastInteractable != null)
+        { lastInteractable.Cancel(this); }
         /*if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
         {
             if (raycastHit.transform.TryGetComponent(out Interactable interactable))

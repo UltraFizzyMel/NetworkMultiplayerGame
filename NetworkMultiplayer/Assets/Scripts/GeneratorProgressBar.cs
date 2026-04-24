@@ -4,22 +4,22 @@ using Unity.Netcode;
 
 public class GeneratorProgressBar : MonoBehaviour
 {
-    //[SerializeField] private Leak leak;
+    [SerializeField] private Generator generator;
     [SerializeField] private Image barImage;
 
     private void Start()
     {
-        leak.OnProgressChanged += Leak_OnProgressChanged;
+        generator.OnFuelChanged += Generator_OnFuelChanged;
         barImage.fillAmount = 1f;
     }
 
-    private void Leak_OnProgressChanged(object sender, Leak.OnProgressChangedEventArgs e)
+    private void Generator_OnFuelChanged(object sender, Generator.OnFuelChangedEventArgs e)
     {
-        barImage.fillAmount = e.progressNormalized;
+        barImage.fillAmount = e.fuelNormalized;
 
-        if (e.progressNormalized <= 0f || e.progressNormalized == 1f)
+        if (e.fuelNormalized <= 0f || e.fuelNormalized == 1f)
         {
-            Hide();
+            //Hide();
         }
         else
         {
