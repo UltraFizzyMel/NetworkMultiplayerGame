@@ -16,11 +16,17 @@ public class Generator : Interactable
     //[SerializeField] private float fuelingProgress = 0f;
     [SerializeField] private float fuelDecayProgess = -0.3f;
     [SerializeField] private float fuelRate = 0.5f;
-    private bool isFueling;
+    //private bool isFueling;
     [SerializeField] private GameObject fuelUI;
 
-    public NetworkVariable<float> fuelingProgress = new NetworkVariable<float>(
+    public NetworkVariable<float> fuelingProgress = new(
         0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
+    public NetworkVariable<bool> isFueling = new(
+        false,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server
     );
@@ -42,7 +48,7 @@ public class Generator : Interactable
         else
         {
             // The player is not holding something
-            isFueling = true;
+            IsFuelingRpc();
             Debug.Log("Player has no item");
             return;
         }
@@ -50,7 +56,7 @@ public class Generator : Interactable
 
     public override void Cancel(Player player)
     {
-        isFueling = false;
+        IsNotFuelingRpc();
 
     }
 
@@ -58,7 +64,7 @@ public class Generator : Interactable
     public void GeneratorServerRpc()
     {
         float fuelChange = 0;
-        if (isFueling)
+        if (isFueling.Value)
         {
             if (fuelingProgress.Value < fuelMax) { fuelChange = fuelRate; }
         }
@@ -70,6 +76,18 @@ public class Generator : Interactable
         {
             return;
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void IsFuelingRpc()
+    {
+        isFueling.Value = true;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void IsNotFuelingRpc()
+    {
+        isFueling.Value = false;
     }
 
 

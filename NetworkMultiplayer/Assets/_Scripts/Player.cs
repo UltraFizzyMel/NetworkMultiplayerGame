@@ -211,13 +211,13 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         }
     }
      private void ApplyGravity()
-    {
+     {
        if (cc.isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
         velocity.y += gravity * Time.deltaTime;
         cc.Move(velocity * Time.deltaTime);
-    }
+     }
 
     [ServerRpc]
     private void MoveServerRpc(Vector2 input)

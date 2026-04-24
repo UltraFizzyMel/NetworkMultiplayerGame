@@ -7,10 +7,23 @@ public class GeneratorProgressBar : MonoBehaviour
     [SerializeField] private Generator generator;
     [SerializeField] private Image barImage;
 
-    private void Start()
+    private void OnEnable()
+    {
+        if (generator != null)
+            GeneratorRpc();
+    }
+
+    private void OnDisable()
+    {
+        if (generator != null)
+            generator.OnFuelChanged -= Generator_OnFuelChanged;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void GeneratorRpc()
     {
         generator.OnFuelChanged += Generator_OnFuelChanged;
-        barImage.fillAmount = 1f;
+        barImage.fillAmount = 0f;
     }
 
     private void Generator_OnFuelChanged(object sender, Generator.OnFuelChangedEventArgs e)
