@@ -1,8 +1,9 @@
 using System;
 using Unity.Netcode;
+using Unity.Services.Qos.V2.Models;
 using UnityEngine;
 
-public class BoatMovement : MonoBehaviour
+public class BoatMovement : NetworkBehaviour
 {
     public event EventHandler<OnBoatMovedEventArgs> OnBoatMoved;
     public class OnBoatMovedEventArgs : EventArgs
@@ -25,13 +26,25 @@ public class BoatMovement : MonoBehaviour
 
     public void Update()
     {
-        float progress = 0;
-        if (generator.FuelCheck()) { progress = boatSpeed; }
-        //else { { progress = 0; } }
-        boatProgress.Value += progress * Time.deltaTime;
-        OnBoatMoved?.Invoke(this, new OnBoatMovedEventArgs { progressNormalized = boatProgress.Value / boatProgressMax });
+        if (!IsServer) return;
+        if (IsSpawned) { BoatMovementRpc(); }
+        
 
     }
 
-    
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void BoatMovementRpc()
+    {
+        float progress = 0;
+        if (generator.FuelCheck()) { progress = boatSpeed;
+            Debug.Log("Moving!!!");
+        }
+        else {  progress = 0;
+            Debug.Log("Not Moving");
+        }
+        boatProgress.Value += progress * Time.deltaTime;
+        OnBoatMoved?.Invoke(this, new OnBoatMovedEventArgs { progressNormalized = boatProgress.Value / boatProgressMax });
+    }
+
+
 }
