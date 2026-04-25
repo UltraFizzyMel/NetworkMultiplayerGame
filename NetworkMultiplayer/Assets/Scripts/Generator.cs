@@ -12,7 +12,7 @@ public class Generator : Interactable
         public float fuelNormalized;
     }
 
-    [SerializeField] public float fuelMax = 5f;// The maxium amount of fuel
+    public float fuelMax = 5f;// The maxium amount of fuel
     [SerializeField] private float fuelDecayProgess = -0.3f;//rate at which fuel bar will decrease
     [SerializeField] private float fuelRate = 0.5f;//rate at which fuel bar will increase
     [SerializeField] private GameObject fuelUI;
@@ -89,5 +89,11 @@ public class Generator : Interactable
         isFueling.Value = false;
     }
 
+    public bool FuelCheck()
+    {
+        if(fuelingProgress.Value > 0f)
+        { return true; }
+        else {  return false; }
+    }
 
 }
