@@ -163,4 +163,13 @@ public class BoatLeakManager : NetworkBehaviour
         }
         return leakLocation.FindRandomLeakLocation();
     }
+
+    public bool CheckLossCondition()
+    {
+        if (currentWaterLevel >= maxWaterLevel)
+        { return true; }
+        else
+        { return false; }
+
+    }
 }

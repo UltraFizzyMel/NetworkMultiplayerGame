@@ -37,14 +37,21 @@ public class BoatMovement : NetworkBehaviour
     {
         float progress = 0;
         if (generator.FuelCheck()) { progress = boatSpeed;
-            Debug.Log("Moving!!!");
+           // Debug.Log("Moving!!!");
         }
         else {  progress = 0;
-            Debug.Log("Not Moving");
+            //Debug.Log("Not Moving");
         }
         boatProgress.Value += progress * Time.deltaTime;
         OnBoatMoved?.Invoke(this, new OnBoatMovedEventArgs { progressNormalized = boatProgress.Value / boatProgressMax });
     }
 
+    public bool CheckWinCondition()
+    {
+        if (boatProgress.Value >= boatProgressMax)
+        { return true; }
+        else
+        { return false; }
 
+    }
 }
