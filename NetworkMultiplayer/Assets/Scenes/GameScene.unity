@@ -10261,7 +10261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: maxWaterLevel
-      value: 1.25
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'
