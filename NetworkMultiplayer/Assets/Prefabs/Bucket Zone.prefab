@@ -185,9 +185,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BucketZone
   ShowTopMostFoldoutHeaderGroup: 1
-  objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
   bucketPlacement: {fileID: 1616730571923847228}
   objectPickUp: {fileID: 2929511079871425230}
+  objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
 --- !u!1001 &7066986558424055804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 684193053435135429, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.782
       objectReference: {fileID: 0}
     - target: {fileID: 684193053435135429, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
       propertyPath: m_LocalPosition.z

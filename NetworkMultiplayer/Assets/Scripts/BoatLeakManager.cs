@@ -93,7 +93,7 @@ public class BoatLeakManager : NetworkBehaviour
 
             yield return new WaitForSeconds(time);
             GameObject leakInstance = Instantiate(leakPrefab, PickRandomSurface(), leakLocation.SetLeakRotation()/*, leakLocation.gameObject.transform*/);// create a leak
-            leakInstance.transform.RotateAround(gameObject.transform.position, Vector3.up, leakLocation.rotationAdjustment);
+            leakInstance.transform.RotateAround(leakLocation.transform.position, Vector3.up, leakLocation.rotationAdjustment);
             leak =leakInstance.GetComponent<Leak>();
             leakInstance.GetComponent<NetworkObject>().Spawn();
             leak.boatLeakManager = this; // Connect the leak to this leak manaager
