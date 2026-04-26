@@ -8,6 +8,7 @@ public class BucketController : NetworkBehaviour
 
     public GameObject waterVisual;
     public float bucketCapacity = 0.5f;
+    public float waterAmount;
 
     public void Fill()
     {

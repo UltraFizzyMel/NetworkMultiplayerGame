@@ -14,7 +14,7 @@ public class LeakLocations : MonoBehaviour
     [SerializeField] private float zAdjustment;
     //[SerializeField] private float boundsAdjustment = 1f;//adjustment to prevent leak from appearing as if off the surface
     //[SerializeField] private float surfaceAdjustment = 0.01f;//Adjustment to place leak above the surface
-
+    public float rotationAdjustment;
 
 
     // [SerializeField] Bounds leakBounds;
@@ -70,15 +70,15 @@ public class LeakLocations : MonoBehaviour
         float y;
         if (hasVariableX)
         { if (usesMaxX)
-            { y = 0; }
+            { y = 0 + rotationAdjustment; }
             else
-            { y = 180; }
+            { y = 180 + rotationAdjustment; }
         }
         else
         { if (usesMaxZ)
-            { y = 90; }
+            { y = 90 + rotationAdjustment; }
             else
-            { y = 270; }
+            { y = 270 + rotationAdjustment; }
         }
 
 
@@ -88,6 +88,7 @@ public class LeakLocations : MonoBehaviour
     private void OnDrawGizmos()
     {
         //Gizmos.DrawWireCube(renderer.bounds.center, renderer.bounds.size);
+        //Gizmos.matrix = transform.localToWorldMatrix;
         { Gizmos.DrawWireCube(this.transform.position - new Vector3(0,0,0), (new Vector3(xAdjustment, yAdjustment, zAdjustment))*2); }
 
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class OffBoat : Interactable
 {
     [SerializeField] private BucketController bucketController;
-    [SerializeField] private BoatLeakManager boatLeakManager;
+    //[SerializeField] private BoatLeakManager boatLeakManager;
     public override void Interact(Player player)
     {
 
