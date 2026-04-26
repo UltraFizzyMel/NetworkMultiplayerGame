@@ -130,7 +130,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f);
-        ApplyGravityRpc();
+        ApplyGravityServerRpc();
     }
 
     [ClientRpc]
@@ -239,7 +239,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     }
 
     [ServerRpc]
-    private void ApplyGravityRpc()
+    private void ApplyGravityServerRpc()
     {
         ApplyGravity();
     }
