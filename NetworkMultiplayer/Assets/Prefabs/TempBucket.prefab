@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1985229350
+  GlobalObjectIdHash: 2100032062
   InScenePlacedSourceGlobalObjectIdHash: 2100032062
   DeferredDespawnTick: 0
   Ownership: 1
@@ -126,7 +126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 88f0e85df173f9845bd0be3521282f0c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.658
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 88f0e85df173f9845bd0be3521282f0c, type: 3}
       propertyPath: m_LocalPosition.z

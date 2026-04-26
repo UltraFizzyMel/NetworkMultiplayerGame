@@ -53,7 +53,7 @@ public class LeakLocations : MonoBehaviour
         else if (hasVariableZ)
         {
             if (usesMaxZ)
-            { X = this.transform.position.x + xAdjustment*2; }
+            { X = this.transform.position.x + xAdjustment; }
             else { X = this.transform.position.x - xAdjustment; }
 
             Z = Random.Range((this.transform.position.z - zAdjustment), (this.transform.position.z + zAdjustment));
@@ -88,7 +88,7 @@ public class LeakLocations : MonoBehaviour
     private void OnDrawGizmos()
     {
         //Gizmos.DrawWireCube(renderer.bounds.center, renderer.bounds.size);
-        Gizmos.matrix = transform.localToWorldMatrix;
+        //Gizmos.matrix = transform.localToWorldMatrix;
         { Gizmos.DrawWireCube(this.transform.position - new Vector3(0,0,0), (new Vector3(xAdjustment, yAdjustment, zAdjustment))*2); }
 
     }
