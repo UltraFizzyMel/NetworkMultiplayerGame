@@ -13,6 +13,7 @@ public class BoatLeakManager : NetworkBehaviour
     public float leakRate = 0.01f;
     public int activeLeaks = 0;
     public GameObject waterPlane;
+    
 
     public GameObject leakPrefab;
     public float leakInterval = 15f;
@@ -27,6 +28,7 @@ public class BoatLeakManager : NetworkBehaviour
     private void Start()
     {
         bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();
+        
     }
 
     public override void OnNetworkSpawn()
@@ -91,6 +93,7 @@ public class BoatLeakManager : NetworkBehaviour
 
             yield return new WaitForSeconds(time);
             GameObject leakInstance = Instantiate(leakPrefab, PickRandomSurface(), leakLocation.SetLeakRotation()/*, leakLocation.gameObject.transform*/);// create a leak
+            leakInstance.transform.RotateAround(leakLocation.transform.position, Vector3.up, leakLocation.rotationAdjustment);
             leak =leakInstance.GetComponent<Leak>();
             leakInstance.GetComponent<NetworkObject>().Spawn();
             leak.boatLeakManager = this; // Connect the leak to this leak manaager
@@ -146,7 +149,7 @@ public class BoatLeakManager : NetworkBehaviour
     }
 
     public void RemoveWater(float bucketCapacity)
-    {
+    {        
         currentWaterLevel = currentWaterLevel - bucketCapacity;
         if (currentWaterLevel <= 0f) { currentWaterLevel = 0f; }
         waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);

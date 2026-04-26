@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1616730571923847228
 Transform:
@@ -50,7 +50,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1636440072646956480
 Transform:
@@ -102,7 +102,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 93becf81cfcb0b84fb9c70c28e62f123, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -185,9 +185,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BucketZone
   ShowTopMostFoldoutHeaderGroup: 1
-  objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
   bucketPlacement: {fileID: 1616730571923847228}
   objectPickUp: {fileID: 2929511079871425230}
+  objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
 --- !u!1001 &7066986558424055804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 684193053435135429, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.782
       objectReference: {fileID: 0}
     - target: {fileID: 684193053435135429, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
       propertyPath: m_LocalPosition.z
@@ -254,7 +254,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8783944822809473766, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 2052688517
+      value: 4137311016
       objectReference: {fileID: 0}
     - target: {fileID: 8783944822809473766, guid: 42fbe8b8b7c162f40af4e523105d0796, type: 3}
       propertyPath: SceneMigrationSynchronization
