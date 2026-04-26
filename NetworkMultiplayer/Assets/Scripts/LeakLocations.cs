@@ -14,7 +14,7 @@ public class LeakLocations : MonoBehaviour
     [SerializeField] private float zAdjustment;
     //[SerializeField] private float boundsAdjustment = 1f;//adjustment to prevent leak from appearing as if off the surface
     //[SerializeField] private float surfaceAdjustment = 0.01f;//Adjustment to place leak above the surface
-    [SerializeField] public float rotationAdjustment;
+    public float rotationAdjustment;
 
 
     // [SerializeField] Bounds leakBounds;

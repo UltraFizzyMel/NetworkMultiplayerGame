@@ -149,7 +149,7 @@ public class BoatLeakManager : NetworkBehaviour
     }
 
     public void RemoveWater(float bucketCapacity)
-    {
+    {        
         currentWaterLevel = currentWaterLevel - bucketCapacity;
         if (currentWaterLevel <= 0f) { currentWaterLevel = 0f; }
         waterPlane.transform.position = new Vector3(waterPlane.transform.position.x, currentWaterLevel, waterPlane.transform.position.z);
