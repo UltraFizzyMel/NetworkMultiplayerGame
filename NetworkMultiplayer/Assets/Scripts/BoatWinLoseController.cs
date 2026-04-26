@@ -18,6 +18,7 @@ public class BoatWinLoseController : NetworkBehaviour {
             NetworkManager.SceneManager.LoadScene("LostGame", LoadSceneMode.Single);
              
         }
+
         if(boatMovement.CheckWinCondition())
         {
             Debug.Log("Game Won");
