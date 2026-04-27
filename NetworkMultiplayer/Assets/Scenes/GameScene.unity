@@ -11407,6 +11407,7 @@ GameObject:
   - component: {fileID: 1382476893}
   - component: {fileID: 1382476892}
   - component: {fileID: 1382476891}
+  - component: {fileID: 1382476894}
   m_Layer: 0
   m_Name: Leak Location 2
   m_TagString: Untagged
@@ -11506,6 +11507,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382476889}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &1382476894
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382476889}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 3.1021588}
+  m_Center: {x: 0.000000070786534, y: -0, z: -1.0510788}
 --- !u!1 &1384178176
 GameObject:
   m_ObjectHideFlags: 0
@@ -13895,6 +13917,7 @@ GameObject:
   - component: {fileID: 1914637277}
   - component: {fileID: 1914637276}
   - component: {fileID: 1914637275}
+  - component: {fileID: 1914637278}
   m_Layer: 0
   m_Name: Leak Location 1
   m_TagString: Untagged
@@ -13994,6 +14017,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1914637273}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &1914637278
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914637273}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.044858, y: 1, z: 2.7033021}
+  m_Center: {x: 0.022428956, y: -0, z: -0.85165024}
 --- !u!1001 &1916190053
 PrefabInstance:
   m_ObjectHideFlags: 0
