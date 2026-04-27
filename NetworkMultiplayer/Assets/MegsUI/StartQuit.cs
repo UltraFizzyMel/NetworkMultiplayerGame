@@ -15,4 +15,9 @@ public class StartQuit : MonoBehaviour
             SceneManager.LoadScene("MainMenu"); 
      
     }
+
+    public void Lobby()
+        {
+        SceneManager.LoadScene("Lobby");
+    }
 }
