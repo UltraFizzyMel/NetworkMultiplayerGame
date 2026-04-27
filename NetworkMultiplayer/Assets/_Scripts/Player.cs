@@ -24,6 +24,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     private InputAction interact;
     private InputAction interactAlternate;
     private CharacterController cc;
+    public GameObject captain;
+    public GameObject crew;
 
     private float pitch;
 

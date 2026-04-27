@@ -32,8 +32,16 @@ public class GameManager : NetworkBehaviour
             Transform targetSpawn =
                 playerIsDeck ? deckSpawn : cabinSpawn;
 
-            CharacterController cc =
-                player.GetComponent<CharacterController>();
+            if (playerIsDeck)
+            { player.crew.SetActive(true);
+                player.captain.SetActive(false);
+            }
+            else { player.crew.SetActive(false);
+                player.captain.SetActive(true);
+            }
+
+                CharacterController cc =
+                    player.GetComponent<CharacterController>();
 
             if (cc != null)
                 cc.enabled = false;
