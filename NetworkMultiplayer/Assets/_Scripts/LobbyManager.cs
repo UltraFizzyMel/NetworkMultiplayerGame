@@ -721,7 +721,7 @@ catch (LobbyServiceException e)
         }
     }
 
-    /*public async void CreateLobby()
+    public async void CreateLobby()
     {
         string lobbyName = createLobbyNameField.text;
         if (string.IsNullOrWhiteSpace(lobbyName))
@@ -909,9 +909,9 @@ catch (LobbyServiceException e)
             Debug.LogError($"Unexpected error creating lobby: {e.Message}");
             Debug.LogError($"Stack: {e.StackTrace}");
         }
-    }*/
+    }
 
-    public async void CreateLobby()
+    /*public async void CreateLobby()
     {
         string lobbyName = createLobbyNameField.text;
         if (string.IsNullOrWhiteSpace(lobbyName))
@@ -1092,7 +1092,7 @@ catch (LobbyServiceException e)
             Debug.LogError($"Unexpected error creating lobby: {e.Message}");
             Debug.LogError($"Stack: {e.StackTrace}");
         }
-    }
+    }*/
 
     private async void LobbyHeartBeat(Lobby lobby)
     {

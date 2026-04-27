@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 public class ButtonManager : MonoBehaviour
 {
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject controlsPanel;
+    [SerializeField] private GameObject howToPanel;
 
     public void LoadLobby()
     {
@@ -18,6 +20,26 @@ public class ButtonManager : MonoBehaviour
     public void CloseSettings()
     {
         settingsPanel.SetActive(false);
+    }
+
+    public void ShowControls()
+    {
+        controlsPanel.SetActive(true);
+    }
+
+    public void CloseControls()
+    {
+        controlsPanel.SetActive(false);
+    }
+
+    public void ShowHowTo()
+    {
+        howToPanel.SetActive(true);
+    }
+
+    public void CloseHowTo()
+    {
+        howToPanel.SetActive(false);
     }
 
     public void LoadMainMenu()
