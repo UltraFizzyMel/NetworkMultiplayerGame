@@ -1781,7 +1781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoatMovement
   ShowTopMostFoldoutHeaderGroup: 1
   boatProgressMax: 50
-  boatSpeed: 0.5
+  boatSpeed: 0.25
   PlayerUI: {fileID: 1960174953}
   generator: {fileID: 974740236}
   boatProgress:

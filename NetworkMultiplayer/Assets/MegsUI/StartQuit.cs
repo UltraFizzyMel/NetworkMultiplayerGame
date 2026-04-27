@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,8 +12,11 @@ public class StartQuit : MonoBehaviour
 
     public void MainMenu()
     {
-       
-            SceneManager.LoadScene("MainMenu"); 
+        if (NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
+        SceneManager.LoadScene("MainMenu"); 
      
     }
 
