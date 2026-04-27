@@ -807,6 +807,7 @@ GameObject:
   - component: {fileID: 172319697}
   - component: {fileID: 172319696}
   - component: {fileID: 172319695}
+  - component: {fileID: 172319698}
   m_Layer: 0
   m_Name: Leak Location 4
   m_TagString: Untagged
@@ -906,6 +907,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 172319693}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &172319698
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172319693}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0656021, y: 1, z: 2.5237377}
+  m_Center: {x: -0.032801036, y: 0.000015273687, z: -0.7618681}
 --- !u!1 &176547283
 GameObject:
   m_ObjectHideFlags: 0
@@ -3044,6 +3066,7 @@ GameObject:
   - component: {fileID: 559373261}
   - component: {fileID: 559373260}
   - component: {fileID: 559373259}
+  - component: {fileID: 559373262}
   m_Layer: 0
   m_Name: Leak Location 3
   m_TagString: Untagged
@@ -3143,6 +3166,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559373257}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &559373262
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559373257}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.233424, y: 1, z: 1.8971239}
+  m_Center: {x: 0.1167117, y: -0, z: -0.44856197}
 --- !u!1 &564862126 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 89898d169ef46e448a8b111da7ff6db2, type: 3}
@@ -11751,8 +11795,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.4511774, z: 1}
-  m_Center: {x: 0, y: 0.74585426, z: 0}
+  m_Size: {x: 1, y: 2.2558017, z: 1}
+  m_Center: {x: 0, y: 0.34354195, z: 0}
 --- !u!114 &1514095973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14640,15 +14684,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 195893971432296293, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 965972997960251688, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1768150017949143308, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4294529111666687599, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_Enabled
@@ -14656,7 +14700,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5211610956943051714, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7783356424289968427, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_LocalScale.x
@@ -14772,7 +14816,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9164540868844314458, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
