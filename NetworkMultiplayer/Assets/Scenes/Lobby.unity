@@ -4284,7 +4284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LobbyRoomUI
   lobbyRoomPanel: {fileID: 2082461470}
   radioStaticSong: {fileID: 8300000, guid: 6bb296b3d6e2f5f4199669333861b4e7, type: 3}
-  ambientSong: {fileID: 0}
+  ambientSong: {fileID: 8300000, guid: a62b6267d43aa4445ad1519ecb6f9a43, type: 3}
   btnReadyOne: {fileID: 172902191}
   btnReadyTwo: {fileID: 511144181}
   txtReadyOne: {fileID: 798706375}
@@ -4977,7 +4977,7 @@ MonoBehaviour:
   pnlFailedToJoin: {fileID: 35294590}
   btnClose: {fileID: 1445400651}
   btnSubmit: {fileID: 1485717327}
-  btnBack: {fileID: 0}
+  btnBack: {fileID: 1755936831}
   joinedLobbyID: 
 --- !u!4 &1174975530
 Transform:
@@ -8657,7 +8657,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2082461471
 RectTransform:
   m_ObjectHideFlags: 0
