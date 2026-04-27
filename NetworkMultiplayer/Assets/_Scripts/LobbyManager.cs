@@ -721,7 +721,7 @@ catch (LobbyServiceException e)
         }
     }
 
-    public async void CreateLobby()
+    /*public async void CreateLobby()
     {
         string lobbyName = createLobbyNameField.text;
         if (string.IsNullOrWhiteSpace(lobbyName))
@@ -866,16 +866,6 @@ catch (LobbyServiceException e)
             Debug.Log($"UnityTransport found and configured: {transport != null}");
             Debug.Log($"Transport type: {transport.GetType().Name}");
 
-            // Now set the relay data
-            /*transport.SetHostRelayData(
-                allocation.RelayServer.IpV4,
-                (ushort)allocation.RelayServer.Port,
-                allocation.AllocationIdBytes,
-                allocation.Key,
-                allocation.ConnectionData,
-                true
-            );*/
-
             if (transport != null)
             {
                 var endpoint = GetEndpointForAllocation(
@@ -895,30 +885,6 @@ catch (LobbyServiceException e)
                 Debug.Log("Host relay data configured (isSecure: " + isSecure + ")");
                 NetworkManager.Singleton.StartHost();
             }
-
-            //NetworkManager.Singleton.StartHost();
-
-            /*UnityTransport transport =
-            NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-            if (transport == null)
-            {
-                transport.SetHostRelayData(
-                    allocation.RelayServer.IpV4,
-                    (ushort)allocation.RelayServer.Port,
-                    allocation.AllocationIdBytes,
-                    allocation.Key,
-                    allocation.ConnectionData,
-                    true
-                );
-
-                Debug.Log("Starting host...");
-                NetworkManager.Singleton.StartHost();
-            }
-            else
-            {
-                Debug.LogError("UnityTransport not found!");
-            }*/
 
             Debug.Log("Lobby created with ID: " + createdLobby.Id);
 
@@ -943,25 +909,189 @@ catch (LobbyServiceException e)
             Debug.LogError($"Unexpected error creating lobby: {e.Message}");
             Debug.LogError($"Stack: {e.StackTrace}");
         }
+    }*/
 
-        //if (!Application.isPlaying)
-        //LobbyHeartBeat(currentLobby);
+    public async void CreateLobby()
+    {
+        string lobbyName = createLobbyNameField.text;
+        if (string.IsNullOrWhiteSpace(lobbyName))
+        {
+            lobbyName = "Test Lobby";
+        }
 
-        //AssignRoles(true);
+        bool privateLobby = isPrivate.isOn;
+        string hostRole = Random.Range(0, 100) < 50 ? "Deck" : "Cabin";
 
-        //LobbyRoomUI.Instance.OpenLobbyRoom(currentLobby);//, AuthenticationService.Instance.Player);
-
-        /*string lobbyName = createLobbyNameField.text;
-        bool isPrivate = createLobbyPrivacyDropdown.value == 1;
         try
         {
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, 2, new CreateLobbyOptions { IsPrivate = isPrivate });
-            Debug.Log("Lobby created with ID: " + lobby.Id);
+            Debug.Log("Creating relay allocation...");
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+
+            CreateLobbyOptions options = new CreateLobbyOptions
+            {
+                IsPrivate = false,
+                Data = new System.Collections.Generic.Dictionary<string, DataObject>
+            {
+                {
+                    "HostRole",
+                    new DataObject(DataObject.VisibilityOptions.Public, hostRole)
+                },
+                {
+                    "JoinCode",
+                    new DataObject(DataObject.VisibilityOptions.Public, joinCode)
+                }
+            }
+            };
+
+            Debug.Log("HOST JOIN CODE: " + joinCode);
+
+            if (privateLobby)
+            {
+                lobbyPassword = createLobbyPasswordField.text;
+                if (string.IsNullOrWhiteSpace(lobbyPassword))
+                {
+                    lobbyPassword = "1234";
+                }
+
+                options.Data.Add(
+                    "HasPassword",
+                    new DataObject(DataObject.VisibilityOptions.Public, "true")
+                );
+
+                options.Data.Add(
+                    "Password",
+                    new DataObject(DataObject.VisibilityOptions.Public, lobbyPassword)
+                );
+            }
+
+            Debug.Log($"Creating lobby: {lobbyName}, MaxPlayers: 2");
+            Lobby createdLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, 2, options);
+
+            if (createdLobby == null)
+            {
+                Debug.LogError("CreateLobbyAsync returned null!");
+                return;
+            }
+
+            joinedLobbyID = createdLobby.Id;
+            currentLobby = createdLobby;
+
+            Debug.Log($"LOBBY CREATED SUCCESSFULLY");
+            Debug.Log($"Lobby ID: {createdLobby.Id}");
+            Debug.Log($"Lobby Name: {createdLobby.Name}");
+            Debug.Log($"Host ID: {createdLobby.HostId}");
+
+            // Check if JoinCode exists before trying to access it
+            if (createdLobby.Data != null && createdLobby.Data.ContainsKey("JoinCode"))
+            {
+                Debug.Log($"Join Code in data: {createdLobby.Data["JoinCode"].Value}");
+            }
+            else
+            {
+                Debug.LogError("JoinCode missing from created lobby data!");
+            }
+
+            // FIXED: Check for NetworkManager first
+            if (NetworkManager.Singleton == null)
+            {
+                Debug.LogError("NetworkManager.Singleton is null! Make sure you have a NetworkManager in the scene.");
+                Debug.LogError("Lobby created but network won't work!");
+                // Still show lobby room even without network - just for testing
+                LobbyRoomUI.Instance?.OpenLobbyRoom(createdLobby, hostRole == "Deck");
+                return;
+            }
+
+            // Get or add UnityTransport
+            UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+            if (transport == null)
+            {
+                transport = NetworkManager.Singleton.GetComponentInChildren<UnityTransport>();
+            }
+
+            if (transport == null)
+            {
+                Debug.LogWarning("UnityTransport not found on NetworkManager! Adding it...");
+                transport = NetworkManager.Singleton.gameObject.AddComponent<UnityTransport>();
+            }
+
+            if (transport == null)
+            {
+                Debug.LogError("Failed to get or create UnityTransport!");
+                // Still show lobby room for debugging
+                string hostFinalNewRole = createdLobby.Data.ContainsKey("HostRole") ?
+                    createdLobby.Data["HostRole"].Value : hostRole;
+                bool hostIsNewDeck = hostFinalNewRole == "Deck";
+
+                LobbyRoomUI.Instance?.OpenLobbyRoom(createdLobby, hostIsNewDeck);
+                LobbyHeartBeat(createdLobby);
+                return;
+            }
+
+            // Configure relay
+            Debug.Log($"UnityTransport found: {transport != null}");
+
+            try
+            {
+                var endpoint = GetEndpointForAllocation(
+                    allocation.ServerEndpoints,
+                    allocation.RelayServer.IpV4,
+                    allocation.RelayServer.Port,
+                    out bool isSecure);
+
+                transport.SetHostRelayData(
+                    endpoint.Address.Split(':')[0],
+                    endpoint.Port,
+                    allocation.AllocationIdBytes,
+                    allocation.Key,
+                    allocation.ConnectionData,
+                    isSecure);
+
+                Debug.Log("Host relay data configured (isSecure: " + isSecure + ")");
+
+                bool started = NetworkManager.Singleton.StartHost();
+                Debug.Log($"NetworkManager.StartHost() returned: {started}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Failed to start host: {ex.Message}\n{ex.StackTrace}");
+            }
+
+            Debug.Log("Lobby created with ID: " + createdLobby.Id);
+
+            lobbyCreationParent.SetActive(false);
+            lobbyListParent.SetActive(true);
+
+            // FIXED: Safely get host role
+            string hostFinalRole = "Deck";
+            if (createdLobby.Data != null && createdLobby.Data.ContainsKey("HostRole"))
+            {
+                hostFinalRole = createdLobby.Data["HostRole"].Value;
+            }
+            bool hostIsDeck = hostFinalRole == "Deck";
+
+            // FIXED: Check if LobbyRoomUI.Instance exists before calling
+            if (LobbyRoomUI.Instance != null)
+            {
+                LobbyRoomUI.Instance.OpenLobbyRoom(createdLobby, hostIsDeck);
+            }
+            else
+            {
+                Debug.LogError("LobbyRoomUI.Instance is null!");
+            }
+
+            LobbyHeartBeat(createdLobby);
         }
         catch (LobbyServiceException e)
         {
-            Debug.LogError("Failed to create lobby: " + e.Message);
-        }*/
+            Debug.LogError($"Failed to create lobby: {e.Message} (Code: {e.ErrorCode})");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Unexpected error creating lobby: {e.Message}");
+            Debug.LogError($"Stack: {e.StackTrace}");
+        }
     }
 
     private async void LobbyHeartBeat(Lobby lobby)

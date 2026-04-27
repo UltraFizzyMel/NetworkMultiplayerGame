@@ -158,6 +158,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
+  generatorAudio: {fileID: 195893971432296293}
   fuelMax: 5
   fuelDecayProgess: -0.2
   fuelRate: 0.5
