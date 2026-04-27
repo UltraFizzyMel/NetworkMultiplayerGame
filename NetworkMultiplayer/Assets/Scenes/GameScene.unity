@@ -12545,10 +12545,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 1841782583}
     m_Modifications:
     - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
-      propertyPath: leakRate
-      value: 0.015
-      objectReference: {fileID: 0}
-    - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'
       value: 
       objectReference: {fileID: 1914637275}
