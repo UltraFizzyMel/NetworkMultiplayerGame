@@ -20,6 +20,9 @@ public class LobbyRoomUI : MonoBehaviour
     [SerializeField] private GameObject lobbyRoomPanel;
     //[SerializeField] private Transform playerListParent;
 
+    public AudioClip radioStaticSong;
+    public AudioClip ambientSong;
+
     [SerializeField] private Button btnReadyOne;
     [SerializeField] private Button btnReadyTwo;
     [SerializeField] private TextMeshProUGUI txtReadyOne;
@@ -60,6 +63,8 @@ public class LobbyRoomUI : MonoBehaviour
         currentLobby = lobby;
         lobbyListParent.SetActive(false);
         lobbyRoomPanel.SetActive(true);
+
+        MusicManager.Instance.CrossfadeToNewSong(radioStaticSong, "RadioStatic");
 
         string myID = AuthenticationService.Instance.PlayerId;
         isHost = currentLobby.HostId == myID;
@@ -269,6 +274,7 @@ public class LobbyRoomUI : MonoBehaviour
 
             // Load the scene - this will automatically sync to all clients
             NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+            MusicManager.Instance.CrossfadeToNewSong(ambientSong, "AmbientEnvironment");
         }
         else
         {

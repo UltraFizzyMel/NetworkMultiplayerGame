@@ -61,6 +61,7 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private GameObject pnlFailedToJoin;
     [SerializeField] private Button btnClose;
     [SerializeField] private Button btnSubmit;
+    [SerializeField] private Button btnBack;
     //[SerializeField] private bool correctPassword = false;
     private string selectedLobbyID;
     private string pendingJoinCode;
@@ -103,6 +104,7 @@ public class LobbyManager : MonoBehaviour
         {
             lobbySearchField.interactable = false;
             btnCreateLobby.interactable = false;
+            btnBack.interactable = false;
             pnlPassword.SetActive(true);
             return;
         }
@@ -456,6 +458,7 @@ catch (LobbyServiceException e)
 
                 lobbySearchField.interactable = true;
                 btnCreateLobby.interactable = true;
+                btnBack.interactable = true;
                 pnlPassword.SetActive(false);
 
                 LobbyRoomUI.Instance.OpenLobbyRoom(lobby, clientIsDeck);
@@ -473,6 +476,7 @@ catch (LobbyServiceException e)
             // Reset UI
             lobbySearchField.interactable = true;
             btnCreateLobby.interactable = true;
+            btnBack.interactable = true;
         }
     }
 
@@ -494,7 +498,9 @@ catch (LobbyServiceException e)
 
         lobbySearchField.interactable = true;
         btnCreateLobby.interactable = true;
+        btnBack.interactable = true;
         pnlPassword.SetActive(false);
+        pnlFailedToJoin.SetActive(false);
 
         LobbyRoomUI.Instance.OpenLobbyRoom(lobby, clientIsDeck);
 
@@ -552,6 +558,7 @@ catch (LobbyServiceException e)
                 btnClose.interactable = false;
                 btnSubmit.interactable = false;
                 pnlFailedToJoin.SetActive(true);
+                pnlPassword.SetActive(false);
                 Debug.LogWarning("Incorrect password!");
                 return;
             }
@@ -584,11 +591,13 @@ catch (LobbyServiceException e)
         pnlPassword.SetActive(false);
         lobbySearchField.interactable = true;
         btnCreateLobby.interactable = true;
+        btnBack.interactable = true;
     }
 
     public void CloseFailedToJoinPanel()
     {
         pnlFailedToJoin.SetActive(false);
+        pnlPassword.SetActive(true);
         btnClose.interactable = true;
         btnSubmit.interactable = true;
     }

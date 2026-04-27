@@ -6,6 +6,8 @@ public class Generator : Interactable
 {
     //public BoatLeakManager boatLeakManager;
 
+    public GameObject generatorAudio;
+
     public event EventHandler<OnFuelChangedEventArgs> OnFuelChanged;
     public class OnFuelChangedEventArgs : EventArgs
     {
@@ -48,6 +50,7 @@ public class Generator : Interactable
         {
             // The player is not holding something
             IsFuelingRpc();// The player fuels up the generator when they have no object in their hand
+            MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
             Debug.Log("Player has no item");
             return;
         }
@@ -70,6 +73,15 @@ public class Generator : Interactable
         else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }// While player is not fueling generator the fuel level goes down until it reaches 0
         fuelingProgress.Value += fuelChange * Time.deltaTime;// The current fuel level changes over time based on the if-else statement above
         //OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress.Value / fuelMax });
+
+        if (fuelChange == 0 )
+        {
+            generatorAudio.SetActive(false);
+        }
+        else
+        {
+            generatorAudio.SetActive(true);
+        }
 
         if (fuelingProgress.Value >= fuelMax)
         {

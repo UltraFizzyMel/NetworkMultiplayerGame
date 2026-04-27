@@ -21,6 +21,9 @@ public class SwapManager : NetworkBehaviour
         while (true)
         {
             yield return new WaitForSeconds(swapInterval);
+            MusicManager.Instance.PlaySFX(SFXType.SwopWarning);
+
+            yield return new WaitForSeconds(2);
 
             while (PlayerRegistry.Players.Count < 2)
                 yield return null;
@@ -59,6 +62,8 @@ public class SwapManager : NetworkBehaviour
 
         Quaternion rotA = playerA.transform.rotation;
         Quaternion rotB = playerB.transform.rotation;
+
+        MusicManager.Instance.PlaySFX(SFXType.Swop);
 
         ccA.enabled = false;
         ccB.enabled = false;
