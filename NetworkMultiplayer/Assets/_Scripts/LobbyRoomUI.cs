@@ -2,9 +2,13 @@
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -78,11 +82,13 @@ public class LobbyRoomUI : MonoBehaviour
             txtWaiting.SetActive(true);
             if (isDeck)
             {
+                SessionData.Instance.isHostDeck = true;
                 imgDeckOne.SetActive(true);
                 imgCabinTwo.SetActive(true);
             }
             else
             {
+                SessionData.Instance.isHostDeck = false;
                 imgCabinOne.SetActive(true);
                 imgDeckTwo.SetActive(true);
             }
@@ -91,11 +97,13 @@ public class LobbyRoomUI : MonoBehaviour
         {
             if (isDeck)
             {
+                SessionData.Instance.isHostDeck = false;
                 imgDeckTwo.SetActive(true);
                 imgCabinOne.SetActive(true);
             }
             else
             {
+                SessionData.Instance.isHostDeck = true;
                 imgCabinTwo.SetActive(true);
                 imgDeckOne.SetActive(true);
             }
@@ -143,8 +151,7 @@ public class LobbyRoomUI : MonoBehaviour
 
         if (AllPlayersReady() && isHost)
         {
-            //NetworkManager.Singleton.StartHost();
-            //NetworkManager.Singleton.StartClient();
+            Debug.Log("All players are ready! Starting game...");
             NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
         }
 

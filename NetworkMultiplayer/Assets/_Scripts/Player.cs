@@ -240,11 +240,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         transform.Rotate(0f, yawInput, 0f);
     }
 
-    [ServerRpc]
+    /*[ServerRpc]
     private void ApplyGravityServerRpc()
     {
         ApplyGravity();
-    }
+    }*/
 
     public override void OnNetworkDespawn()
     {

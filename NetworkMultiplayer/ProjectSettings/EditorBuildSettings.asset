@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WonGame.unity
     guid: 111862ea652f1ac4e807e7e5ce1e4312
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: f28471d7b9d67ef4a9da4284583888d7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
