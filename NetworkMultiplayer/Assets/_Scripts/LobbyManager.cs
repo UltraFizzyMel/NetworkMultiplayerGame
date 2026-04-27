@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -15,6 +17,24 @@ using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
 {
+    NetworkEndpoint GetEndpointForAllocation(List<RelayServerEndpoint> endpoints, string ip, int port, out bool isSecure)
+    {
+#if ENABLE_MANAGED_UNITYTLS && !UNITY_WEBGL
+        // Prioritize a secure UDP endpoint if available
+        foreach (RelayServerEndpoint endpoint in endpoints)
+        {
+            if (endpoint.Secure && endpoint.Network == RelayServerEndpoint.NetworkOptions.Udp)
+            {
+                isSecure = true;
+                return NetworkEndpoint.Parse(endpoint.Host, (ushort)endpoint.Port);
+            }
+        }
+#endif
+        // Fallback to the default IP/port (unsecured or WebGL)
+        isSecure = false;
+        return NetworkEndpoint.Parse(ip, (ushort)port);
+    }
+
     public static LobbyManager Instance { get; private set; }
 
     [Header("Lobby Creation")]
@@ -53,6 +73,9 @@ public class LobbyManager : MonoBehaviour
     public Lobby currentLobby;
     public string joinedLobbyID;
 
+    private bool shouldStopHeartbeat = false;
+    private bool shouldStopLobbyList = false;
+
     private async void Start()
     {
         Instance = this;
@@ -63,8 +86,10 @@ public class LobbyManager : MonoBehaviour
         {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
+        shouldStopHeartbeat = false;
+        shouldStopLobbyList = false;
 
-        TogglePasswordField();
+    TogglePasswordField();
         ExitLobbyCreationButton();
         //await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
@@ -85,7 +110,7 @@ public class LobbyManager : MonoBehaviour
         JoinLobbyDirectly();
     }
 
-    private async void JoinLobbyDirectly()
+    /*private async void JoinLobbyDirectly(string prefetchedJoinCode = null)
     {
         try
         {
@@ -116,85 +141,314 @@ public class LobbyManager : MonoBehaviour
 
             Debug.Log($"Successfully joined lobby: {lobby.Name} (ID: {lobby.Id})");
 
+            string joinCode = prefetchedJoinCode;
 
-            if (!lobby.Data.ContainsKey("JoinCode"))
+            // Otherwise, we need to get it from the lobby
+            if (string.IsNullOrWhiteSpace(joinCode))
             {
-                Debug.LogError("Lobby has no JoinCode!");
-                return;
-            }
-
-            string joinCode = null;
-            int maxRetries = 10;
-            int retryDelay = 500; // milliseconds
-
-            for (int i = 0; i < maxRetries; i++)
-            {
-                // Refresh lobby data
-                lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobbyID);
-
-                Debug.Log($"Attempt {i + 1}: Checking for JoinCode...");
-                Debug.Log($"Lobby Data keys: {(lobby.Data != null ? string.Join(", ", lobby.Data.Keys) : "null")}");
-
-                if (lobby.Data != null && lobby.Data.ContainsKey("JoinCode"))
+                if (!lobby.Data.ContainsKey("JoinCode"))
                 {
-                    joinCode = lobby.Data["JoinCode"].Value;
-                    if (!string.IsNullOrWhiteSpace(joinCode))
+                    Debug.LogError("Lobby has no JoinCode!");
+                    return;
+                }
+
+                joinCode = lobby.Data["JoinCode"].Value;
+
+                // If still empty, wait for it (but this shouldn't happen for non-password joins)
+                if (string.IsNullOrWhiteSpace(joinCode))
+                {
+                    int maxRetries = 10;
+                    int retryDelay = 500;
+
+                    for (int i = 0; i < maxRetries; i++)
                     {
-                        Debug.Log($"JoinCode found after {i + 1} attempts: '{joinCode}'");
-                        break;
+                        lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobbyID);
+
+                        Debug.Log($"Attempt {i + 1}: Checking for JoinCode...");
+
+                        if (lobby.Data != null && lobby.Data.ContainsKey("JoinCode"))
+                        {
+                            joinCode = lobby.Data["JoinCode"].Value;
+                            if (!string.IsNullOrWhiteSpace(joinCode))
+                            {
+                                Debug.Log($"JoinCode found after {i + 1} attempts: '{joinCode}'");
+                                break;
+                            }
+                        }
+
+                        if (i < maxRetries - 1)
+                        {
+                            Debug.Log($"JoinCode not ready yet, waiting {retryDelay}ms...");
+                            await Task.Delay(retryDelay);
+                        }
                     }
                 }
-
-                if (i < maxRetries - 1)
-                {
-                    Debug.Log($"JoinCode not ready yet, waiting {retryDelay}ms...");
-                    await Task.Delay(retryDelay);
-                }
             }
-
-            //string joinCode =
-            //lobby.Data["JoinCode"].Value;
 
             if (string.IsNullOrWhiteSpace(joinCode))
             {
                 Debug.LogError("JoinCode is empty!");
+                await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
                 return;
             }
 
             Debug.Log("CLIENT JOIN CODE: " + joinCode);
 
+            /*if (!lobby.Data.ContainsKey("JoinCode"))
+            {
+                Debug.LogError("Lobby has no JoinCode!");
+                return;
+            }*/
+
+    //string joinCode = null;
+    //int maxRetries = 10;
+    //int retryDelay = 500; // milliseconds
+
+    /*for (int i = 0; i < maxRetries; i++)
+    {
+        // Refresh lobby data
+        lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobbyID);
+
+        Debug.Log($"Attempt {i + 1}: Checking for JoinCode...");
+        Debug.Log($"Lobby Data keys: {(lobby.Data != null ? string.Join(", ", lobby.Data.Keys) : "null")}");
+
+        if (lobby.Data != null && lobby.Data.ContainsKey("JoinCode"))
+        {
+            joinCode = lobby.Data["JoinCode"].Value;
+            if (!string.IsNullOrWhiteSpace(joinCode))
+            {
+                Debug.Log($"JoinCode found after {i + 1} attempts: '{joinCode}'");
+                break;
+            }
+        }
+
+        if (i < maxRetries - 1)
+        {
+            Debug.Log($"JoinCode not ready yet, waiting {retryDelay}ms...");
+            await Task.Delay(retryDelay);
+        }
+    }
+
+    //string joinCode =
+    //lobby.Data["JoinCode"].Value;
+
+    try
+    {
+        JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
+
+        Debug.Log("Relay allocation joined successfully!");
+
+        // Step 4: Configure transport
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+        if (transport == null)
+        {
+            Debug.LogError("UnityTransport component not found on NetworkManager!");
+            return;
+        }
+
+        // Use the newer method for setting relay data
+        /*transport.SetClientRelayData(
+            joinAllocation.RelayServer.IpV4,
+            (ushort)joinAllocation.RelayServer.Port,
+            joinAllocation.AllocationIdBytes,
+            joinAllocation.Key,
+            joinAllocation.ConnectionData,
+            joinAllocation.HostConnectionData,
+            true  // isSecure - set to true for dtls, false for udp
+        );
+
+        var endpoint = GetEndpointForAllocation(
+            joinAllocation.ServerEndpoints,
+            joinAllocation.RelayServer.IpV4,
+            joinAllocation.RelayServer.Port,
+            out bool isSecure);
+
+        transport.SetClientRelayData(
+            endpoint.Address.Split(':')[0], // The IP address
+            endpoint.Port,
+            joinAllocation.AllocationIdBytes,
+            joinAllocation.Key,
+            joinAllocation.ConnectionData,
+            joinAllocation.HostConnectionData,
+            isSecure);
+
+        Debug.Log("Relay data configured successfully");
+
+        // Step 5: Start the client
+        NetworkManager.Singleton.StartClient();
+
+        // Step 6: Setup UI
+        string hostRole = lobby.Data.ContainsKey("HostRole") ?
+            lobby.Data["HostRole"].Value : "Deck";
+
+        bool clientIsDeck = hostRole != "Deck";
+
+        lobbySearchField.interactable = true;
+        btnCreateLobby.interactable = true;
+        pnlPassword.SetActive(false);
+
+        LobbyRoomUI.Instance.OpenLobbyRoom(lobby, clientIsDeck);
+    }
+    catch (RelayServiceException relayEx)
+    {
+        Debug.LogError($"=== RELAY JOIN FAILED ===");
+        Debug.LogError($"Message: {relayEx.Message}");
+        Debug.LogError($"Error Code: {relayEx.ErrorCode}");
+        Debug.LogError($"Reason: {relayEx.Reason}");
+        Debug.LogError($"StackTrace: {relayEx.StackTrace}");
+
+        // Log the join code we tried to use
+        Debug.LogError($"Join Code Used: '{joinCode}'");
+        Debug.LogError($"Join Code Length: {joinCode?.Length ?? 0}");
+
+        // If relay join fails, leave the lobby
+        await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
+
+        // Don't throw - handle gracefully
+        return;
+    }
+
+    /*JoinAllocation joinAllocation =
+        await RelayService.Instance.JoinAllocationAsync(joinCode);
+
+    UnityTransport transport =
+        NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+    transport.SetClientRelayData(
+        joinAllocation.RelayServer.IpV4,
+        (ushort)joinAllocation.RelayServer.Port,
+        joinAllocation.AllocationIdBytes,
+        joinAllocation.Key,
+        joinAllocation.ConnectionData,
+        joinAllocation.HostConnectionData,
+        true
+    );
+
+    var relayServerData = new RelayServerData(joinAllocation, "dtls"); // Use "dtls" for secure or "udp" for standard
+    transport.SetRelayServerData(relayServerData);
+
+    NetworkManager.Singleton.StartClient();
+
+    string hostRole = lobby.Data["HostRole"].Value;
+    bool clientIsDeck = hostRole != "Deck";
+
+    lobbySearchField.interactable = true;
+    btnCreateLobby.interactable = true;
+    pnlPassword.SetActive(false);
+
+    LobbyRoomUI.Instance.OpenLobbyRoom(lobby, clientIsDeck);
+}
+catch (LobbyServiceException e)
+{
+    Debug.LogError("Failed to join lobby: " + e.Message);
+}
+}*/
+
+    private async void JoinLobbyDirectly(string prefetchedJoinCode = null)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(selectedLobbyID)) return;
+
+            Debug.Log($"Calling JoinLobbyByIdAsync with ID: {selectedLobbyID}");
+
+            // Join the lobby - this is the ONLY call we make initially
+            Lobby lobby = await LobbyService.Instance.JoinLobbyByIdAsync(selectedLobbyID);
+
+            currentLobby = lobby;
+            joinedLobbyID = lobby.Id;
+
+            Debug.Log($"Successfully joined lobby: {lobby.Name} (ID: {lobby.Id})");
+
+            // Check if we got a prefetched join code from password verification
+            string joinCode = prefetchedJoinCode;
+
+            // If no prefetched code, get it from the lobby data we already have
+            if (string.IsNullOrWhiteSpace(joinCode))
+            {
+                if (lobby.Data != null && lobby.Data.ContainsKey("JoinCode"))
+                {
+                    joinCode = lobby.Data["JoinCode"].Value;
+                }
+            }
+
+            // If still no join code (unlikely but possible), wait and retry
+            if (string.IsNullOrWhiteSpace(joinCode))
+            {
+                Debug.LogWarning("JoinCode not in initial data, waiting...");
+
+                // Wait a bit before retrying to avoid rate limits
+                await Task.Delay(1500);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    await Task.Delay(1000); // Wait 1 second between attempts
+
+                    try
+                    {
+                        lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobbyID);
+
+                        if (lobby.Data != null && lobby.Data.ContainsKey("JoinCode"))
+                        {
+                            joinCode = lobby.Data["JoinCode"].Value;
+                            if (!string.IsNullOrWhiteSpace(joinCode))
+                            {
+                                Debug.Log($"JoinCode found on attempt {i + 1}: '{joinCode}'");
+                                break;
+                            }
+                        }
+                    }
+                    catch (LobbyServiceException e)
+                    {
+                        Debug.LogWarning($"Retry {i + 1} failed: {e.Message}");
+                        if (i >= 4) throw; // Rethrow on last attempt
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(joinCode))
+            {
+                Debug.LogError("JoinCode is empty after all attempts!");
+                await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
+                return;
+            }
+
+            Debug.Log("CLIENT JOIN CODE: " + joinCode);
+
+            // Join relay
             try
             {
                 JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-
                 Debug.Log("Relay allocation joined successfully!");
 
-                // Step 4: Configure transport
                 UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
 
                 if (transport == null)
                 {
                     Debug.LogError("UnityTransport component not found on NetworkManager!");
+                    await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
                     return;
                 }
 
-                // Use the newer method for setting relay data
-                transport.SetClientRelayData(
+                var endpoint = GetEndpointForAllocation(
+                    joinAllocation.ServerEndpoints,
                     joinAllocation.RelayServer.IpV4,
-                    (ushort)joinAllocation.RelayServer.Port,
+                    joinAllocation.RelayServer.Port,
+                    out bool isSecure);
+
+                transport.SetClientRelayData(
+                    endpoint.Address.Split(':')[0],
+                    endpoint.Port,
                     joinAllocation.AllocationIdBytes,
                     joinAllocation.Key,
                     joinAllocation.ConnectionData,
                     joinAllocation.HostConnectionData,
-                    true  // isSecure - set to true for dtls, false for udp
-                );
+                    isSecure);
 
                 Debug.Log("Relay data configured successfully");
-
-                // Step 5: Start the client
                 NetworkManager.Singleton.StartClient();
 
-                // Step 6: Setup UI
                 string hostRole = lobby.Data.ContainsKey("HostRole") ?
                     lobby.Data["HostRole"].Value : "Deck";
 
@@ -208,98 +462,17 @@ public class LobbyManager : MonoBehaviour
             }
             catch (RelayServiceException relayEx)
             {
-                Debug.LogError($"=== RELAY JOIN FAILED ===");
-                Debug.LogError($"Message: {relayEx.Message}");
-                Debug.LogError($"Error Code: {relayEx.ErrorCode}");
-                Debug.LogError($"Reason: {relayEx.Reason}");
-                Debug.LogError($"StackTrace: {relayEx.StackTrace}");
-
-                // Log the join code we tried to use
-                Debug.LogError($"Join Code Used: '{joinCode}'");
-                Debug.LogError($"Join Code Length: {joinCode?.Length ?? 0}");
-
-                // If relay join fails, leave the lobby
+                Debug.LogError($"Relay join failed: {relayEx.Message} (Code: {relayEx.ErrorCode})");
                 await LobbyService.Instance.RemovePlayerAsync(lobby.Id, AuthenticationService.Instance.PlayerId);
-
-                // Don't throw - handle gracefully
-                return;
             }
-
-            /*JoinAllocation joinAllocation =
-                await RelayService.Instance.JoinAllocationAsync(joinCode);
-
-            UnityTransport transport =
-                NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-            transport.SetClientRelayData(
-                joinAllocation.RelayServer.IpV4,
-                (ushort)joinAllocation.RelayServer.Port,
-                joinAllocation.AllocationIdBytes,
-                joinAllocation.Key,
-                joinAllocation.ConnectionData,
-                joinAllocation.HostConnectionData,
-                true
-            );
-
-            var relayServerData = new RelayServerData(joinAllocation, "dtls"); // Use "dtls" for secure or "udp" for standard
-            transport.SetRelayServerData(relayServerData);
-
-            NetworkManager.Singleton.StartClient();
-
-            string hostRole = lobby.Data["HostRole"].Value;
-            bool clientIsDeck = hostRole != "Deck";
-
-            lobbySearchField.interactable = true;
-            btnCreateLobby.interactable = true;
-            pnlPassword.SetActive(false);
-
-            LobbyRoomUI.Instance.OpenLobbyRoom(lobby, clientIsDeck);*/
         }
         catch (LobbyServiceException e)
         {
-            Debug.LogError("Failed to join lobby: " + e.Message);
-        }
-    }
+            Debug.LogError($"Failed to join lobby: {e.Message} (Error: {e.ErrorCode})");
 
-    private async void WaitForRelayAndJoin()
-    {
-        while (waitingForRelayJoin)
-        {
-            Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobbyID);
-
-            if (lobby.Data != null &&
-                lobby.Data.ContainsKey("JoinCode") &&
-                !string.IsNullOrWhiteSpace(lobby.Data["JoinCode"].Value))
-            {
-                string joinCode = lobby.Data["JoinCode"].Value;
-
-                Debug.Log("Relay Join Code Ready: " + joinCode);
-
-                JoinAllocation allocation =
-                    await RelayService.Instance.JoinAllocationAsync(joinCode);
-
-                UnityTransport transport =
-                    NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-                transport.SetClientRelayData(
-                    allocation.RelayServer.IpV4,
-                    (ushort)allocation.RelayServer.Port,
-                    allocation.AllocationIdBytes,
-                    allocation.Key,
-                    allocation.ConnectionData,
-                    allocation.HostConnectionData,
-                    true
-                );
-
-                NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-                NetworkManager.Singleton.StartClient();
-
-                waitingForRelayJoin = false;
-
-                return;
-            }
-
-            await Task.Delay(1000);
+            // Reset UI
+            lobbySearchField.interactable = true;
+            btnCreateLobby.interactable = true;
         }
     }
 
@@ -331,7 +504,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void SubmitPassword()
     {
-        try
+        /*try
         {
             Lobby lobby = await LobbyService.Instance.GetLobbyAsync(selectedLobbyID);
 
@@ -346,17 +519,63 @@ public class LobbyManager : MonoBehaviour
                 Debug.LogWarning("Password is required to join this lobby.");
                 return;
             }
-            /*else if (txtPassword.text == lobbyPassword)
-            {
-                correctPassword = true;
-                JoinLobby(joinedLobbyID, true);
-            }*/
 
             JoinLobbyDirectly();
         }
         catch (LobbyServiceException e)
         {
             Debug.LogError("Failed to join lobby: " + e.Message);
+        }*/
+
+        if (string.IsNullOrWhiteSpace(selectedLobbyID))
+        {
+            Debug.LogError("No lobby selected!");
+            return;
+        }
+
+        try
+        {
+            // Get lobby to verify password
+            Lobby lobby = await LobbyService.Instance.GetLobbyAsync(selectedLobbyID);
+
+            // Check if password exists
+            if (!lobby.Data.ContainsKey("Password"))
+            {
+                Debug.LogError("Lobby has no password data!");
+                return;
+            }
+
+            string realPassword = lobby.Data["Password"].Value;
+
+            if (txtPassword.text != realPassword)
+            {
+                btnClose.interactable = false;
+                btnSubmit.interactable = false;
+                pnlFailedToJoin.SetActive(true);
+                Debug.LogWarning("Incorrect password!");
+                return;
+            }
+
+            // Password correct - get the join code NOW while we have the lobby data
+            string joinCode = lobby.Data.ContainsKey("JoinCode") ? lobby.Data["JoinCode"].Value : null;
+
+            // Close password panel
+            pnlPassword.SetActive(false);
+
+            await Task.Delay(1500);
+
+            // Join directly, but pass the join code so we don't need another GetLobbyAsync
+            JoinLobbyDirectly(prefetchedJoinCode: joinCode);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError($"Failed to verify password: {e.Message}");
+
+            if (e.Reason == LobbyExceptionReason.LobbyNotFound)
+            {
+                Debug.LogError("Lobby no longer exists!");
+                ClosePasswordPanel();
+            }
         }
     }
 
@@ -380,7 +599,7 @@ public class LobbyManager : MonoBehaviour
 
         isRefreshingLobbyList = true;
 
-        while (Application.isPlaying && lobbyListParent.activeInHierarchy)
+        while (Application.isPlaying && !shouldStopLobbyList && lobbyListParent != null && lobbyListParent.activeInHierarchy)
         {
             try
             {
@@ -457,6 +676,11 @@ public class LobbyManager : MonoBehaviour
             catch (LobbyServiceException e)
             {
                 Debug.LogError("Failed to query lobbies: " + e.Message);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error refreshing lobby list: {e.Message}");
+                break; // Break on errors
             }
 
             await Task.Delay(1000); // Refresh every 1 second
@@ -634,16 +858,36 @@ public class LobbyManager : MonoBehaviour
             Debug.Log($"Transport type: {transport.GetType().Name}");
 
             // Now set the relay data
-            transport.SetHostRelayData(
+            /*transport.SetHostRelayData(
                 allocation.RelayServer.IpV4,
                 (ushort)allocation.RelayServer.Port,
                 allocation.AllocationIdBytes,
                 allocation.Key,
                 allocation.ConnectionData,
                 true
-            );
+            );*/
 
-            NetworkManager.Singleton.StartHost();
+            if (transport != null)
+            {
+                var endpoint = GetEndpointForAllocation(
+                    allocation.ServerEndpoints,
+                    allocation.RelayServer.IpV4,
+                    allocation.RelayServer.Port,
+                    out bool isSecure);
+
+                transport.SetHostRelayData(
+                    endpoint.Address.Split(':')[0],
+                    endpoint.Port,
+                    allocation.AllocationIdBytes,
+                    allocation.Key,
+                    allocation.ConnectionData,
+                    isSecure);
+
+                Debug.Log("Host relay data configured (isSecure: " + isSecure + ")");
+                NetworkManager.Singleton.StartHost();
+            }
+
+            //NetworkManager.Singleton.StartHost();
 
             /*UnityTransport transport =
             NetworkManager.Singleton.GetComponent<UnityTransport>();
@@ -713,7 +957,7 @@ public class LobbyManager : MonoBehaviour
 
     private async void LobbyHeartBeat(Lobby lobby)
     {
-        while (true && Application.isPlaying)
+        while (!shouldStopHeartbeat && Application.isPlaying)
         {
             if (lobby == null) return;
 
@@ -723,7 +967,34 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    /*private async void OnApplicationQuit()
+    public void ResetForNewLobby()
+    {
+        shouldStopHeartbeat = false;
+        shouldStopLobbyList = false;
+        currentLobby = null;
+        joinedLobbyID = null;
+
+        // Restart the lobby list refreshing if the list is active
+        if (lobbyListParent != null && lobbyListParent.activeInHierarchy)
+        {
+            ShowLobbies();
+        }
+    }
+
+    public void StopAllLobbyProcesses()
+    {
+        shouldStopHeartbeat = true;
+        shouldStopLobbyList = true;
+        isRefreshingLobbyList = false;
+    }
+
+    private void OnDestroy()
+    {
+        StopAllLobbyProcesses();
+        Instance = null;
+    }
+
+    private async void OnApplicationQuit()
     {
         if (currentLobby == null)
             return;
@@ -736,7 +1007,7 @@ public class LobbyManager : MonoBehaviour
             await LobbyService.Instance.DeleteLobbyAsync(currentLobby.Id);
         }
         catch { }
-    }*/
+    }
 
 
     /*private Lobby joinedLobby;
