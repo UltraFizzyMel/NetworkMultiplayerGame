@@ -33,10 +33,13 @@ public class GameManager : NetworkBehaviour
                 playerIsDeck ? deckSpawn : cabinSpawn;
 
             if (playerIsDeck)
-            { player.crew.SetActive(true);
+            { 
+                player.crew.SetActive(true);
                 player.captain.SetActive(false);
             }
-            else { player.crew.SetActive(false);
+            else 
+            { 
+                player.crew.SetActive(false);
                 player.captain.SetActive(true);
             }
 
