@@ -1136,7 +1136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwapManager
   ShowTopMostFoldoutHeaderGroup: 1
-  swapInterval: 28
+  swapInterval: 30
 --- !u!4 &182586969
 Transform:
   m_ObjectHideFlags: 0

@@ -43,8 +43,9 @@ public class GameManager : NetworkBehaviour
                 player.captain.SetActive(true);
             }
 
-                CharacterController cc =
-                    player.GetComponent<CharacterController>();
+            
+            CharacterController cc =
+                player.GetComponent<CharacterController>();
 
             if (cc != null)
                 cc.enabled = false;

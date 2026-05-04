@@ -123,17 +123,24 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         //if (cc.enabled)
             //cc.Move(move * moveSpeed * Time.deltaTime);
 
-        MoveServerRpc(m);
+        Move(m);
 
         Vector2 look = lookAction.ReadValue<Vector2>() * lookSensitivity;    
         //transform.Rotate(0f, look.x, 0f);
-        LookServerRpc(look.x);
+        Look(look.x);
 
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f);
         ApplyGravityServerRpc();
     }
+
+
+    public (Vector3 posA, Quaternion rotA) GetPosition()
+    {
+        return (transform.position, transform.rotation);
+    }
+
 
     [ClientRpc]
     public void TeleportClientRpc(Vector3 pos, Quaternion rot, Vector3 scale)
@@ -146,6 +153,21 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             {
                 cnt.Teleport(pos, rot, scale);
             }
+            else
+            {
+                Debug.LogWarning("ClientNetworkTransform component not found on player. Teleportation may not work correctly.");
+                transform.position = pos;
+                transform.rotation = rot;
+                transform.localScale = scale;
+            }
+
+           /* Debug.Log($"Teleporting player to {pos} with rotation {rot} and scale {scale}");
+
+            transform.position = pos; 
+            transform.rotation = rot;*/
+
+
+
         }
     }
 
@@ -223,8 +245,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc.Move(velocity * Time.deltaTime);
      }
 
-    [ServerRpc]
-    private void MoveServerRpc(Vector2 input)
+    //[ServerRpc]
+    private void Move(Vector2 input)
     {
         Vector3 move =
             transform.right * input.x +
@@ -236,8 +258,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc.Move(moveSpeed * Time.deltaTime * move);
     }
 
-    [ServerRpc]
-    private void LookServerRpc(float yawInput)
+    //[ServerRpc]
+    private void Look(float yawInput)
     {
         transform.Rotate(0f, yawInput, 0f);
     }

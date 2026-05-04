@@ -6,6 +6,7 @@ using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 
 public class SwapManager : NetworkBehaviour
 {
+   
     [SerializeField] private float swapInterval = 30f;
 
     public override void OnNetworkSpawn()
@@ -32,11 +33,11 @@ public class SwapManager : NetworkBehaviour
             PlayerRegistry.Players.Sort((a, b) =>
             a.NetworkObjectId.CompareTo(b.NetworkObjectId));
 
-            SwapPlayers();
+            SwapPlayersServerRpc();
         }
     }
-
-    private void SwapPlayers()
+    [ServerRpc]
+    private void SwapPlayersServerRpc()
     {
         if (!IsServer) return;
 
@@ -58,11 +59,30 @@ public class SwapManager : NetworkBehaviour
         //ClientNetworkTransform cntA = playerA.GetComponent<ClientNetworkTransform>();
         //ClientNetworkTransform cntB = playerB.GetComponent<ClientNetworkTransform>();
 
-        Vector3 posA = playerA.transform.position;
-        Vector3 posB = playerB.transform.position;
 
-        Quaternion rotA = playerA.transform.rotation;
-        Quaternion rotB = playerB.transform.rotation;
+
+
+        /*
+
+                Vector3 posA = playerA.transform.position;
+                Vector3 posB = playerB.transform.position;
+
+                //Debug.Log($"Swapping players! A: {posA} | B: {posB}");
+
+                Quaternion rotA = playerA.transform.rotation;
+                Quaternion rotB = playerB.transform.rotation;
+        */
+
+
+
+        Vector3 posA, posB;
+        Quaternion rotA, rotB;
+
+        (posA,rotA) = playerAScript.GetPosition();
+        (posB,rotB) = playerBScript.GetPosition();
+
+
+
 
         if (MusicManager.Instance != null)
             MusicManager.Instance.PlaySFX(SFXType.Swop);
@@ -73,11 +93,14 @@ public class SwapManager : NetworkBehaviour
         //cntA.Teleport(posB, rotB, playerB.transform.localScale);
         //cntB.Teleport(posA, rotA, playerA.transform.localScale);
 
-        playerA.transform.position = posB;
+        /*playerA.transform.position = posB;
         playerB.transform.position = posA;
 
         playerA.transform.rotation = rotB;
-        playerB.transform.rotation = rotA;
+        playerB.transform.rotation = rotA;*/
+
+        playerAScript.TeleportClientRpc(posB, rotB, playerB.transform.localScale);
+        playerBScript.TeleportClientRpc(posA, rotA, playerA.transform.localScale);
 
         ccA.enabled = true;
         ccB.enabled = true;
