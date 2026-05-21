@@ -1,8 +1,10 @@
+using System;
+using System.Collections;
 using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : NetworkBehaviour, IObjectPickUpParent
@@ -21,8 +23,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     private PlayerInput pi;
     private InputAction moveAction;
     private InputAction lookAction;
+    private InputAction swapAction;
     private InputAction interact;
     private InputAction interactAlternate;
+    private ClientNetworkTransform cnt;
     private CharacterController cc;
     public GameObject captain;
     public GameObject crew;
@@ -46,6 +50,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     public override void OnNetworkSpawn()
     {
         cc = GetComponent<CharacterController>();
+        cnt = GetComponent<ClientNetworkTransform>();
         pi = GetComponent<PlayerInput>();
 
         PlayerRegistry.Register(this);
@@ -57,7 +62,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             if (pi)
                 pi.enabled = false;
 
-            enabled = false;
+            //enabled = false;
             return;
         }
 
@@ -65,13 +70,15 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         {
             cc.enabled = false;
         }*/
-        
+
         moveAction = pi.actions["Move"];
         lookAction = pi.actions["Look"];
+        swapAction = pi.actions["Swap"];
         interact = pi.actions["Interact"];
         interactAlternate = pi.actions["InteractAlternate"];
         moveAction.Enable();
         lookAction.Enable();
+        swapAction.Enable();
         interact.Enable();
         interactAlternate.Enable();
 
@@ -87,7 +94,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         interact.performed += Interact_performed;
         interact.canceled += Interact_canceled;
         interactAlternate.performed += InteractAlternate_performed;
-        
+
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -109,7 +116,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private void Update()
     {
-        if (!IsOwner || !IsSpawned)
+        if (!IsOwner || !IsSpawned || cc.enabled == false)
             return;
 
         //if (NetworkManager.Singleton.LocalClientId != controllingClientId.Value)
@@ -119,34 +126,80 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         //  return;
 
         Vector2 m = moveAction.ReadValue<Vector2>();
-        //Vector3 move = transform.right * m.x + transform.forward * m.y;
-        //if (cc.enabled)
-            //cc.Move(move * moveSpeed * Time.deltaTime);
+        Vector3 move = transform.right * m.x + transform.forward * m.y;
+        if (cc.enabled)
+            cc.Move(move * moveSpeed * Time.deltaTime);
 
-        MoveServerRpc(m);
+        //Move(m);
 
-        Vector2 look = lookAction.ReadValue<Vector2>() * lookSensitivity;    
-        //transform.Rotate(0f, look.x, 0f);
-        LookServerRpc(look.x);
+        Vector2 look = lookAction.ReadValue<Vector2>() * lookSensitivity;
+        transform.Rotate(0f, look.x, 0f);
+        //Look(look.x);
 
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f);
-        ApplyGravityServerRpc();
+        ApplyGravity();
+
+        if (swapAction.WasPressedThisFrame())
+        {
+            RequestSwapServerRpc();
+        }
     }
 
     [ClientRpc]
-    public void TeleportClientRpc(Vector3 pos, Quaternion rot, Vector3 scale)
+    public void SpawnPlayerClientRpc(Vector3 pos, Quaternion rot, bool isDeck)
     {
-        if (IsOwner)
-        {
-            var cnt = GetComponent<ClientNetworkTransform>();
+        StartCoroutine(ApplySpawn(pos, rot, isDeck));
+    }
 
-            if (cnt)
-            {
-                cnt.Teleport(pos, rot, scale);
-            }
+    private IEnumerator ApplySpawn(Vector3 pos, Quaternion rot, bool isDeck)
+    {
+        yield return null;
+        yield return null;
+
+        if (cc != null)
+            cc.enabled = false;
+
+        transform.position = pos;
+        transform.rotation = rot;
+
+        if (cnt != null && IsOwner)
+            cnt.Teleport(pos, rot, transform.localScale);
+
+        crew.SetActive(isDeck);
+        captain.SetActive(!isDeck);
+
+        if (cc != null)
+            cc.enabled = true;
+    }
+
+    [ServerRpc]
+    private void RequestSwapServerRpc()
+    {
+        SwapManager.Instance.TrySwap();
+    }
+
+    [ClientRpc]
+    public void TeleportClientRpc(Vector3 pos, Quaternion rot)
+    {
+        if (!IsOwner)
+            return;
+
+        if (cc != null)
+            cc.enabled = false;
+
+        //var cnt = GetComponent<ClientNetworkTransform>();
+
+        if (cnt)
+        {
+            cnt.Teleport(pos, rot, Vector3.one);
         }
+
+        transform.SetPositionAndRotation(pos, rot);
+
+        if (cc != null)
+            cc.enabled = true;
     }
 
     /*private void LateUpdate()
@@ -213,8 +266,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         }
     }
 
-    [ServerRpc]
-     private void ApplyGravityServerRpc()
+     private void ApplyGravity()
      {
        if (cc.isGrounded && velocity.y < 0)
             velocity.y = -2f;
@@ -223,8 +275,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc.Move(velocity * Time.deltaTime);
      }
 
-    [ServerRpc]
-    private void MoveServerRpc(Vector2 input)
+    private void Move(Vector2 input)
     {
         Vector3 move =
             transform.right * input.x +
@@ -236,8 +287,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc.Move(moveSpeed * Time.deltaTime * move);
     }
 
-    [ServerRpc]
-    private void LookServerRpc(float yawInput)
+    private void Look(float yawInput)
     {
         transform.Rotate(0f, yawInput, 0f);
     }

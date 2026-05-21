@@ -3,42 +3,68 @@ using UnityEngine;
 using System.Collections;
 using Unity.Services.Matchmaker.Models;
 using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
+using System.Runtime.CompilerServices;
 
 public class SwapManager : NetworkBehaviour
 {
+    public static SwapManager Instance;
     [SerializeField] private float swapInterval = 30f;
+    [SerializeField] private bool swapCooldownOn = false;
+    [SerializeField] private float swapCooldownStart = 20f;
+    [SerializeField] private float swapCooldownDuration = 5f;
 
     public override void OnNetworkSpawn()
     {
         if (!IsServer)
             return;
         
-        StartCoroutine(SwapLoop());
+        Instance = this;
+        //StartCoroutine(SwapLoop());
+
+        StartCoroutine(SwapCooldown(swapCooldownStart));
     }
 
-    private IEnumerator SwapLoop()
+    /*private IEnumerator SwapLoop()
     {
-        while (true)
+        //yield return new WaitForSeconds(swapInterval);
+        //if (MusicManager.Instance != null)
+        //    MusicManager.Instance.PlaySFX(SFXType.SwopWarning);
+
+        //yield return new WaitForSeconds(2);
+
+        if (!swapCooldownOn)
         {
-            yield return new WaitForSeconds(swapInterval);
-            if (MusicManager.Instance != null)
-                MusicManager.Instance.PlaySFX(SFXType.SwopWarning);
-
-            yield return new WaitForSeconds(2);
-
             while (PlayerRegistry.Players.Count < 2)
                 yield return null;
 
             PlayerRegistry.Players.Sort((a, b) =>
             a.NetworkObjectId.CompareTo(b.NetworkObjectId));
 
-            SwapPlayers();
+            SwapPlayersServerRpc();
+
+            swapCooldownOn = true;
         }
+
+        yield return new WaitForSeconds(swapCooldownDuration);
+        swapCooldownOn = false;
+    }*/
+
+    public void TrySwap()
+    {
+        if (swapCooldownOn)
+            return;
+
+        StartCoroutine(SwapCooldown(swapCooldownDuration));
+
+        PerformSwap();
     }
 
-    private void SwapPlayers()
+    private void PerformSwap()
     {
-        if (!IsServer) return;
+        //if (!IsServer) return;
+
+        PlayerRegistry.Players.Sort((a, b) =>
+            a.NetworkObjectId.CompareTo(b.NetworkObjectId));
 
         Player playerA = PlayerRegistry.Players[0];
         Player playerB = PlayerRegistry.Players[1];
@@ -46,8 +72,8 @@ public class SwapManager : NetworkBehaviour
         if (playerA == null || playerB == null)
             return;
 
-        var ccA = playerA.GetComponent<CharacterController>();
-        var ccB = playerB.GetComponent<CharacterController>();
+        //var ccA = playerA.GetComponent<CharacterController>();
+        //var ccB = playerB.GetComponent<CharacterController>();
 
         var playerAScript = playerA.GetComponent<Player>();
         var playerBScript = playerB.GetComponent<Player>();
@@ -64,25 +90,35 @@ public class SwapManager : NetworkBehaviour
         Quaternion rotA = playerA.transform.rotation;
         Quaternion rotB = playerB.transform.rotation;
 
+        playerAScript.TeleportClientRpc(posB, rotB);
+        playerBScript.TeleportClientRpc(posA, rotA);
+
         if (MusicManager.Instance != null)
             MusicManager.Instance.PlaySFX(SFXType.Swop);
 
-        ccA.enabled = false;
-        ccB.enabled = false;
+        //ccA.enabled = false;
+        //ccB.enabled = false;
 
         //cntA.Teleport(posB, rotB, playerB.transform.localScale);
         //cntB.Teleport(posA, rotA, playerA.transform.localScale);
 
-        playerA.transform.position = posB;
-        playerB.transform.position = posA;
+        //playerA.transform.position = posB;
+        //playerB.transform.position = posA;
 
-        playerA.transform.rotation = rotB;
-        playerB.transform.rotation = rotA;
+        //playerA.transform.rotation = rotB;
+        //playerB.transform.rotation = rotA;
 
-        ccA.enabled = true;
-        ccB.enabled = true;
+        //ccA.enabled = true;
+        //ccB.enabled = true;
 
         Debug.Log("SWAP COMPLETE");
+    }
+
+    private IEnumerator SwapCooldown(float swapCooldown)
+    {
+        swapCooldownOn = true;
+        yield return new WaitForSeconds(swapCooldown);
+        swapCooldownOn = false;
     }
 }
 

@@ -1102,7 +1102,7 @@ catch (LobbyServiceException e)
 
             await LobbyService.Instance.SendHeartbeatPingAsync(lobby.Id);
             Debug.Log("Sent heartbeat ping for lobby ID: " + lobby.Id);
-            await Task.Delay(15*1000); // Send heartbeat every 5 seconds
+            await Task.Delay(5*1000); // Send heartbeat every 5 seconds
         }
     }
 

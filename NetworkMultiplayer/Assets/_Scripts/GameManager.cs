@@ -1,6 +1,8 @@
-using UnityEngine;
-using Unity.Netcode;
 using System;
+using System.Collections;
+using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
+using Unity.Netcode;
+using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
@@ -10,6 +12,26 @@ public class GameManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
+
+        //AssignSpawnPositions();
+        StartCoroutine(DelayedSpawnSetup());
+    }
+
+    private IEnumerator DelayedSpawnSetup()
+    {
+        while (NetworkManager.Singleton.ConnectedClientsList.Count < 2)
+            yield return null;
+
+        Player[] players = FindObjectsByType<Player>(FindObjectsSortMode.None);
+
+        while (players.Length < 2)
+        {
+            yield return null;
+            players = FindObjectsByType<Player>(FindObjectsSortMode.None);
+        }
+
+        yield return null;
+        yield return null;
 
         AssignSpawnPositions();
     }
@@ -32,7 +54,9 @@ public class GameManager : NetworkBehaviour
             Transform targetSpawn =
                 playerIsDeck ? deckSpawn : cabinSpawn;
 
-            if (playerIsDeck)
+            player.SpawnPlayerClientRpc(targetSpawn.position, targetSpawn.rotation, playerIsDeck);
+
+            /*if (playerIsDeck)
             { 
                 player.crew.SetActive(true);
                 player.captain.SetActive(false);
@@ -41,20 +65,52 @@ public class GameManager : NetworkBehaviour
             { 
                 player.crew.SetActive(false);
                 player.captain.SetActive(true);
-            }
+            }*/
 
-                CharacterController cc =
-                    player.GetComponent<CharacterController>();
+            //StartCoroutine(MovePlayer(player, targetSpawn));
+
+            //ClientNetworkTransform cnt = player.GetComponent<ClientNetworkTransform>();
+
+            /*CharacterController cc =
+                player.GetComponent<CharacterController>();
 
             if (cc != null)
                 cc.enabled = false;
 
-            player.transform.position = targetSpawn.position;
-            player.transform.rotation = targetSpawn.rotation;
+            player.transform.SetPositionAndRotation(
+                targetSpawn.position,
+                targetSpawn.rotation
+            );
+
+            //cnt.Teleport(targetSpawn.position, targetSpawn.rotation, Vector3.one);
+
+            //player.transform.position = targetSpawn.position;
+            //player.transform.rotation = targetSpawn.rotation;
 
             if (cc != null)
-                cc.enabled = true;
+                cc.enabled = true;*/
         }
+    }
+
+    private IEnumerator MovePlayer(Player player, Transform targetSpawn)
+    {
+        CharacterController cc =
+            player.GetComponent<CharacterController>();
+
+        if (cc != null)
+            cc.enabled = false;
+
+        yield return null;
+
+        player.transform.SetPositionAndRotation(
+            targetSpawn.position,
+            targetSpawn.rotation
+        );
+
+        yield return null;
+
+        if (cc != null)
+            cc.enabled = true;
     }
 
     /*public static GameManager Instance { get; private set; }

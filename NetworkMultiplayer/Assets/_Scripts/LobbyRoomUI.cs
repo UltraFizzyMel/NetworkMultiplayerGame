@@ -986,9 +986,20 @@ public class LobbyRoomUI : MonoBehaviour
 
         while (!shouldStopUpdateLoop && lobbyRoomPanel != null && lobbyRoomPanel.activeInHierarchy)
         {
-            await Task.Delay(15000);
+            await Task.Delay(1000);
 
-            if (currentLobby == null) break;
+            if (shouldStopUpdateLoop)
+                break;
+
+            if (this == null)
+                break;
+
+
+            if (currentLobby == null) 
+                break;
+
+            if (string.IsNullOrWhiteSpace(currentLobby.Id))
+                break;
 
             try
             {
@@ -1011,14 +1022,10 @@ public class LobbyRoomUI : MonoBehaviour
 
                 RefreshUI();
             }
-            catch (LobbyServiceException e)
+            catch (System.Exception e)
             {
                 Debug.LogWarning($"Lobby refresh failed: {e.Message}");
-                if (e.Reason == LobbyExceptionReason.LobbyNotFound)
-                {
-                    Debug.Log("Lobby not found during refresh. Game might be starting...");
-                    break;
-                }
+                break;
             }
         }
 
@@ -1157,6 +1164,9 @@ public class LobbyRoomUI : MonoBehaviour
                 Debug.LogError($"Failed to remove player: {e.Message}");
             }
         }
+
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.CrossfadeToNewSong(ambientSong, "SeaAmbience");
 
         currentLobby = null;
         lobbyRoomPanel.SetActive(false);
