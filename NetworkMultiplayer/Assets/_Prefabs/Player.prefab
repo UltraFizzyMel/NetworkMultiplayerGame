@@ -279,6 +279,11 @@ MonoBehaviour:
   lastInteractable: {fileID: 0}
   bucketHoldPoint: {fileID: 1181721550243166216}
   objectPickUp: {fileID: 0}
+  globalVolume: {fileID: 0}
+  lensChangeValue: -0.45
+  vignetteChangeValue: 0.55
+  chromaticChangeValue: 1
+  teleportEffectDuration: 2
 --- !u!1 &2457219218124793994
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,6 +789,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7252895976723332874}
   - component: {fileID: 4028414198584995261}
+  - component: {fileID: 5582861504314652252}
   m_Layer: 0
   m_Name: Global Volume
   m_TagString: Untagged
@@ -799,8 +805,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7816217202190532711}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.54999995, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -818,11 +824,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
-  m_IsGlobal: 1
+  m_IsGlobal: 0
   priority: 0
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 35b54d94d463ba54681310b6dcc9144d, type: 2}
+--- !u!65 &5582861504314652252
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7816217202190532711}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8978974819450754118
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,8 @@ using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CharacterController))]
@@ -47,11 +49,26 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private Transform bucketHoldPoint;
     [SerializeField] private ObjectPickUp objectPickUp;
 
+    [Header("Global Volume Settings")]
+    [SerializeField] private Volume globalVolume;
+    private LensDistortion lens;
+    [SerializeField] float lensChangeValue = -0.45f;
+    private Vignette vignette;
+    [SerializeField] float vignetteChangeValue = 0.55f;
+    private ChromaticAberration chromatic;
+    [SerializeField] float chromaticChangeValue = 1f;
+    [SerializeField] private float teleportEffectDuration = 0.8f;
+
     public override void OnNetworkSpawn()
     {
         cc = GetComponent<CharacterController>();
         cnt = GetComponent<ClientNetworkTransform>();
         pi = GetComponent<PlayerInput>();
+
+        if (globalVolume == null)
+        {
+            globalVolume = FindFirstObjectByType<Volume>();
+        }
 
         PlayerRegistry.Register(this);
 
@@ -61,6 +78,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
                 playerCamera.enabled = false;
             if (pi)
                 pi.enabled = false;
+            if (globalVolume)
+                globalVolume.enabled = false;
 
             //enabled = false;
             return;
@@ -93,8 +112,18 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         //OnControlChanged(0, controllingClientId.Value);
         interact.performed += Interact_performed;
         interact.canceled += Interact_canceled;
-        interactAlternate.performed += InteractAlternate_performed;
+        interactAlternate.performed += InteractAlternate_performed;              
 
+        if (globalVolume != null)
+        {
+            globalVolume.profile.TryGet(out lens);
+            globalVolume.profile.TryGet(out vignette);
+            globalVolume.profile.TryGet(out chromatic);
+
+            Debug.Log($"Lens: {lens}");
+            Debug.Log($"Vignette: {vignette}");
+            Debug.Log($"Chromatic: {chromatic}");
+        }
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -186,11 +215,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         if (!IsOwner)
             return;
 
-        if (cc != null)
+        StartCoroutine(TeleportSequence(pos, rot));
+
+        /*if (cc != null)
             cc.enabled = false;
-
-        //var cnt = GetComponent<ClientNetworkTransform>();
-
+        
         if (cnt)
         {
             cnt.Teleport(pos, rot, Vector3.one);
@@ -199,7 +228,100 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         transform.SetPositionAndRotation(pos, rot);
 
         if (cc != null)
+            cc.enabled = true;*/
+    }
+
+    private IEnumerator TeleportSequence(Vector3 pos, Quaternion rot)
+    {
+        float duration = teleportEffectDuration;
+        float halfDuration = duration * 0.5f;
+
+        float startLens = 0f;
+        float peakLens = lensChangeValue;
+
+        float startVignette = 0.4f;
+        float peakVignette = vignetteChangeValue;
+
+        float startChromatic = 0f;
+        float peakChromatic = chromaticChangeValue;
+
+        float timer = 0f;
+
+        // PHASE 1
+        // Ramp UP toward teleport
+
+        while (timer < halfDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / halfDuration;
+
+            // Smooth easing
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+
+            lens.intensity.value =
+                Mathf.Lerp(startLens, peakLens, eased);
+
+            vignette.intensity.value =
+                Mathf.Lerp(startVignette, peakVignette, eased);
+
+            chromatic.intensity.value =
+                Mathf.Lerp(startChromatic, peakChromatic, eased);
+
+            yield return null;
+        }
+
+        Debug.Log("Lens value: " + lens.intensity.value);
+        Debug.Log("Vignette value: " + vignette.intensity.value);
+        Debug.Log("Chromatic value: " + chromatic.intensity.value);
+
+        // TELEPORT AT PEAK
+
+        if (cc != null)
+            cc.enabled = false;
+
+        Vector3 safePos = pos + Vector3.up * 0.2f;
+
+        transform.SetPositionAndRotation(safePos, rot);
+
+        if (cnt != null)
+        {
+            cnt.Teleport(safePos, rot, transform.localScale);
+        }
+
+        if (cc != null)
             cc.enabled = true;
+
+        // PHASE 2
+        // Ramp DOWN after teleport
+
+        timer = 0f;
+
+        while (timer < halfDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / halfDuration;
+
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+
+            lens.intensity.value =
+                Mathf.Lerp(peakLens, startLens, eased);
+
+            vignette.intensity.value =
+                Mathf.Lerp(peakVignette, startVignette, eased);
+
+            chromatic.intensity.value =
+                Mathf.Lerp(peakChromatic, startChromatic, eased);
+
+            yield return null;
+        }
+
+        // FINAL RESET
+
+        lens.intensity.value = startLens;
+        vignette.intensity.value = startVignette;
+        chromatic.intensity.value = startChromatic;
     }
 
     /*private void LateUpdate()
