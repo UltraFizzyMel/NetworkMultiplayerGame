@@ -7,6 +7,9 @@ public class Interactable : NetworkBehaviour, IObjectPickUpParent
 
     [SerializeField] private ObjectPickUp objectPickUp;
 
+    [SerializeField] public string interactText;
+    
+
     public virtual void Interact(Player player)
     { }
 

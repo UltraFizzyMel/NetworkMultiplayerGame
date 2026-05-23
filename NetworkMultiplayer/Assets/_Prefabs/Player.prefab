@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 6892359144139765546}
   - component: {fileID: 7448426681803307756}
   - component: {fileID: 7133703540028710463}
+  - component: {fileID: 957881302102714310}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -284,6 +285,21 @@ MonoBehaviour:
   vignetteChangeValue: 0.55
   chromaticChangeValue: 1
   teleportEffectDuration: 2
+--- !u!114 &957881302102714310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274580874432871458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52e3bf30b5590f847b99602fc383d08a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractUI
+  promptText: {fileID: 0}
+  UIPrompt: {fileID: 0}
+  player: {fileID: 7133703540028710463}
 --- !u!1 &2457219218124793994
 GameObject:
   m_ObjectHideFlags: 0

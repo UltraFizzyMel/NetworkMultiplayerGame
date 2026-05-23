@@ -12,7 +12,7 @@ using UnityEngine.UIElements;
 public class Player : NetworkBehaviour, IObjectPickUpParent
 {
     [Header("Player Components")]
-    [SerializeField] private Transform cameraPivot;
+    [SerializeField] public Transform cameraPivot;
     [SerializeField] private Camera playerCamera;
 
     [Header("Player Settings")]
