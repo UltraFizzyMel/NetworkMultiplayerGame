@@ -38,7 +38,7 @@ public class InteractUI : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
-        if (IsOwner) { promptText = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>(); }
+        //if (IsOwner) { promptText = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>(); }
         //UIPrompt.SetActive(false);
     }
 

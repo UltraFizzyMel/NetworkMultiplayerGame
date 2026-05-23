@@ -2170,7 +2170,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: 
+  interactText: Press E with a full Bucket
   bucketController: {fileID: 0}
 --- !u!65 &282198913
 BoxCollider:
@@ -3476,7 +3476,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: 
+  interactText: Press E with a full Bucket
   bucketController: {fileID: 0}
 --- !u!65 &575721031
 BoxCollider:
@@ -4482,7 +4482,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: 
+  interactText: Press E with a full Bucket
   bucketController: {fileID: 0}
 --- !u!1 &798206409
 GameObject:
@@ -11861,7 +11861,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: 
+  interactText: Press E with a full Bucket
   bucketController: {fileID: 0}
 --- !u!1 &1444456349
 GameObject:
@@ -12499,7 +12499,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: 
+  interactText: Press E with a full Bucket
   bucketController: {fileID: 0}
 --- !u!1 &1552143500 stripped
 GameObject:
@@ -12963,7 +12963,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: 
+  interactText: Press E with a full Bucket
   bucketController: {fileID: 0}
 --- !u!4 &1646220754 stripped
 Transform:
@@ -14920,7 +14920,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E while holding an empty bucket
+  interactText: Press E with an empty bucket
   bucketController: {fileID: 0}
   DeckManager: {fileID: 1901160223}
 --- !u!1 &2048408318 stripped
