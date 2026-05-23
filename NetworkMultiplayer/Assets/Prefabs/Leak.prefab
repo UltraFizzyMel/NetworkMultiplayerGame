@@ -137,6 +137,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
+  interactText: Hold E with tape to fix
   boatLeakManager: {fileID: 0}
   fixingProgressMax: 5
   fixingProgress: 0
