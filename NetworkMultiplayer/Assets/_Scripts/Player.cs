@@ -61,6 +61,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log($"=== PLAYER SPAWNED === OwnerClientId: {OwnerClientId}, IsOwner: {IsOwner}, IsServer: {IsServer}, IsClient: {IsClient}, IsHost: {IsHost}, NetworkObjectId: {NetworkObjectId}");
+        Debug.Log($"Player GameObject: {gameObject.name}, Scene: {gameObject.scene.name}");
+
         cc = GetComponent<CharacterController>();
         cnt = GetComponent<ClientNetworkTransform>();
         pi = GetComponent<PlayerInput>();
@@ -72,6 +75,28 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         PlayerRegistry.Register(this);
 
+        if (IsServer && !IsOwner)
+        {
+            Debug.Log($"[Player] Server-owned copy of client {OwnerClientId}'s player - disabling components");
+
+            // Disable ALL components that could cause issues
+            if (playerCamera) playerCamera.enabled = false;
+            if (pi) pi.enabled = false;
+            if (globalVolume) globalVolume.enabled = false;
+
+            // Disable this script to prevent Update from running
+            enabled = false;
+
+            // Still register but don't initialize further
+            PlayerRegistry.Register(this);
+            return;
+        }
+
+        /*if (!IsServer)
+        {
+            cc.enabled = false;
+        }*/
+
         if (!IsOwner)
         {
             if (playerCamera)
@@ -81,14 +106,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             if (globalVolume)
                 globalVolume.enabled = false;
 
-            //enabled = false;
             return;
         }
-
-        /*if (!IsServer)
-        {
-            cc.enabled = false;
-        }*/
 
         moveAction = pi.actions["Move"];
         lookAction = pi.actions["Look"];
@@ -177,8 +196,40 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     }
 
     [ClientRpc]
+    public void UpdatePlayerRoleClientRpc(Vector3 pos, Quaternion rot, bool isDeck)
+    {
+        Debug.Log($"[Player] UpdatePlayerRole - IsOwner:{IsOwner}, IsDeck:{isDeck}");
+
+        if (IsOwner) return; // Owner was already set by server
+
+        StartCoroutine(ApplyRoleUpdate(pos, rot, isDeck));
+    }
+
+    private IEnumerator ApplyRoleUpdate(Vector3 pos, Quaternion rot, bool isDeck)
+    {
+        yield return null;
+        yield return null;
+
+        if (cc != null) cc.enabled = false;
+
+        transform.position = pos;
+        transform.rotation = rot;
+
+        if (crew != null) crew.SetActive(isDeck);
+        if (captain != null) captain.SetActive(!isDeck);
+
+        yield return null;
+
+        if (cc != null) cc.enabled = true;
+
+        Debug.Log($"[Player] Role update applied - IsDeck:{isDeck}, Pos:{pos}");
+    }
+
+    [ClientRpc]
     public void SpawnPlayerClientRpc(Vector3 pos, Quaternion rot, bool isDeck)
     {
+        //if (IsOwner) return;
+
         StartCoroutine(ApplySpawn(pos, rot, isDeck));
     }
 
@@ -201,6 +252,33 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         if (cc != null)
             cc.enabled = true;
+    }
+
+    [ClientRpc]
+    public void UpdateVisualsClientRpc(Vector3 pos, Quaternion rot, bool isDeck)
+    {
+        if (IsOwner) return;
+
+        StartCoroutine(ApplyVisualUpdate(pos, rot, isDeck));
+    }
+
+    private IEnumerator ApplyVisualUpdate(Vector3 pos, Quaternion rot, bool isDeck)
+    {
+        yield return null;
+        yield return null;
+
+        CharacterController charCtrl = GetComponent<CharacterController>();
+        if (charCtrl != null) charCtrl.enabled = false;
+
+        transform.position = pos;
+        transform.rotation = rot;
+
+        if (crew != null) crew.SetActive(isDeck);
+        if (captain != null) captain.SetActive(!isDeck);
+
+        yield return null;
+
+        if (charCtrl != null) charCtrl.enabled = true;
     }
 
     [ServerRpc]
@@ -422,9 +500,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     public override void OnNetworkDespawn()
     {
+        Debug.Log($"=== PLAYER DESPAWNED === OwnerClientId: {OwnerClientId}, IsOwner: {IsOwner}, IsSpawned: {IsSpawned}");
+        Debug.Log($"Despawn called from:\n{System.Environment.StackTrace}");
         PlayerRegistry.Unregister(this);
     }
-
 
     public Transform GetObjectPickUpTransform()
     {

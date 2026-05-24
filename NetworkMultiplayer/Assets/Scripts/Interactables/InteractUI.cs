@@ -21,17 +21,7 @@ public class InteractUI : NetworkBehaviour
     void Awake()
     {
         player = GetComponent<Player>();
-       
-       
-
-        if (instance == null)
-        { instance = this; }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+              
         DontDestroyOnLoad(gameObject);
     }
 

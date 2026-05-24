@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 6892359144139765546}
   - component: {fileID: 7448426681803307756}
   - component: {fileID: 7133703540028710463}
-  - component: {fileID: 957881302102714310}
+  - component: {fileID: -1156579248354491240}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2594804961
+  GlobalObjectIdHash: 2982419664
   InScenePlacedSourceGlobalObjectIdHash: 2594804961
   DeferredDespawnTick: 0
   Ownership: 1
@@ -280,12 +280,12 @@ MonoBehaviour:
   lastInteractable: {fileID: 0}
   bucketHoldPoint: {fileID: 1181721550243166216}
   objectPickUp: {fileID: 0}
-  globalVolume: {fileID: 0}
+  globalVolume: {fileID: 4028414198584995261}
   lensChangeValue: -0.45
   vignetteChangeValue: 0.55
   chromaticChangeValue: 1
   teleportEffectDuration: 2
---- !u!114 &957881302102714310
+--- !u!114 &-1156579248354491240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -297,8 +297,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e3bf30b5590f847b99602fc383d08a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractUI
+  ShowTopMostFoldoutHeaderGroup: 1
   promptText: {fileID: 0}
-  UIPrompt: {fileID: 0}
   player: {fileID: 7133703540028710463}
 --- !u!1 &2457219218124793994
 GameObject:
