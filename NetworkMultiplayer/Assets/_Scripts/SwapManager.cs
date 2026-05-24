@@ -1,68 +1,90 @@
+﻿// ─── SwapManager.cs ──────────────────────────────────────────────────────────
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using System.Collections;
-using Unity.Services.Matchmaker.Models;
-using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
-using System.Runtime.CompilerServices;
 
 public class SwapManager : NetworkBehaviour
 {
-    public static SwapManager Instance;
+    public static SwapManager Instance { get; private set; }
+
+    [Header("Timing")]
     [SerializeField] private float swapInterval = 30f;
-    [SerializeField] private bool swapCooldownOn = false;
-    [SerializeField] private float swapCooldownStart = 20f;
-    [SerializeField] private float swapCooldownDuration = 5f;
+    [SerializeField] private float warningDuration = 5f; // Must be <= swapInterval
+
+    // Surfaced so the UI countdown can read it (read-only from other scripts)
+    public float TimeUntilNextSwap { get; private set; }
+
+    private bool _swapRunning;
+
+    // ─── Network spawn ───────────────────────────────────────────────────────
 
     public override void OnNetworkSpawn()
     {
-        if (!IsServer)
-            return;
-        
         Instance = this;
-        //StartCoroutine(SwapLoop());
-
-        StartCoroutine(SwapCooldown(swapCooldownStart));
+        if (!IsServer) return;
+        StartCoroutine(SwapLoop());
     }
 
-    /*private IEnumerator SwapLoop()
+    public override void OnNetworkDespawn()
     {
-        //yield return new WaitForSeconds(swapInterval);
-        //if (MusicManager.Instance != null)
-        //    MusicManager.Instance.PlaySFX(SFXType.SwopWarning);
+        _swapRunning = false;
+        Instance = null;
+    }
 
-        //yield return new WaitForSeconds(2);
+    // ─── Main loop (server only) ─────────────────────────────────────────────
 
-        if (!swapCooldownOn)
+    private IEnumerator SwapLoop()
+    {
+        if (_swapRunning) yield break;
+        _swapRunning = true;
+
+        // Give the game scene a moment to finish spawning players
+        yield return new WaitForSeconds(2f);
+
+        while (_swapRunning && Application.isPlaying)
         {
-            while (PlayerRegistry.Players.Count < 2)
+            // ── Wait for two players to be present ──────────────────────────
+            yield return new WaitUntil(() => PlayerRegistry.Players.Count >= 2);
+
+            // ── Count down, exposing time for any UI that wants it ───────────
+            float waitBeforeWarning = swapInterval - warningDuration;
+            TimeUntilNextSwap = swapInterval;
+
+            float elapsed = 0f;
+            while (elapsed < waitBeforeWarning)
+            {
+                elapsed += Time.deltaTime;
+                TimeUntilNextSwap = swapInterval - elapsed;
                 yield return null;
+            }
 
-            PlayerRegistry.Players.Sort((a, b) =>
-            a.NetworkObjectId.CompareTo(b.NetworkObjectId));
+            // ── Tell every client to start the warning visuals ───────────────
+            if (PlayerRegistry.Players.Count >= 2)
+            {
+                TriggerWarningClientRpc(warningDuration);
+                PlayWarningSFXClientRpc();
+            }
 
-            SwapPlayersServerRpc();
+            elapsed = 0f;
+            while (elapsed < warningDuration)
+            {
+                elapsed += Time.deltaTime;
+                TimeUntilNextSwap = warningDuration - elapsed;
+                yield return null;
+            }
 
-            swapCooldownOn = true;
+            TimeUntilNextSwap = 0f;
+
+            // ── Swap ─────────────────────────────────────────────────────────
+            if (PlayerRegistry.Players.Count >= 2)
+                PerformSwap();
         }
-
-        yield return new WaitForSeconds(swapCooldownDuration);
-        swapCooldownOn = false;
-    }*/
-
-    public void TrySwap()
-    {
-        if (swapCooldownOn)
-            return;
-
-        StartCoroutine(SwapCooldown(swapCooldownDuration));
-
-        PerformSwap();
     }
+
+    // ─── Swap logic (server only) ────────────────────────────────────────────
 
     private void PerformSwap()
     {
-        //if (!IsServer) return;
-
         PlayerRegistry.Players.Sort((a, b) =>
             a.NetworkObjectId.CompareTo(b.NetworkObjectId));
 
@@ -70,184 +92,42 @@ public class SwapManager : NetworkBehaviour
         Player playerB = PlayerRegistry.Players[1];
 
         if (playerA == null || playerB == null)
+        {
+            Debug.LogWarning("[SwapManager] A player reference is null – skipping swap.");
             return;
-
-        //var ccA = playerA.GetComponent<CharacterController>();
-        //var ccB = playerB.GetComponent<CharacterController>();
-
-        var playerAScript = playerA.GetComponent<Player>();
-        var playerBScript = playerB.GetComponent<Player>();
-
-        //playerAScript.TeleportClientRpc(playerB.transform.position, playerB.transform.rotation, playerB.transform.localScale);
-        //playerBScript.TeleportClientRpc(playerA.transform.position, playerA.transform.rotation, playerA.transform.localScale);
-
-        //ClientNetworkTransform cntA = playerA.GetComponent<ClientNetworkTransform>();
-        //ClientNetworkTransform cntB = playerB.GetComponent<ClientNetworkTransform>();
+        }
 
         Vector3 posA = playerA.transform.position;
         Vector3 posB = playerB.transform.position;
-
         Quaternion rotA = playerA.transform.rotation;
         Quaternion rotB = playerB.transform.rotation;
 
-        playerAScript.TeleportClientRpc(posB, rotB);
-        playerBScript.TeleportClientRpc(posA, rotA);
+        playerA.TeleportClientRpc(posB, rotB);
+        playerB.TeleportClientRpc(posA, rotA);
 
+        Debug.Log("[SwapManager] Swap complete.");
+    }
+
+    // ─── Client RPCs ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Tells every client to find its own local player and start the warning FX.
+    /// </summary>
+    [ClientRpc]
+    private void TriggerWarningClientRpc(float duration)
+    {
+        foreach (Player player in PlayerRegistry.Players)
+        {
+            if (!player.IsOwner) continue;
+            player.StartSwapWarning(duration);
+            break;
+        }
+    }
+
+    [ClientRpc]
+    private void PlayWarningSFXClientRpc()
+    {
         if (MusicManager.Instance != null)
-            MusicManager.Instance.PlaySFX(SFXType.Swop);
-
-        //ccA.enabled = false;
-        //ccB.enabled = false;
-
-        //cntA.Teleport(posB, rotB, playerB.transform.localScale);
-        //cntB.Teleport(posA, rotA, playerA.transform.localScale);
-
-        //playerA.transform.position = posB;
-        //playerB.transform.position = posA;
-
-        //playerA.transform.rotation = rotB;
-        //playerB.transform.rotation = rotA;
-
-        //ccA.enabled = true;
-        //ccB.enabled = true;
-
-        Debug.Log("SWAP COMPLETE");
-    }
-
-    private IEnumerator SwapCooldown(float swapCooldown)
-    {
-        swapCooldownOn = true;
-        yield return new WaitForSeconds(swapCooldown);
-        swapCooldownOn = false;
+            MusicManager.Instance.PlaySFX(SFXType.SwopWarning);
     }
 }
-
-/*using Unity.Netcode;
-using UnityEngine;
-using System.Linq;
-using System.Collections;
-
-public class SwapManager : NetworkBehaviour
-{
-    [SerializeField] private Player playerA;
-    [SerializeField] private Player playerB;
-
-    [SerializeField] private float timer = 30f;
-    private bool assigned = false;
-    private float assignDelay = 1f;
-    private bool waitingToAssign = true;
-
-    //public NetworkVariable<ulong> controllingClientId =
-    //new NetworkVariable<ulong>(ulong.MaxValue);
-
-    private void Awake()
-    {
-        //NetworkManager.Singleton.StartHost();
-        //NetworkManager.Singleton.StartClient();
-}
-    private void Update()
-    {
-        if (!IsServer) return;
-
-        if (!assigned && NetworkManager.Singleton.ConnectedClientsList.Count == 2)
-        {
-            StartCoroutine(AssignAfterDelay());
-            assigned = true;
-        }
-        else
-            return;
-
-        /*if (!assigned && NetworkManager.Singleton.ConnectedClientsList.Count >= 2)
-        {
-            AssignPlayers();
-            assigned = true;
-        }
-
-        if (!assigned) return;*/
-
-/*if (waitingToAssign)
-{
-    assignDelay -= Time.deltaTime;
-    if (assignDelay <= 0f && NetworkManager.Singleton.ConnectedClientsList.Count >= 2)
-    {
-        AssignPlayers();
-        assigned = true;
-        waitingToAssign = false;
-    }
-    return;
-}
-
-timer -= Time.deltaTime;
-
-if (timer <= 0f)
-{
-    SwapPlayers();
-    timer = 30f;
-}
-}
-
-private IEnumerator AssignAfterDelay()
-{
-yield return new WaitForSeconds(1f); // give everything time to spawn
-
-AssignPlayers();
-
-Debug.Log("Players assigned AFTER delay");
-}
-
-private void AssignPlayers()
-{
-/*var clients = NetworkManager.Singleton.ConnectedClientsList
-    .OrderBy(c => c.ClientId) // Ensure consistent order
-    .Select(c => c.ClientId)
-    .ToList();
-
-// Shuffle randomly
-if (Random.value > 0.5f)
-{
-    playerA.controllingClientId.Value = clients[0];
-    playerB.controllingClientId.Value = clients[1];
-}
-else
-{
-    playerA.controllingClientId.Value = clients[1];
-    playerB.controllingClientId.Value = clients[0];
-}
-
-Debug.Log("Players assigned!");
-
-var clients = NetworkManager.Singleton.ConnectedClientsList
-.OrderBy(c => c.ClientId)
-.Select(c => c.ClientId)
-.ToList();
-
-// Random swap
-if (Random.value > 0.5f)
-{
-    playerA.controllingClientId.Value = clients[0];
-    playerB.controllingClientId.Value = clients[1];
-}
-else
-{
-    playerA.controllingClientId.Value = clients[1];
-    playerB.controllingClientId.Value = clients[0];
-}
-
-playerA.controllingClientId.SetDirty(true);
-playerB.controllingClientId.SetDirty(true);
-
-Debug.Log($"Client 0: {clients[0]} | Client 1: {clients[1]}");
-Debug.Log($"PlayerA -> {playerA.controllingClientId.Value}");
-Debug.Log($"PlayerB -> {playerB.controllingClientId.Value}");
-}
-
-private void SwapPlayers()
-{
-ulong temp = playerA.controllingClientId.Value;
-
-playerA.controllingClientId.Value = playerB.controllingClientId.Value;
-playerB.controllingClientId.Value = temp;
-
-Debug.Log("Players swapped!");
-}
-}*/

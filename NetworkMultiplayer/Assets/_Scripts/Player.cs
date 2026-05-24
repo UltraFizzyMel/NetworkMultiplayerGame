@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 using Unity.Netcode;
@@ -52,10 +52,13 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [Header("Global Volume Settings")]
     [SerializeField] private Volume globalVolume;
     private LensDistortion lens;
+    [SerializeField] private float lensBaseValue = 0f;
     [SerializeField] float lensChangeValue = -0.45f;
     private Vignette vignette;
+    [SerializeField] private float vignetteBaseValue = 0.4f;
     [SerializeField] float vignetteChangeValue = 0.55f;
     private ChromaticAberration chromatic;
+    [SerializeField] private float chromaticBaseValue = 0f;
     [SerializeField] float chromaticChangeValue = 1f;
     [SerializeField] private float teleportEffectDuration = 0.8f;
 
@@ -254,37 +257,63 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             cc.enabled = true;
     }
 
-    [ClientRpc]
-    public void UpdateVisualsClientRpc(Vector3 pos, Quaternion rot, bool isDeck)
-    {
-        if (IsOwner) return;
-
-        StartCoroutine(ApplyVisualUpdate(pos, rot, isDeck));
-    }
-
-    private IEnumerator ApplyVisualUpdate(Vector3 pos, Quaternion rot, bool isDeck)
-    {
-        yield return null;
-        yield return null;
-
-        CharacterController charCtrl = GetComponent<CharacterController>();
-        if (charCtrl != null) charCtrl.enabled = false;
-
-        transform.position = pos;
-        transform.rotation = rot;
-
-        if (crew != null) crew.SetActive(isDeck);
-        if (captain != null) captain.SetActive(!isDeck);
-
-        yield return null;
-
-        if (charCtrl != null) charCtrl.enabled = true;
-    }
-
     [ServerRpc]
     private void RequestSwapServerRpc()
     {
-        SwapManager.Instance.TrySwap();
+        //SwapManager.Instance.TrySwap();
+    }
+
+    // Called by SwapManager's ClientRpc on the owner client only.
+    public void StartSwapWarning(float duration)
+    {
+        if (!IsOwner) return;
+        StopCoroutine(nameof(SwapWarningSequence)); // Prevent stacking
+        StartCoroutine(SwapWarningSequence(duration));
+    }
+
+    private IEnumerator SwapWarningSequence(float totalDuration)
+    {
+        // ── Baseline values (match your resting / TeleportSequence start values) ─
+        const float baseVignette = 0.4f;
+        const float peakVignette = 0.65f; // Noticeably dark but not blinding
+
+        const float baseChromatic = 0f;
+        const float peakChromatic = 0.55f;
+
+        const float baseLens = 0f;
+        const float peakLens = -0.6f;  // Slight squeeze
+
+        // ── How fast the pulse heartbeat beats (starts slow, quickens) ───────────
+        // Pulse frequency ramps from 0.5 Hz to 3 Hz over the warning window.
+        float minFreq = 0.5f;
+        float maxFreq = 3.0f;
+
+        float timer = 0f;
+
+        while (timer < totalDuration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / totalDuration); // 0 → 1 over the window
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+
+            // Steady ramp ────────────────────────────────────────────────────────
+            float vignetteBase = Mathf.Lerp(baseVignette, peakVignette, eased);
+            float chromaticBase = Mathf.Lerp(baseChromatic, peakChromatic, eased);
+            float lensBase = Mathf.Lerp(baseLens, peakLens, eased);
+
+            // Heartbeat pulse on top of the ramp ─────────────────────────────────
+            // Frequency increases as t approaches 1
+            float freq = Mathf.Lerp(minFreq, maxFreq, t);
+            float pulse = Mathf.Abs(Mathf.Sin(timer * freq * Mathf.PI)); // 0 → 1 → 0 …
+                                                                         // Scale pulse magnitude up as the swap gets closer
+            float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;
+
+            vignette.intensity.value = Mathf.Clamp01(vignetteBase + pulseAmt);
+            chromatic.intensity.value = Mathf.Clamp01(chromaticBase);
+            lens.intensity.value = lensBase;
+
+            yield return null;
+        }
     }
 
     [ClientRpc]
@@ -314,13 +343,13 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         float duration = teleportEffectDuration;
         float halfDuration = duration * 0.5f;
 
-        float startLens = 0f;
+        float startLens = -0.6f;
         float peakLens = lensChangeValue;
 
-        float startVignette = 0.4f;
+        float startVignette = 0.65f;
         float peakVignette = vignetteChangeValue;
 
-        float startChromatic = 0f;
+        float startChromatic = 0.55f;
         float peakChromatic = chromaticChangeValue;
 
         float timer = 0f;
@@ -328,7 +357,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         // PHASE 1
         // Ramp UP toward teleport
 
-        while (timer < halfDuration)
+        /*while (timer < halfDuration)
         {
             timer += Time.deltaTime;
 
@@ -351,7 +380,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         Debug.Log("Lens value: " + lens.intensity.value);
         Debug.Log("Vignette value: " + vignette.intensity.value);
-        Debug.Log("Chromatic value: " + chromatic.intensity.value);
+        Debug.Log("Chromatic value: " + chromatic.intensity.value);*/
 
         // TELEPORT AT PEAK
 
@@ -384,22 +413,22 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float eased = Mathf.SmoothStep(0f, 1f, t);
 
             lens.intensity.value =
-                Mathf.Lerp(peakLens, startLens, eased);
+                Mathf.Lerp(peakLens, lensBaseValue, eased);
 
             vignette.intensity.value =
-                Mathf.Lerp(peakVignette, startVignette, eased);
+                Mathf.Lerp(peakVignette, vignetteBaseValue, eased);
 
             chromatic.intensity.value =
-                Mathf.Lerp(peakChromatic, startChromatic, eased);
+                Mathf.Lerp(peakChromatic, chromaticBaseValue, eased);
 
             yield return null;
         }
 
         // FINAL RESET
 
-        lens.intensity.value = startLens;
-        vignette.intensity.value = startVignette;
-        chromatic.intensity.value = startChromatic;
+        lens.intensity.value = lensBaseValue;
+        vignette.intensity.value = vignetteBaseValue;
+        chromatic.intensity.value = chromaticBaseValue;
     }
 
     /*private void LateUpdate()
