@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     [Header("Spawn Points")]
     [SerializeField] private Transform deckSpawn;
     [SerializeField] private Transform cabinSpawn;
 
     [Header("UI")]
-    // Create a full-screen Canvas in the game scene, set it active by default.
-    // GameManager will hide it once both players are set up.
-    [SerializeField] private GameObject loadingOverlay;
+    [SerializeField] private GameObject loadingOverlay;    
 
-    // Synced from the host so every client knows the role assignment.
+    // Expose the overlay so Player.cs can hide it after a safe spawn.
+    public GameObject LoadingOverlay => loadingOverlay;
+
     private readonly NetworkVariable<bool> _netIsHostDeck = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
@@ -22,40 +24,47 @@ public class GameManager : NetworkBehaviour
 
     private const int RequiredPlayers = 2;
     private const float SetupTimeout = 30f;
+    // Extra fixed-update frames to wait after players are found.
+    // In a build the physics engine needs several fixed steps to register
+    // all scene colliders before a CharacterController can land on them.
+    private const int PhysicsSettleFrames = 6;
 
     // ─── Network spawn ───────────────────────────────────────────────────────
 
     public override void OnNetworkSpawn()
     {
-        // Show the loading overlay on every client while the host sets things up
+        Instance = this;
+
+        // Keep the overlay up on every client until we confirm the teleport
+        // has actually completed on that client (see HideOverlayClientRpc).
         if (loadingOverlay != null) loadingOverlay.SetActive(true);
 
         if (!IsServer) return;
 
-        // Push the role assignment to all clients via the NetworkVariable
-        _netIsHostDeck.Value = SessionData.Instance != null && SessionData.Instance.isHostDeck;
+        _netIsHostDeck.Value =
+            SessionData.Instance != null && SessionData.Instance.isHostDeck;
 
         StartCoroutine(SetupRoutine());
     }
 
-    // ─── Setup ───────────────────────────────────────────────────────────────
+    // ─── Setup (server only) ─────────────────────────────────────────────────
 
     private IEnumerator SetupRoutine()
     {
-        // 1. Wait until both NGO clients are connected
+        // 1. Wait for both clients to be fully connected -----------------------
         float elapsed = 0f;
         while (NetworkManager.Singleton.ConnectedClientsList.Count < RequiredPlayers)
         {
             elapsed += Time.deltaTime;
             if (elapsed >= SetupTimeout)
             {
-                Debug.LogError("[GameManager] Timed out waiting for all clients to connect.");
+                Debug.LogError("[GameManager] Timed out waiting for clients.");
                 yield break;
             }
             yield return null;
         }
 
-        // 2. Wait until both Player components have spawned in the scene
+        // 2. Wait for both Player NetworkObjects to be spawned -----------------
         elapsed = 0f;
         Player[] players = FindObjectsByType<Player>(FindObjectsSortMode.None);
         while (players.Length < RequiredPlayers)
@@ -70,12 +79,16 @@ public class GameManager : NetworkBehaviour
             players = FindObjectsByType<Player>(FindObjectsSortMode.None);
         }
 
-        yield return null; // One frame for things to settle
+        // 3. Let physics run for several fixed steps so colliders register -----
+        //    This is the critical fix: WaitForFixedUpdate advances the physics
+        //    simulation, which WaitForEndOfFrame / yield return null do NOT.
+        for (int i = 0; i < PhysicsSettleFrames; i++)
+            yield return new WaitForFixedUpdate();
 
+        // 4. Send each player to their spawn point ----------------------------
+        //    The overlay is hidden from INSIDE SpawnPlayerClientRpc on the
+        //    client AFTER the physics-safe teleport completes, not here.
         AssignSpawnPositions(players);
-
-        // Hide the loading overlay on all clients now that setup is done
-        HideLoadingOverlayClientRpc();
     }
 
     private void AssignSpawnPositions(Player[] players)
@@ -86,14 +99,16 @@ public class GameManager : NetworkBehaviour
             bool playerIsDeck = isHostPlayer ? _netIsHostDeck.Value : !_netIsHostDeck.Value;
             Transform spawn = playerIsDeck ? deckSpawn : cabinSpawn;
 
+            // Pass hideOverlayAfter = true so the client knows to close the
+            // loading screen once it has finished repositioning itself.
             player.SpawnPlayerClientRpc(spawn.position, spawn.rotation, playerIsDeck);
         }
     }
 
-    [ClientRpc]
-    private void HideLoadingOverlayClientRpc()
+    private void OnDestroy()
     {
-        if (loadingOverlay != null) loadingOverlay.SetActive(false);
+        if (Instance == this) 
+            Instance = null;
     }
 }
 

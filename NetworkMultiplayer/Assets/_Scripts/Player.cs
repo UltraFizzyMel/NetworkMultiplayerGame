@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 using Unity.Netcode;
@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : NetworkBehaviour, IObjectPickUpParent
@@ -225,12 +226,66 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         Debug.Log($"[Player] Role update applied - IsDeck:{isDeck}, Pos:{pos}");
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     public void SpawnPlayerClientRpc(Vector3 pos, Quaternion rot, bool isDeck)
     {
         //if (IsOwner) return;
 
         StartCoroutine(ApplySpawn(pos, rot, isDeck));
+    }*/
+
+    [ClientRpc]
+    public void SpawnPlayerClientRpc(Vector3 position, Quaternion rotation, bool isDeck)
+    {
+        if (IsOwner)
+            StartCoroutine(PhysicsSafeSpawn(position, rotation));
+
+        ApplyRoleVisuals(isDeck);
+
+        // Hide the overlay on ALL clients once physics has settled,
+        // not just the owner — this was the missing call.
+        StartCoroutine(HideOverlayAfterPhysicsSettle());
+    }
+
+    // Matches the exact wait used in PhysicsSafeSpawn so the overlay
+    // disappears only after the teleport is guaranteed to have landed.
+    private IEnumerator HideOverlayAfterPhysicsSettle()
+    {
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        HideLoadingOverlay();
+    }
+
+    private void ApplyRoleVisuals(bool isDeck)
+    {
+        if (crew != null) crew.SetActive(isDeck);
+        if (captain != null) captain.SetActive(!isDeck);
+    }
+
+    private IEnumerator PhysicsSafeSpawn(Vector3 position, Quaternion rotation)
+    {
+        if (cc != null) cc.enabled = false;
+
+        Vector3 safePosition = position + Vector3.up * 0.05f;
+        transform.SetPositionAndRotation(safePosition, rotation);
+
+        Physics.SyncTransforms();
+
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+
+        if (cc != null) cc.enabled = true;
+
+        if (cnt != null)
+            cnt.Teleport(safePosition, rotation, transform.localScale);
+
+        // Removed from here — HideOverlayAfterPhysicsSettle handles it for everyone
+    }
+
+    private static void HideLoadingOverlay()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.LoadingOverlay != null)
+            GameManager.Instance.LoadingOverlay.SetActive(false);
     }
 
     private IEnumerator ApplySpawn(Vector3 pos, Quaternion rot, bool isDeck)

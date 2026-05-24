@@ -1,67 +1,83 @@
+﻿using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using System.Collections;
-using Unity.Services.Matchmaker.Models;
-using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
-using System.Runtime.CompilerServices;
+using UnityEngine.UI;
 
 public class SwapManager : NetworkBehaviour
 {
-    public static SwapManager Instance;
-    [SerializeField] private float swapInterval = 30f;
-    [SerializeField] private bool swapCooldownOn = false;
+    public static SwapManager Instance { get; private set; }
+
+    [Header("Timing")]
     [SerializeField] private float swapCooldownStart = 20f;
     [SerializeField] private float swapCooldownDuration = 5f;
 
+    [Header("UI")]
+    [SerializeField] private Image imgSwap;
+    // Inspector-friendly: set Full Alpha colour in the editor (e.g. white, a=1)
+    // and Low Alpha colour (same colour, a≈0.06). Beats doing it in code.
+    [SerializeField] private Color colCanSwap = new Color(1f, 1f, 1f, 1f);
+    [SerializeField] private Color colCannotSwap = new Color(1f, 1f, 1f, 0.06f); // ~15/255
+
+    // Synced so a late-joining or reconnecting client gets the right state.
+    private readonly NetworkVariable<bool> _onCooldown = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
+    private bool _cooldownRunning;
+
+    // ─── Lifecycle ───────────────────────────────────────────────────────────
+
     public override void OnNetworkSpawn()
     {
-        if (!IsServer)
-            return;
-        
         Instance = this;
-        //StartCoroutine(SwapLoop());
 
-        StartCoroutine(SwapCooldown(swapCooldownStart));
+        // React to NetworkVariable changes on ALL clients (including late joins).
+        _onCooldown.OnValueChanged += OnCooldownChanged;
+
+        // Apply whatever state the server already has when this client spawns.
+        ApplyCooldownVisual(_onCooldown.Value);
+
+        if (!IsServer) return;
+
+        StartCoroutine(CooldownRoutine(swapCooldownStart));
     }
 
-    /*private IEnumerator SwapLoop()
+    public override void OnNetworkDespawn()
     {
-        //yield return new WaitForSeconds(swapInterval);
-        //if (MusicManager.Instance != null)
-        //    MusicManager.Instance.PlaySFX(SFXType.SwopWarning);
+        _onCooldown.OnValueChanged -= OnCooldownChanged;
+        Instance = null;
+    }
 
-        //yield return new WaitForSeconds(2);
+    // ─── Swap (called by UI button on the local client) ──────────────────────
 
-        if (!swapCooldownOn)
-        {
-            while (PlayerRegistry.Players.Count < 2)
-                yield return null;
-
-            PlayerRegistry.Players.Sort((a, b) =>
-            a.NetworkObjectId.CompareTo(b.NetworkObjectId));
-
-            SwapPlayersServerRpc();
-
-            swapCooldownOn = true;
-        }
-
-        yield return new WaitForSeconds(swapCooldownDuration);
-        swapCooldownOn = false;
-    }*/
-
+    /// <summary>Call this from your swap button's OnClick.</summary>
     public void TrySwap()
     {
-        if (swapCooldownOn)
-            return;
-
-        StartCoroutine(SwapCooldown(swapCooldownDuration));
-
-        PerformSwap();
+        // Only the server actually executes the swap.
+        if (!IsServer) { RequestSwapServerRpc(); return; }
+        ServerTrySwap();
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestSwapServerRpc() => ServerTrySwap();
+
+    private void ServerTrySwap()
+    {
+        if (_cooldownRunning) return;
+        PerformSwap();
+        StartCoroutine(CooldownRoutine(swapCooldownDuration));
+    }
+
+    // ─── Swap logic (server only) ────────────────────────────────────────────
 
     private void PerformSwap()
     {
-        //if (!IsServer) return;
+        if (PlayerRegistry.Players.Count < 2)
+        {
+            Debug.LogWarning("[SwapManager] Not enough players to swap.");
+            return;
+        }
 
         PlayerRegistry.Players.Sort((a, b) =>
             a.NetworkObjectId.CompareTo(b.NetworkObjectId));
@@ -69,56 +85,43 @@ public class SwapManager : NetworkBehaviour
         Player playerA = PlayerRegistry.Players[0];
         Player playerB = PlayerRegistry.Players[1];
 
-        if (playerA == null || playerB == null)
-            return;
+        if (playerA == null || playerB == null) return;
 
-        //var ccA = playerA.GetComponent<CharacterController>();
-        //var ccB = playerB.GetComponent<CharacterController>();
+        Vector3 posA = playerA.transform.position, posB = playerB.transform.position;
+        Quaternion rotA = playerA.transform.rotation, rotB = playerB.transform.rotation;
 
-        var playerAScript = playerA.GetComponent<Player>();
-        var playerBScript = playerB.GetComponent<Player>();
-
-        //playerAScript.TeleportClientRpc(playerB.transform.position, playerB.transform.rotation, playerB.transform.localScale);
-        //playerBScript.TeleportClientRpc(playerA.transform.position, playerA.transform.rotation, playerA.transform.localScale);
-
-        //ClientNetworkTransform cntA = playerA.GetComponent<ClientNetworkTransform>();
-        //ClientNetworkTransform cntB = playerB.GetComponent<ClientNetworkTransform>();
-
-        Vector3 posA = playerA.transform.position;
-        Vector3 posB = playerB.transform.position;
-
-        Quaternion rotA = playerA.transform.rotation;
-        Quaternion rotB = playerB.transform.rotation;
-
-        playerAScript.TeleportClientRpc(posB, rotB);
-        playerBScript.TeleportClientRpc(posA, rotA);
+        playerA.TeleportClientRpc(posB, rotB);
+        playerB.TeleportClientRpc(posA, rotA);
 
         if (MusicManager.Instance != null)
             MusicManager.Instance.PlaySFX(SFXType.Swop);
 
-        //ccA.enabled = false;
-        //ccB.enabled = false;
-
-        //cntA.Teleport(posB, rotB, playerB.transform.localScale);
-        //cntB.Teleport(posA, rotA, playerA.transform.localScale);
-
-        //playerA.transform.position = posB;
-        //playerB.transform.position = posA;
-
-        //playerA.transform.rotation = rotB;
-        //playerB.transform.rotation = rotA;
-
-        //ccA.enabled = true;
-        //ccB.enabled = true;
-
-        Debug.Log("SWAP COMPLETE");
+        Debug.Log("[SwapManager] Swap complete.");
     }
 
-    private IEnumerator SwapCooldown(float swapCooldown)
+    // ─── Cooldown (server only, result broadcast via NetworkVariable) ─────────
+
+    private IEnumerator CooldownRoutine(float duration)
     {
-        swapCooldownOn = true;
-        yield return new WaitForSeconds(swapCooldown);
-        swapCooldownOn = false;
+        _cooldownRunning = true;
+        _onCooldown.Value = true;   // triggers OnCooldownChanged on all clients
+
+        yield return new WaitForSeconds(duration);
+
+        _onCooldown.Value = false;
+        _cooldownRunning = false;
+    }
+
+    // ─── Visual update (runs on every client) ────────────────────────────────
+
+    // Fired by the NetworkVariable whenever the server changes it.
+    private void OnCooldownChanged(bool previous, bool current)
+        => ApplyCooldownVisual(current);
+
+    private void ApplyCooldownVisual(bool onCooldown)
+    {
+        if (imgSwap == null) return;
+        imgSwap.color = onCooldown ? colCannotSwap : colCanSwap;
     }
 }
 
