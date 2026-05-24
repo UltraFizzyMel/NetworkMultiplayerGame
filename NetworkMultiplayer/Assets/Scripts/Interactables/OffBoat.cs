@@ -16,7 +16,7 @@ public class OffBoat : Interactable
                 if (bucketController.isFull)
                 {
                     Debug.Log("Player Bucket Emptied");
-                    MusicManager.Instance.PlaySFX(SFXType.WaterOutBucket);
+                    //MusicManager.Instance.PlaySFX(SFXType.WaterOutBucket);
                     bucketController.isFull = false;
                     
                 }
