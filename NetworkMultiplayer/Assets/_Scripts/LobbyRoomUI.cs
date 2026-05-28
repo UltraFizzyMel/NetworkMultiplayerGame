@@ -57,6 +57,12 @@ public class LobbyRoomUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+        }
+
         _stopUpdateLoop = true;
         _isUpdatingLobby = false;
         _currentLobby = null;
@@ -119,12 +125,32 @@ public class LobbyRoomUI : MonoBehaviour
 
         RefreshUI();
 
-        if (!_isUpdatingLobby) _ = UpdateLobbyLoop();
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+        }
+
+        //if (!_isUpdatingLobby) _ = UpdateLobbyLoop();
+    }
+
+    private void HandleClientConnected(ulong clientId)
+    {
+        Debug.Log($"[LobbyRoomUI] Client connected: {clientId}");
+
+        RefreshUI();
+    }
+
+    private void HandleClientDisconnected(ulong clientId)
+    {
+        Debug.Log($"[LobbyRoomUI] Client disconnected: {clientId}");
+
+        RefreshUI();
     }
 
     // ─── Ready ───────────────────────────────────────────────────────────────
 
-    public async void ToggleReady()
+    /*public async void ToggleReady()
     {
         if (_currentLobby == null || _isTransitioning) return;
 
@@ -161,61 +187,26 @@ public class LobbyRoomUI : MonoBehaviour
             Debug.LogError($"[LobbyRoom] Ready toggle failed: {e.Message}");
             _isReady = !_isReady; // Revert on failure
         }
+    }*/
+
+    public void ToggleReady()
+    {
+        if (_isTransitioning) return;
+
+        if (ReadyManager.Instance == null)
+        {
+            Debug.LogError("ReadyManager instance missing!");
+            return;
+        }
+
+        ReadyManager.Instance.ToggleReady();
     }
 
-    /*public async void ToggleReady()
+    public void RefreshReadyVisuals(bool hostReady, bool clientReady)
     {
-        if (_currentLobby == null || _isTransitioning) return;
-
-        _isReady = !_isReady;
-
-        try
-        {
-            await LobbyService.Instance.UpdatePlayerAsync(
-                _currentLobby.Id,
-                AuthenticationService.Instance.PlayerId,
-                new UpdatePlayerOptions
-                {
-                    Data = new Dictionary<string, PlayerDataObject>
-                    {
-                    { "Ready", new PlayerDataObject(
-                        PlayerDataObject.VisibilityOptions.Member,
-                        _isReady ? "true" : "false") }
-                    }
-                });
-
-            // Add a small delay to let the lobby service process the update
-            await Task.Delay(300);
-
-            // Try to get updated lobby, but don't fail if it errors
-            try
-            {
-                _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
-            }
-            catch (System.Exception)
-            {
-                // Lobby service hiccup - the update succeeded, so just keep current lobby
-                Debug.LogWarning("[LobbyRoom] GetLobbyAsync failed, but UpdatePlayerAsync succeeded. Continuing...");
-            }
-
-            if (_currentLobby != null)
-            {
-                if (_isHost && AllPlayersReady() && !_isTransitioning)
-                {
-                    _isTransitioning = true;
-                    StartGameTransition();
-                    return;
-                }
-
-                RefreshUI();
-            }
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.LogError($"[LobbyRoom] Ready toggle failed: {e.Message}");
-            _isReady = !_isReady; // Revert on failure
-        }
-    }*/
+        ApplyReadyState(btnReadyOne, txtReadyOne, hostReady);
+        ApplyReadyState(btnReadyTwo, txtReadyTwo, clientReady);
+    }
 
     // ─── Game start ──────────────────────────────────────────────────────────
 
@@ -294,7 +285,7 @@ public class LobbyRoomUI : MonoBehaviour
 
     // ─── Update loop ─────────────────────────────────────────────────────────
 
-    private async Task UpdateLobbyLoop()
+    /*private async Task UpdateLobbyLoop()
     {
         if (_isUpdatingLobby) return;
         _isUpdatingLobby = true;
@@ -331,7 +322,7 @@ public class LobbyRoomUI : MonoBehaviour
         }
 
         _isUpdatingLobby = false;
-    }
+    }*/
 
     // ─── UI helpers ──────────────────────────────────────────────────────────
 
@@ -339,7 +330,12 @@ public class LobbyRoomUI : MonoBehaviour
     {
         if (_currentLobby == null || btnReadyOne == null) return;
 
-        bool hasTwoPlayers = _currentLobby.Players.Count >= 2;
+        //bool hasTwoPlayers = _currentLobby.Players.Count >= 2;
+
+        bool hasTwoPlayers =
+            NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening &&
+            NetworkManager.Singleton.ConnectedClientsList.Count >= 2;
 
         btnReadyOne.interactable = _isHost && hasTwoPlayers;
         btnReadyTwo.interactable = !_isHost && hasTwoPlayers;
@@ -362,7 +358,7 @@ public class LobbyRoomUI : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < Mathf.Min(_currentLobby.Players.Count, 2); i++)
+        /*for (int i = 0; i < Mathf.Min(_currentLobby.Players.Count, 2); i++)
         {
             var player = _currentLobby.Players[i];
             bool ready = player.Data != null
@@ -371,7 +367,7 @@ public class LobbyRoomUI : MonoBehaviour
 
             if (i == 0) ApplyReadyState(btnReadyOne, txtReadyOne, ready);
             else ApplyReadyState(btnReadyTwo, txtReadyTwo, ready);
-        }
+        }*/
     }
 
     private static void ApplyReadyState(Button btn, TextMeshProUGUI label, bool ready)
@@ -382,7 +378,7 @@ public class LobbyRoomUI : MonoBehaviour
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
-    private bool AllPlayersReady()
+    /*private bool AllPlayersReady()
     {
         if (_currentLobby?.Players == null || _currentLobby.Players.Count < 2) return false;
 
@@ -393,7 +389,7 @@ public class LobbyRoomUI : MonoBehaviour
                 || player.Data["Ready"].Value != "true") return false;
         }
         return true;
-    }
+    }*/
 
     private void StopAllBackgroundProcesses()
     {
