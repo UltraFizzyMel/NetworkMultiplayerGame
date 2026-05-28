@@ -22,11 +22,15 @@ public class BucketZone : Interactable, IObjectPickUpParent
             if (player.HasObjectPickUp()) {
                 //Player has an object in their hands                
                 player.GetObjectPickUp().SetObjectPickUpParent(this);
-                if (player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
-                    MusicManager.Instance.PlaySFX(SFXType.PickupBucket);
-                else if (player.GetObjectPickUp().TryGetComponent<TapeController>(out TapeController tapeController))
-                    MusicManager.Instance.PlaySFX(SFXType.PickupDuctTape);
 
+                if (MusicManager.Instance != null)
+                {
+                    if (player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
+                        MusicManager.Instance.PlaySFX(SFXType.PickupBucket);
+                    else if (player.GetObjectPickUp().TryGetComponent<TapeController>(out TapeController tapeController))
+                        MusicManager.Instance.PlaySFX(SFXType.PickupDuctTape);
+                }                 
+                
                 Debug.Log("Carrying!!");
             }
             else {

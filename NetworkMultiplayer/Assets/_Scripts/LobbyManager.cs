@@ -541,6 +541,65 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    public async Task ShutdownNetworkAndLobby()
+    {
+        Debug.Log("[Lobby] Starting full shutdown...");
+
+        UnsubscribeNGOCallbacks();
+        StopAllLobbyProcesses();
+
+        // Shutdown NGO FIRST
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+
+            // Wait one frame so NGO fully cleans up
+            await Task.Yield();
+        }
+
+        // Leave/delete Unity Lobby SECOND
+        if (CurrentLobby != null)
+        {
+            try
+            {
+                if (AuthenticationService.Instance.PlayerId == CurrentLobby.HostId)
+                {
+                    await LobbyService.Instance.DeleteLobbyAsync(CurrentLobby.Id);
+
+                    Debug.Log("[Lobby] Deleted lobby.");
+                }
+                else
+                {
+                    await LobbyService.Instance.RemovePlayerAsync(
+                        CurrentLobby.Id,
+                        AuthenticationService.Instance.PlayerId);
+
+                    Debug.Log("[Lobby] Left lobby.");
+                }
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.LogWarning($"[Lobby] Shutdown cleanup warning: {e.Message}");
+            }
+        }
+
+        // HARD RESET ALL STATE
+        CurrentLobby = null;
+        JoinedLobbyID = null;
+
+        _pendingLobby = null;
+
+        _isCreatingLobby = false;
+        _isJoiningLobby = false;
+        _isRefreshingList = false;
+
+        _stopHeartbeat = true;
+        _stopLobbyList = true;
+
+        Debug.Log("[Lobby] Shutdown complete.");
+    }
+
     private void SetJoinControlsInteractable(bool value)
     {
         if (lobbySearchField) lobbySearchField.interactable = value;

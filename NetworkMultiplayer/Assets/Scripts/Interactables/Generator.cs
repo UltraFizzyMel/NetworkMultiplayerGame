@@ -50,7 +50,8 @@ public class Generator : Interactable
         {
             // The player is not holding something
             IsFuelingRpc();// The player fuels up the generator when they have no object in their hand
-            MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
             Debug.Log("Player has no item");
             return;
         }

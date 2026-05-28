@@ -3035,7 +3035,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1174975529}
         m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
-        m_MethodName: ExitLobbyCreationButton
+        m_MethodName: ExitLobbyCreationPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8902,7 +8902,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2016838449}
-    PlayerPrefab: {fileID: 1274580874432871458, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 0acb79920232c8b4bbdee10969754521, type: 2}
