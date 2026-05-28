@@ -2843,7 +2843,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 150
+  MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -16058,7 +16058,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   deckSpawn: {fileID: 176547284}
   cabinSpawn: {fileID: 193684032}
-  playerPrefab: {fileID: 2169015718086321695, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
   loadingOverlay: {fileID: 834617751}
 --- !u!1001 &2059593010
 PrefabInstance:

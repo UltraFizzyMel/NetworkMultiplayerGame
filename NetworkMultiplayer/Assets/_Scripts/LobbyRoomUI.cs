@@ -96,9 +96,8 @@ public class LobbyRoomUI : MonoBehaviour
         txtLobbyName.text = lobby.Name;
 
         // Reset ready buttons
-        //ApplyReadyState(btnReadyOne, txtReadyOne, false);
-        //ApplyReadyState(btnReadyTwo, txtReadyTwo, false);
-        ResetReadyUI();
+        ApplyReadyState(btnReadyOne, txtReadyOne, false);
+        ApplyReadyState(btnReadyTwo, txtReadyTwo, false);
         btnReadyOne.interactable = false;
         btnReadyTwo.interactable = false;
 
@@ -146,30 +145,49 @@ public class LobbyRoomUI : MonoBehaviour
     {
         Debug.Log($"[LobbyRoomUI] Client disconnected: {clientId}");
 
-        if (_isTransitioning)
-            return;
-
-        // HOST SIDE:
-        // Client left lobby
-        if (NetworkManager.Singleton.IsHost)
-        {
-            ReadyManager.Instance?.ResetReadyStates();
-
-            ResetReadyUI();
-
-            RefreshUI();
-
-            Debug.Log("[LobbyRoomUI] Client left. Ready states reset.");
-        }
-        else
-        {
-            // CLIENT SIDE:
-            // Host disappeared
-            LeaveLobby();
-        }
+        RefreshUI();
     }
 
     // ─── Ready ───────────────────────────────────────────────────────────────
+
+    /*public async void ToggleReady()
+    {
+        if (_currentLobby == null || _isTransitioning) return;
+
+        _isReady = !_isReady;
+
+        try
+        {
+            await LobbyService.Instance.UpdatePlayerAsync(
+                _currentLobby.Id,
+                AuthenticationService.Instance.PlayerId,
+                new UpdatePlayerOptions
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        { "Ready", new PlayerDataObject(
+                            PlayerDataObject.VisibilityOptions.Member,
+                            _isReady ? "true" : "false") }
+                    }
+                });
+
+            _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
+
+            if (_isHost && AllPlayersReady() && !_isTransitioning)
+            {
+                _isTransitioning = true;
+                StartGameTransition();
+                return;
+            }
+
+            RefreshUI();
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError($"[LobbyRoom] Ready toggle failed: {e.Message}");
+            _isReady = !_isReady; // Revert on failure
+        }
+    }*/
 
     public void ToggleReady()
     {
@@ -217,7 +235,7 @@ public class LobbyRoomUI : MonoBehaviour
 
     // ─── Leave lobby ─────────────────────────────────────────────────────────
 
-    /*public async void LeaveLobby()
+    public async void LeaveLobby()
     {
         if (_currentLobby == null) return;
 
@@ -263,44 +281,48 @@ public class LobbyRoomUI : MonoBehaviour
         lobbyListParent.SetActive(true);
 
         LobbyManager.Instance?.ResetForNewLobby();
-    }*/
-
-    public async void LeaveLobby()
-    {
-        if (_isTransitioning)
-            return;
-
-        _isTransitioning = true;
-
-        if (ReadyManager.Instance != null &&
-            NetworkManager.Singleton != null &&
-            NetworkManager.Singleton.IsHost)
-        {
-            ReadyManager.Instance.ResetReadyStates();
-        }
-
-        await LobbyManager.Instance.ShutdownNetworkAndLobby();
-
-        if (MusicManager.Instance != null)
-        {
-            MusicManager.Instance.CrossfadeToNewSong(
-                ambientSong,
-                "SeaAmbience");
-        }
-
-        lobbyRoomPanel.SetActive(false);
-        lobbyListParent.SetActive(true);
-
-        LobbyManager.Instance.ResetForNewLobby();
-
-        _currentLobby = null;
-
-        _isReady = false;
-        _hasUpdatedVisuals = false;
-        _isTransitioning = false;
-
-        Debug.Log("[LobbyRoom] Returned to lobby browser.");
     }
+
+    // ─── Update loop ─────────────────────────────────────────────────────────
+
+    /*private async Task UpdateLobbyLoop()
+    {
+        if (_isUpdatingLobby) return;
+        _isUpdatingLobby = true;
+
+        while (!_stopUpdateLoop
+               && _currentLobby != null
+               && lobbyRoomPanel != null
+               && lobbyRoomPanel.activeInHierarchy)
+        {
+            await Task.Delay(2000);
+
+            if (_stopUpdateLoop || _currentLobby == null) break;
+
+            try
+            {
+                _currentLobby = await LobbyService.Instance.GetLobbyAsync(_currentLobby.Id);
+
+                if (_currentLobby == null) break;
+
+                if (_isHost && AllPlayersReady() && !_isTransitioning)
+                {
+                    _isTransitioning = true;
+                    StartGameTransition();
+                    break;
+                }
+
+                RefreshUI();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[LobbyRoom] Poll failed: {e.Message}");
+                break;
+            }
+        }
+
+        _isUpdatingLobby = false;
+    }*/
 
     // ─── UI helpers ──────────────────────────────────────────────────────────
 
@@ -315,21 +337,8 @@ public class LobbyRoomUI : MonoBehaviour
             NetworkManager.Singleton.IsListening &&
             NetworkManager.Singleton.ConnectedClientsList.Count >= 2;
 
-        //btnReadyOne.interactable = _isHost && hasTwoPlayers;
-        //btnReadyTwo.interactable = !_isHost && hasTwoPlayers;
-
-        bool locked = ReadyManager.Instance != null &&
-              ReadyManager.Instance.IsGameStarting;
-
-        btnReadyOne.interactable =
-            _isHost &&
-            hasTwoPlayers &&
-            !locked;
-
-        btnReadyTwo.interactable =
-            !_isHost &&
-            hasTwoPlayers &&
-            !locked;
+        btnReadyOne.interactable = _isHost && hasTwoPlayers;
+        btnReadyTwo.interactable = !_isHost && hasTwoPlayers;
 
         if (_isHost)
         {
@@ -348,6 +357,17 @@ public class LobbyRoomUI : MonoBehaviour
                 _hasUpdatedVisuals = false;
             }
         }
+
+        /*for (int i = 0; i < Mathf.Min(_currentLobby.Players.Count, 2); i++)
+        {
+            var player = _currentLobby.Players[i];
+            bool ready = player.Data != null
+                       && player.Data.ContainsKey("Ready")
+                       && player.Data["Ready"].Value == "true";
+
+            if (i == 0) ApplyReadyState(btnReadyOne, txtReadyOne, ready);
+            else ApplyReadyState(btnReadyTwo, txtReadyTwo, ready);
+        }*/
     }
 
     private static void ApplyReadyState(Button btn, TextMeshProUGUI label, bool ready)
@@ -357,6 +377,19 @@ public class LobbyRoomUI : MonoBehaviour
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    /*private bool AllPlayersReady()
+    {
+        if (_currentLobby?.Players == null || _currentLobby.Players.Count < 2) return false;
+
+        foreach (var player in _currentLobby.Players)
+        {
+            if (player.Data == null
+                || !player.Data.ContainsKey("Ready")
+                || player.Data["Ready"].Value != "true") return false;
+        }
+        return true;
+    }*/
 
     private void StopAllBackgroundProcesses()
     {
@@ -373,24 +406,5 @@ public class LobbyRoomUI : MonoBehaviour
             if (Path.GetFileNameWithoutExtension(path) == sceneName) return true;
         }
         return false;
-    }
-
-    private void ResetReadyUI()
-    {
-        ApplyReadyState(btnReadyOne, txtReadyOne, false);
-        ApplyReadyState(btnReadyTwo, txtReadyTwo, false);
-
-        btnReadyOne.interactable = false;
-        btnReadyTwo.interactable = false;
-
-        _isReady = false;
-    }
-
-    public void LockLobbyUI()
-    {
-        btnReadyOne.interactable = false;
-        btnReadyTwo.interactable = false;
-
-        _isTransitioning = true;
     }
 }

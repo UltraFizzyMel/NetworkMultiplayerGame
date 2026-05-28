@@ -1,4 +1,4 @@
-using System.Collections;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,11 +6,14 @@ public class ReadyManager : NetworkBehaviour
 {
     public static ReadyManager Instance;
 
+    //private NetworkVariable<bool> hostReady = new(false);
+    //private NetworkVariable<bool> clientReady = new(false);
+
     private NetworkVariable<bool> hostReady = new(
-        false,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
+    false,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server
+);
 
     private NetworkVariable<bool> clientReady = new(
         false,
@@ -19,7 +22,6 @@ public class ReadyManager : NetworkBehaviour
     );
 
     private bool gameStarting;
-    public bool IsGameStarting => gameStarting;
 
     private void Awake()
     {
@@ -30,9 +32,6 @@ public class ReadyManager : NetworkBehaviour
     {
         hostReady.OnValueChanged += OnReadyStateChanged;
         clientReady.OnValueChanged += OnReadyStateChanged;
-
-        // Force initial UI refresh
-        OnReadyStateChanged(false, false);
     }
 
     public override void OnNetworkDespawn()
@@ -43,18 +42,12 @@ public class ReadyManager : NetworkBehaviour
 
     public void ToggleReady()
     {
-        if (gameStarting)
-            return;
-
         SubmitReadyServerRpc(NetworkManager.Singleton.LocalClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SubmitReadyServerRpc(ulong clientId)
     {
-        if (gameStarting)
-            return;
-
         bool isHost = clientId == NetworkManager.ServerClientId;
 
         if (isHost)
@@ -64,25 +57,12 @@ public class ReadyManager : NetworkBehaviour
 
         Debug.Log($"HOST READY: {hostReady.Value} | CLIENT READY: {clientReady.Value}");
 
-        if (hostReady.Value && clientReady.Value)
+        if (hostReady.Value && clientReady.Value && !gameStarting)
         {
             gameStarting = true;
-
-            // Lock in ready state
-            hostReady.Value = true;
-            clientReady.Value = true;
-
-            StartCoroutine(StartGameRoutine());
+            StartGame();
         }
     }
-
-    /*private void OnReadyStateChanged(bool previous, bool current)
-    {
-        LobbyRoomUI.Instance?.RefreshReadyVisuals(
-            hostReady.Value,
-            clientReady.Value
-        );
-    }*/
 
     private void OnReadyStateChanged(bool previous, bool current)
     {
@@ -90,59 +70,19 @@ public class ReadyManager : NetworkBehaviour
             hostReady.Value,
             clientReady.Value
         );
-
-        // Disable buttons once both are ready
-        if (hostReady.Value && clientReady.Value)
-        {
-            LobbyRoomUI.Instance?.LockLobbyUI();
-        }
     }
 
-    private IEnumerator StartGameRoutine()
+    private async void StartGame()
     {
         Debug.Log("[READY] Both players ready.");
 
-        // VERY IMPORTANT:
-        // Give NGO time to flush replication/state updates
-        yield return new WaitForSeconds(1.0f);
+        //await System.Threading.Tasks.Task.Delay(1000);
 
-        // Extra safety:
-        // wait one full network tick/frame
-        yield return null;
-
-        if (!IsServer)
-            yield break;
-
-        if (NetworkManager.Singleton == null)
-            yield break;
-
-        // Make sure both clients STILL exist
-        if (NetworkManager.Singleton.ConnectedClientsList.Count < 2)
-        {
-            Debug.LogError("[READY] Lost client before scene transition.");
-            gameStarting = false;
-            ResetReadyStates();
-            yield break;
-        }
-
-        Debug.Log("[READY] Loading GameScene...");
+        if (!IsServer) return;
 
         NetworkManager.Singleton.SceneManager.LoadScene(
             "GameScene",
             UnityEngine.SceneManagement.LoadSceneMode.Single
         );
-    }
-
-    public void ResetReadyStates()
-    {
-        if (!IsServer)
-            return;
-
-        hostReady.Value = false;
-        clientReady.Value = false;
-
-        gameStarting = false;
-
-        Debug.Log("[ReadyManager] Ready states reset.");
     }
 }

@@ -14,6 +14,7 @@ public class InteractUI : NetworkBehaviour
 
     //public GameObject UIPrompt;
 
+    public static InteractUI instance;
     public Player player;
 
 
@@ -21,11 +22,11 @@ public class InteractUI : NetworkBehaviour
     {
         player = GetComponent<Player>();
               
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
     // Start is called before the first frame update
-    /*public override void OnNetworkSpawn()
+    public override void OnNetworkSpawn()
     {
         //if (IsOwner) { promptText = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>(); }
         //UIPrompt.SetActive(false);
@@ -45,35 +46,9 @@ public class InteractUI : NetworkBehaviour
     {
         if (IsOwner) { promptText = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>(); }
         
-    }*/
-
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner)
-            return;
-
-        StartCoroutine(SetupUI());
     }
 
-    private IEnumerator SetupUI()
-    {
-        yield return null;
-        yield return null;
-
-        GameObject textObj = GameObject.Find("InteractText");
-
-        if (textObj != null)
-        {
-            promptText = textObj.GetComponent<TextMeshProUGUI>();
-            Debug.Log("[InteractUI] Prompt text assigned.");
-        }
-        else
-        {
-            Debug.LogError("[InteractUI] InteractText not found.");
-        }
-    }
-
-    /*public void Update()
+    public void Update()
     {
         UpdateText(string.Empty);
        
@@ -92,30 +67,8 @@ public class InteractUI : NetworkBehaviour
         }
         
             
-    }*/
-
-    public void Update()
-    {
-        if (!IsOwner)
-            return;
-
-        if (player == null || player.cameraPivot == null)
-            return;
-
-        UpdateText(string.Empty);
-
-        if (Physics.Raycast(
-            player.cameraPivot.position,
-            player.cameraPivot.forward,
-            out RaycastHit hitInfo,
-            player.interactionDistance))
-        {
-            if (hitInfo.collider.TryGetComponent(out Interactable interactable))
-            {
-                UpdateText(interactable.interactText);
-            }
-        }
     }
+
 
     public void UpdateText(string promptMessage)
     {

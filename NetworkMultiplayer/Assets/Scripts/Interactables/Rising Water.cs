@@ -24,8 +24,7 @@ public class RisingWater : Interactable
                     TryGetComponent<BoatLeakManager>(out BoatLeakManager boatLeakManager);
                     DeckManager.RemoveWaterServerRpc(bucketController.bucketCapacity);
                     bucketController.isFull = true;
-                    if (MusicManager.Instance != null)
-                        MusicManager.Instance.PlaySFX(SFXType.WaterInBucket);
+                    MusicManager.Instance.PlaySFX(SFXType.WaterInBucket);
                     Debug.Log("Player bucket has been Filled");
                 }
            }

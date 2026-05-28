@@ -88,7 +88,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             if (globalVolume) globalVolume.enabled = false;
 
             // Disable this script to prevent Update from running
-            //enabled = false;
+            enabled = false;
 
             // Still register but don't initialize further
             PlayerRegistry.Register(this);
@@ -198,7 +198,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         }
     }
 
-    /*[ClientRpc]
+    [ClientRpc]
     public void SpawnPlayerClientRpc(Vector3 position, Quaternion rotation, bool isDeck)
     {
         if (IsOwner)
@@ -271,21 +271,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         if (cc != null)
             cc.enabled = true;
-    }*/
-
-    [ClientRpc]
-    public void ApplyRoleVisualsClientRpc(bool isDeck)
-    {
-        ApplyRoleVisuals(isDeck);
-    }
-
-    private void ApplyRoleVisuals(bool isDeck)
-    {
-        if (crew != null)
-            crew.SetActive(isDeck);
-
-        if (captain != null)
-            captain.SetActive(!isDeck);
     }
 
     [ServerRpc]
