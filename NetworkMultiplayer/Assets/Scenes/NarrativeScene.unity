@@ -448,8 +448,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Dialogue
   textBox: {fileID: 1292106530}
   lines:
-  - 'Regardless of what is happening, we must reach the lighthouse at all costs.
-    Before our fate is that of our comrades. '
+  - "Despite this, we are at full speed to the lighthouse, nevermind the state of
+    our blasted boat!\n\nRegardless of what mental state we are in, or the disrepair
+    of our vessel, we will make it to the lighthouse at all costs. Keep the generator
+    running, course firm, and leaks repaired. \n\n\nOr else we will befall the same
+    fate as our comrades. \n\n\nSOS from the OBMEN... "
   speed: 0.05
 --- !u!1 &576246912
 GameObject:
@@ -815,11 +818,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Dialogue
   textBox: {fileID: 990380098}
   lines:
-  - 'Perhaps the guilt of leaving our comrades is driving us both to insanity. Something
-    strange is happening to our heads...
-
-    We keep waking in different places,
-    still holding the objects, but not feeling... ourselves?'
+  - "I believe we are going insane, something about the main vessel is affecting
+    us too. Something I cannot hope to explain. I believe something has a hold on
+    my mind. \n\nWe keep blacking out, awakening in different places, our minds fuzzy
+    and confused. It is difficult to go about my boatly duties when lost in a fog.\n\nWe
+    are not quite... ourselves?"
   speed: 0.05
 --- !u!1 &875794000
 GameObject:
@@ -861,8 +864,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d389b38c7d0a6ff43ab7b53d96ca3c5a, type: 2}
+  m_sharedMaterial: {fileID: -4825002664635672520, guid: d389b38c7d0a6ff43ab7b53d96ca3c5a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1146,7 +1149,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d389b38c7d0a6ff43ab7b53d96ca3c5a, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1171,8 +1174,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1213,7 +1216,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &990380099
@@ -1314,7 +1317,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Dialogue
   textBox: {fileID: 875794001}
   lines:
-  - Something is terribly wrong with this ship. We two barely escaped in time.
+  - "I fear we have committed a sin. We heard the noises, ran away from our comrades,
+    to the tugboat. We tried to take many others, but they were pulled into the darkness
+    by something far bigger than ourselves. \n\n\nOut of fear us two have run, and
+    we are on course to the motherland lighthouse."
   speed: 0.05
 --- !u!1 &1128071655
 GameObject:
@@ -1646,7 +1652,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 17, y: -345}
+  m_AnchoredPosition: {x: 17, y: -234}
   m_SizeDelta: {x: 1900, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1292106530
@@ -1671,7 +1677,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d389b38c7d0a6ff43ab7b53d96ca3c5a, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1696,8 +1702,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1738,7 +1744,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1292106531
