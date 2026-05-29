@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2982419664
+  GlobalObjectIdHash: 2594804961
   InScenePlacedSourceGlobalObjectIdHash: 2594804961
   DeferredDespawnTick: 0
   Ownership: 1
@@ -267,7 +267,7 @@ MonoBehaviour:
   cameraPivot: {fileID: 5341566302329490269}
   playerCamera: {fileID: 4148365070146029587}
   moveSpeed: 5
-  lookSensitivity: 1.5
+  lookSensitivity: 0.5
   maxPitch: 80
   gravity: -9.81
   captain: {fileID: 7783600342340823313}
@@ -281,8 +281,11 @@ MonoBehaviour:
   bucketHoldPoint: {fileID: 1181721550243166216}
   objectPickUp: {fileID: 0}
   globalVolume: {fileID: 4028414198584995261}
+  lensBaseValue: 0
   lensChangeValue: -0.45
+  vignetteBaseValue: 0.4
   vignetteChangeValue: 0.55
+  chromaticBaseValue: 0
   chromaticChangeValue: 1
   teleportEffectDuration: 2
 --- !u!114 &-1156579248354491240
