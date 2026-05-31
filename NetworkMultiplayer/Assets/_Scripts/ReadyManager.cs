@@ -49,7 +49,7 @@ public class ReadyManager : NetworkBehaviour
         SubmitReadyServerRpc(NetworkManager.Singleton.LocalClientId);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SubmitReadyServerRpc(ulong clientId)
     {
         if (gameStarting)

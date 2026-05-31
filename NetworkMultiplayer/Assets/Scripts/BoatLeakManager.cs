@@ -12,8 +12,7 @@ public class BoatLeakManager : NetworkBehaviour
     public float minWaterLevel = 0f;
     public float leakRate = 0.01f;
     public int activeLeaks = 0;
-    public GameObject waterPlane;
-    
+    public GameObject waterPlane;    
 
     public GameObject leakPrefab;
     public float leakInterval = 15f;
@@ -24,19 +23,23 @@ public class BoatLeakManager : NetworkBehaviour
     [SerializeField] private List<LeakLocations> leakLocationsList;
     private LeakLocations leakLocation;
 
-
     private void Start()
     {
         bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();
-        
     }
 
     public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
-        StartCoroutine(SpawnLeaks());
+        StartCoroutine(WaitForGameReady());
         //RequestLeakSpawnServerRpc();
-        
+    }
+
+    private IEnumerator WaitForGameReady()
+    {
+        yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.GameReady());
+
+        StartCoroutine(SpawnLeaks());
     }
 
     // Update is called once per frame
@@ -45,18 +48,21 @@ public class BoatLeakManager : NetworkBehaviour
         if (!IsServer) return;
         if (IsSpawned)
         { 
-        WaterLevelServerRpc();
-        RisingWaterServerRpc();
+            WaterLevelServerRpc();
+            RisingWaterServerRpc();
         }
-        
     }
 
     // used when a leak is spawned
     public void AddLeak()
-    { activeLeaks++; }
+    { 
+        activeLeaks++; 
+    }
 
     public void RepairLeak()
-    { activeLeaks = Mathf.Max(0, activeLeaks - 1); }
+    { 
+        activeLeaks = Mathf.Max(0, activeLeaks - 1); 
+    }
 
     //[ServerRpc]
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -92,7 +98,8 @@ public class BoatLeakManager : NetworkBehaviour
             float time = Random.Range(leakInterval, leakInterval + 5);
 
             yield return new WaitForSeconds(time);
-            GameObject leakInstance = Instantiate(leakPrefab, PickRandomSurface(), leakLocation.SetLeakRotation()/*, leakLocation.gameObject.transform*/);// create a leak
+            // create a leak
+            GameObject leakInstance = Instantiate(leakPrefab, PickRandomSurface(), leakLocation.SetLeakRotation()); //, leakLocation.gameObject.transform);
             leakInstance.transform.RotateAround(leakLocation.transform.position, Vector3.up, leakLocation.rotationAdjustment);
             leak =leakInstance.GetComponent<Leak>();
             leakInstance.GetComponent<NetworkObject>().Spawn();
@@ -102,8 +109,39 @@ public class BoatLeakManager : NetworkBehaviour
         }
     }
 
-   // IEnumerator BucketCooldown()
+    public void SpawnImmediateLeaks(int amount)
+    {
+        if (!IsServer)
+            return;
 
+        for (int i = 0; i < amount; i++)
+        {
+            GameObject leakInstance =
+                Instantiate(
+                    leakPrefab,
+                    PickRandomSurface(),
+                    leakLocation.SetLeakRotation()
+                );
+
+            leakInstance.transform.RotateAround(
+                leakLocation.transform.position,
+                Vector3.up,
+                leakLocation.rotationAdjustment
+            );
+
+            leak = leakInstance.GetComponent<Leak>();
+
+            leakInstance.GetComponent<NetworkObject>().Spawn();
+
+            leak.boatLeakManager = this;
+
+            AddLeak();
+        }
+
+        Debug.Log($"[BoatLeakManager] Spawned {amount} collision leaks.");
+    }
+
+    // IEnumerator BucketCooldown()
 
 
     public void SetWaterLevel(float currentWaterLevel)
@@ -173,6 +211,5 @@ public class BoatLeakManager : NetworkBehaviour
         { return true; }
         else
         { return false; }
-
     }
 }

@@ -38,8 +38,11 @@ public class SwapManager : NetworkBehaviour
         if (_swapRunning) yield break;
         _swapRunning = true;
 
-        // Give the game scene a moment to finish spawning players
-        yield return new WaitForSeconds(2f);
+        // Wait until GameManager finishes spawning everybody
+        yield return new WaitUntil(() =>
+            GameManager.Instance != null &&
+            GameManager.Instance.PlayersSpawned
+        );
 
         while (_swapRunning && Application.isPlaying)
         {
@@ -109,10 +112,7 @@ public class SwapManager : NetworkBehaviour
     }
 
     // ─── Client RPCs ─────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Tells every client to find its own local player and start the warning FX.
-    /// </summary>
+    //Tells every client to find its own local player and start the warning FX.
     [ClientRpc]
     private void TriggerWarningClientRpc(float duration)
     {

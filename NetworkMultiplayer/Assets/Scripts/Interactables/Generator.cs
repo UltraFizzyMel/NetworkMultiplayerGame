@@ -31,6 +31,8 @@ public class Generator : Interactable
         NetworkVariableWritePermission.Server
     );
 
+    [SerializeField] private bool speedChange = false;
+
     public void Update()
     {
         if (!IsServer) return;
@@ -72,7 +74,14 @@ public class Generator : Interactable
             if (fuelingProgress.Value < fuelMax) { fuelChange = fuelRate; }// if the current fuel level is less than max fuel then the fuel rate will be positive
         }
         else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }// While player is not fueling generator the fuel level goes down until it reaches 0
+        
         fuelingProgress.Value += fuelChange * Time.deltaTime;// The current fuel level changes over time based on the if-else statement above
+        // Clamps the fuel level between 0 and the max fuel level
+        fuelingProgress.Value = Mathf.Clamp(
+            fuelingProgress.Value,
+            0f,
+            fuelMax
+        );
         //OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs { fuelNormalized = fuelingProgress.Value / fuelMax });
 
         if (fuelChange == 0 )
@@ -104,9 +113,22 @@ public class Generator : Interactable
 
     public bool FuelCheck()
     {
-        if(fuelingProgress.Value > 0f)
-        { return true; }
-        else {  return false; }
+        if (fuelingProgress.Value > 0f)
+            return true;
+        else 
+            return false;
     }
 
+    public float GetFuelNormalized()
+    {
+        if (speedChange)
+            return Mathf.Clamp01(fuelingProgress.Value / fuelMax);
+        else
+        {
+            if (FuelCheck())
+                return 1f;
+            else
+                return 0f;
+        }
+    }
 }

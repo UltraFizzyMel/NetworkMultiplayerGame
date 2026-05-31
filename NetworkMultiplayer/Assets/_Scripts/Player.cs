@@ -25,7 +25,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     private PlayerInput pi;
     private InputAction moveAction;
     private InputAction lookAction;
-    private InputAction swapAction;
     private InputAction interact;
     private InputAction interactAlternate;
     private ClientNetworkTransform cnt;
@@ -48,6 +47,20 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [Header("Interface settings")]
     [SerializeField] private Transform bucketHoldPoint;
     [SerializeField] private ObjectPickUp objectPickUp;
+
+    [Header("Steering")]
+    [SerializeField] private float steeringLookLimit = 35f;
+    [SerializeField] private float steeringLookSensitivity = 1f;
+
+    private bool isSteering;
+    private bool canMove = true;
+
+    private SteeringWheel currentWheel;
+
+    private float steeringYaw;
+    private float steeringPitch;
+
+    private float _lastSentSteering = float.NaN;
 
     [Header("Global Volume Settings")]
     [SerializeField] private Volume globalVolume;
@@ -114,12 +127,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         moveAction = pi.actions["Move"];
         lookAction = pi.actions["Look"];
-        swapAction = pi.actions["Swap"];
         interact = pi.actions["Interact"];
         interactAlternate = pi.actions["InteractAlternate"];
         moveAction.Enable();
         lookAction.Enable();
-        swapAction.Enable();
         interact.Enable();
         interactAlternate.Enable();
 
@@ -167,63 +178,123 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private void Update()
     {
-        if (!IsOwner || !IsSpawned || cc.enabled == false)
+        if (!IsOwner || !IsSpawned)// || cc.enabled == false)
             return;
 
-        //if (NetworkManager.Singleton.LocalClientId != controllingClientId.Value)
-        //  return;
+        if (isSteering)
+        {
+            HandleSteeringMode();
+            return;
+        }
 
-        //if (controllingClientId.Value == ulong.MaxValue)
-        //  return;
+        if (!canMove)
+            return;
+
+        NormalMovementUpdate();
+
+        /*ApplyGravity();
 
         Vector2 m = moveAction.ReadValue<Vector2>();
+        if (isSteering)
+        {
+            currentWheel.HandleSteeringInput(m.x);
+            return;
+        }
+
         Vector3 move = transform.right * m.x + transform.forward * m.y;
         if (cc.enabled)
             cc.Move(move * moveSpeed * Time.deltaTime);
 
-        //Move(m);
-
         Vector2 look = lookAction.ReadValue<Vector2>() * lookSensitivity;
         transform.Rotate(0f, look.x, 0f);
-        //Look(look.x);
 
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
-        cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f);
+        cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */       
+    }
+
+    private void NormalMovementUpdate()
+    {
         ApplyGravity();
 
-        if (swapAction.WasPressedThisFrame())
-        {
-            RequestSwapServerRpc();
-        }
+        Vector2 m = moveAction.ReadValue<Vector2>();
+
+        Vector3 move =
+            transform.right * m.x +
+            transform.forward * m.y;
+
+        cc.Move(move * moveSpeed * Time.deltaTime);
+
+        Vector2 look =
+            lookAction.ReadValue<Vector2>() *
+            lookSensitivity;
+
+        transform.Rotate(0f, look.x, 0f);
+
+        pitch -= look.y;
+
+        pitch = Mathf.Clamp(
+            pitch,
+            -maxPitch,
+            maxPitch
+        );
+
+        cameraPivot.localEulerAngles =
+            new Vector3(pitch, 0f, 0f);
     }
 
-    /*[ClientRpc]
+    private void HandleSteeringMode()
+    {
+        transform.position = currentWheel.steeringPosition.position;
+
+        transform.rotation = Quaternion.Euler(0f, currentWheel.steeringPosition.eulerAngles.y, 0f);
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            ExitSteering();
+            return;
+        }
+
+        /*Vector2 moveInput = moveAction.ReadValue<Vector2>();
+
+        // ONLY A/D
+        currentWheel.HandleSteeringInput(moveInput.x);*/
+
+        float steeringInput = moveAction.ReadValue<Vector2>().x;
+
+        // Only fire the ServerRpc when input actually changes
+        if (!Mathf.Approximately(steeringInput, _lastSentSteering))
+        {
+            _lastSentSteering = steeringInput;
+            currentWheel.HandleSteeringInput(steeringInput);
+        }
+
+        // LIMITED CAMERA LOOK
+        Vector2 look = lookAction.ReadValue<Vector2>() * steeringLookSensitivity;
+
+        // HORIZONTAL LOOK
+        steeringYaw += look.x;
+
+        steeringYaw = Mathf.Clamp(steeringYaw, -steeringLookLimit, steeringLookLimit);
+
+        // VERTICAL LOOK
+        steeringPitch -= look.y;
+
+        steeringPitch = Mathf.Clamp(steeringPitch, -15f, 15f);
+
+        // ROTATE CAMERA ONLY
+        cameraPivot.localRotation = Quaternion.Euler(steeringPitch, steeringYaw, 0f);
+    }
+
+    [ClientRpc]
     public void SpawnPlayerClientRpc(Vector3 position, Quaternion rotation, bool isDeck)
     {
-        if (IsOwner)
-            StartCoroutine(PhysicsSafeSpawn(position, rotation));
-
         ApplyRoleVisuals(isDeck);
 
-        // Hide the overlay on ALL clients once physics has settled,
-        // not just the owner — this was the missing call.
-        StartCoroutine(HideOverlayAfterPhysicsSettle());
-    }
-
-    // Matches the exact wait used in PhysicsSafeSpawn so the overlay
-    // disappears only after the teleport is guaranteed to have landed.
-    private IEnumerator HideOverlayAfterPhysicsSettle()
-    {
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        HideLoadingOverlay();
-    }
-
-    private void ApplyRoleVisuals(bool isDeck)
-    {
-        if (crew != null) crew.SetActive(isDeck);
-        if (captain != null) captain.SetActive(!isDeck);
+        if (IsOwner)
+            StartCoroutine(PhysicsSafeSpawn(position, rotation));
+        else
+            StartCoroutine(HideOverlayWhenOwnerReady());
     }
 
     private IEnumerator PhysicsSafeSpawn(Vector3 position, Quaternion rotation)
@@ -231,19 +302,55 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         if (cc != null) cc.enabled = false;
 
         Vector3 safePosition = position + Vector3.up * 0.05f;
-        transform.SetPositionAndRotation(safePosition, rotation);
 
+        if (Physics.Raycast(
+                position + Vector3.up * 2f,
+                Vector3.down,
+                out RaycastHit hit,
+                10f,
+                ~LayerMask.GetMask("Player")))
+        {
+            safePosition = hit.point + Vector3.up * (cc != null ? cc.skinWidth + 0.01f : 0.05f);
+        }
+
+        transform.SetPositionAndRotation(safePosition, rotation);
         Physics.SyncTransforms();
 
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-
         if (cc != null) cc.enabled = true;
+
+        const float groundedTimeout = 5f;
+        float elapsed = 0f;
+
+        while (cc != null && !cc.isGrounded && elapsed < groundedTimeout)
+        {
+            cc.Move(Vector3.down * (9.81f * Time.fixedDeltaTime));
+            elapsed += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
 
         if (cnt != null)
             cnt.Teleport(safePosition, rotation, transform.localScale);
 
-        // Removed from here — HideOverlayAfterPhysicsSettle handles it for everyone
+        // Owner is grounded — hide the overlay on this client.
+        HideLoadingOverlay();
+    }
+
+    // Non-owner waits for the owner's PhysicsSafeSpawn to finish (detected by the overlay being hidden), then hides its own copy.
+    private IEnumerator HideOverlayWhenOwnerReady()
+    {
+        var overlay = GameManager.Instance?.LoadingOverlay;
+        if (overlay == null) { HideLoadingOverlay(); yield break; }
+
+        const float timeout = 10f;
+        float elapsed = 0f;
+
+        while (overlay.activeSelf && elapsed < timeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        HideLoadingOverlay();
     }
 
     private static void HideLoadingOverlay()
@@ -251,27 +358,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         if (GameManager.Instance != null && GameManager.Instance.LoadingOverlay != null)
             GameManager.Instance.LoadingOverlay.SetActive(false);
     }
-
-    private IEnumerator ApplySpawn(Vector3 pos, Quaternion rot, bool isDeck)
-    {
-        yield return null;
-        yield return null;
-
-        if (cc != null)
-            cc.enabled = false;
-
-        transform.position = pos;
-        transform.rotation = rot;
-
-        if (cnt != null && IsOwner)
-            cnt.Teleport(pos, rot, transform.localScale);
-
-        crew.SetActive(isDeck);
-        captain.SetActive(!isDeck);
-
-        if (cc != null)
-            cc.enabled = true;
-    }*/
 
     [ClientRpc]
     public void ApplyRoleVisualsClientRpc(bool isDeck)
@@ -288,12 +374,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             captain.SetActive(!isDeck);
     }
 
-    [ServerRpc]
-    private void RequestSwapServerRpc()
-    {
-        //SwapManager.Instance.TrySwap();
-    }
-
     // Called by SwapManager's ClientRpc on the owner client only.
     public void StartSwapWarning(float duration)
     {
@@ -304,7 +384,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private IEnumerator SwapWarningSequence(float totalDuration)
     {
-        // ── Baseline values (match your resting / TeleportSequence start values) ─
+        // ── Baseline values (match resting / TeleportSequence start values) ─
         const float baseVignette = 0.4f;
         const float peakVignette = 0.65f; // Noticeably dark but not blinding
 
@@ -353,20 +433,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         if (!IsOwner)
             return;
 
+        if (isSteering) ExitSteering();
+
         StartCoroutine(TeleportSequence(pos, rot));
-
-        /*if (cc != null)
-            cc.enabled = false;
-        
-        if (cnt)
-        {
-            cnt.Teleport(pos, rot, Vector3.one);
-        }
-
-        transform.SetPositionAndRotation(pos, rot);
-
-        if (cc != null)
-            cc.enabled = true;*/
     }
 
     private IEnumerator TeleportSequence(Vector3 pos, Quaternion rot)
@@ -384,34 +453,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         float peakChromatic = chromaticChangeValue;
 
         float timer = 0f;
-
-        // PHASE 1
-        // Ramp UP toward teleport
-
-        /*while (timer < halfDuration)
-        {
-            timer += Time.deltaTime;
-
-            float t = timer / halfDuration;
-
-            // Smooth easing
-            float eased = Mathf.SmoothStep(0f, 1f, t);
-
-            lens.intensity.value =
-                Mathf.Lerp(startLens, peakLens, eased);
-
-            vignette.intensity.value =
-                Mathf.Lerp(startVignette, peakVignette, eased);
-
-            chromatic.intensity.value =
-                Mathf.Lerp(startChromatic, peakChromatic, eased);
-
-            yield return null;
-        }
-
-        Debug.Log("Lens value: " + lens.intensity.value);
-        Debug.Log("Vignette value: " + vignette.intensity.value);
-        Debug.Log("Chromatic value: " + chromatic.intensity.value);*/
 
         // TELEPORT AT PEAK
 
@@ -461,19 +502,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         vignette.intensity.value = vignetteBaseValue;
         chromatic.intensity.value = chromaticBaseValue;
     }
-
-    /*private void LateUpdate()
-    {
-        if (!IsOwner || !IsSpawned)
-            return;
-
-        Vector2 look = lookAction.ReadValue<Vector2>();
-
-        pitch -= look.y * lookSensitivity;
-        pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
-
-        cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
-    }*/
 
     private void HandleInteractions()
     {
@@ -535,28 +563,93 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc.Move(velocity * Time.deltaTime);
      }
 
-    private void Move(Vector2 input)
+    public bool IsSteering()
     {
-        Vector3 move =
-            transform.right * input.x +
-            transform.forward * input.y;
-
-        move.y = 0f;
-        move.Normalize();
-
-        cc.Move(moveSpeed * Time.deltaTime * move);
+        return isSteering;
     }
 
-    private void Look(float yawInput)
+    public void EnterSteering(SteeringWheel wheel)
     {
-        transform.Rotate(0f, yawInput, 0f);
+        if (isSteering)
+            return;
+
+        isSteering = true;
+
+        currentWheel = wheel;
+
+        canMove = false;
+
+        velocity = Vector3.zero;
+
+        //cc.enabled = false;
+
+        /*transform.SetPositionAndRotation(
+            wheel.steeringPosition.position,
+            wheel.steeringPosition.rotation
+        );*/
+
+        transform.position = wheel.steeringPosition.position;
+
+        transform.rotation =
+            Quaternion.Euler(
+                0f,
+                wheel.steeringPosition.eulerAngles.y,
+                0f
+            );
+
+        steeringYaw = 0f;
+        steeringPitch = 0f;
     }
 
-    /*[ServerRpc]
-    private void ApplyGravityServerRpc()
+    public void ExitSteering()
     {
-        ApplyGravity();
-    }*/
+        if (!isSteering)
+            return;
+
+        isSteering = false;
+
+        currentWheel = null;
+
+        canMove = true;
+
+        _lastSentSteering = float.NaN;
+
+        //cc.enabled = true;
+
+        cameraPivot.localEulerAngles = Vector3.zero;
+
+        pitch = 0f;
+
+        BoatSteeringManager.Instance.SetSteering(0f);
+    }
+
+    public void StartCameraShake(float intensity, float duration)
+    {
+        StopCoroutine(nameof(CameraShakeRoutine));
+
+        StartCoroutine(CameraShakeRoutine(intensity, duration));
+    }
+
+    private IEnumerator CameraShakeRoutine(float intensity, float duration)
+    {
+        Vector3 originalPos =
+            cameraPivot.localPosition;
+
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            Vector3 randomOffset = UnityEngine.Random.insideUnitSphere * intensity;
+
+            cameraPivot.localPosition = originalPos + randomOffset;
+
+            yield return null;
+        }
+
+        cameraPivot.localPosition = originalPos;
+    }
 
     public override void OnNetworkDespawn()
     {

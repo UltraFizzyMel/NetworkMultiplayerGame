@@ -104,6 +104,14 @@ public class InteractUI : NetworkBehaviour
 
         UpdateText(string.Empty);
 
+        // If the player is currently steering, show steering instructions instead of interaction prompts
+        if (player.IsSteering())
+        {
+            UpdateText("Hold [A] to steer left, hold [D] to steer right" +
+                       "\nPress [Esc] to stop steering");
+            return;
+        }
+
         if (Physics.Raycast(
             player.cameraPivot.position,
             player.cameraPivot.forward,
@@ -120,8 +128,8 @@ public class InteractUI : NetworkBehaviour
     public void UpdateText(string promptMessage)
     {
         if (promptText == null)
-        { return; }
-            promptText.text = promptMessage;
+            return;
+        promptText.text = promptMessage;
     }
 
 }
