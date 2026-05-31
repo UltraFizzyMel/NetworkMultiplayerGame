@@ -10,61 +10,63 @@ public class BoatCollisionDetector : NetworkBehaviour
     private bool collisionCooldown;
     [SerializeField] private float collisionCooldownTime = 3f;
 
+    private BoatWinLoseController winLoseController;
+
+    private void Start()
+    {
+        winLoseController = BoatWinLoseController.Instance;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!IsServer)
             return;
 
-        if (collisionCooldown)
+        if (winLoseController == null) winLoseController = BoatWinLoseController.Instance;
+
+        if (other.CompareTag("Goal"))
+        {
+            Debug.Log("[Boat] Reached lighthouse!");
+            winLoseController.WinGame();
             return;
+        }
+
+        if (collisionCooldown)
+            return;       
 
         if (!other.CompareTag("Obstacle"))
             return;
 
-        RockObstacle rock =
-            other.GetComponent<RockObstacle>();
+        RockObstacle rock = other.GetComponent<RockObstacle>();
 
         if (rock == null)
             return;
 
         collisionCooldown = true;
 
-        Debug.Log(
-            $"[Boat] Rock collision! +" +
-            $"{rock.instantLeakAmount} leaks"
-        );
+        Debug.Log($"[Boat] Rock collision! +" + $"{rock.instantLeakAmount} leaks");
 
-        if (deckLeaks != null)
-        {
-            deckLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
-        }
+        if (deckLeaks != null) deckLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
 
-        if (cabinLeaks != null)
-        {
-            cabinLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
-        }
+        if (cabinLeaks != null) cabinLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
 
         //Damage Systems
-        BoatMovement.Instance.ApplyPermanentSlow(rock.speedDamage);
+        BoatMovement.Instance?.ApplyPermanentSlow(rock.speedDamage);
 
-        BoatSteeringManager.Instance.ApplySteeringKnockback(rock.steeringKnockback);
+        BoatSteeringManager.Instance?.ApplySteeringKnockback(rock.steeringKnockback);
 
         TriggerCameraShakeClientRpc(rock.cameraShakeStrength, rock.cameraShakeDuration);
 
-        /*if (MusicManager.Instance != null)
-            MusicManager.Instance.PlaySFX(SFXType.BoatCrash);*/
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.PlaySFX(SFXType.Crash);
 
-        if (rock.destroyOnHit)
-        {
-            NetworkObject no =
-                rock.GetComponent<NetworkObject>();
+        //Destroy rock after collision
+        NetworkObject no = rock.GetComponent<NetworkObject>();
 
-            if (no != null && no.IsSpawned)
-                no.Despawn();
-
-            else
-                Destroy(rock.gameObject);
-        }
+        if (no != null && no.IsSpawned)
+            no.Despawn();
+        else
+            Destroy(rock.gameObject);
 
         StartCoroutine(CollisionCooldownRoutine());
     }
@@ -72,25 +74,17 @@ public class BoatCollisionDetector : NetworkBehaviour
     private IEnumerator CollisionCooldownRoutine()
     {
         yield return new WaitForSeconds(collisionCooldownTime);
-
         collisionCooldown = false;
     }
 
     [ClientRpc]
-    private void TriggerCameraShakeClientRpc(
-    float intensity,
-    float duration
-)
+    private void TriggerCameraShakeClientRpc(float intensity, float duration)
     {
         foreach (Player player in PlayerRegistry.Players)
         {
-            if (!player.IsOwner)
-                continue;
-
-            player.StartCameraShake(
-                intensity,
-                duration
-            );
+            if (!player.IsOwner) continue;
+            player.StartCameraShake(intensity, duration);
+            break;
         }
     }
 }

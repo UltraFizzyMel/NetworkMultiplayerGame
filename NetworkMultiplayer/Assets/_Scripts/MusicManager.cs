@@ -20,6 +20,7 @@ public enum SFXType
     SwopWarning,
     Leak,
     GeneratorRunning,
+    Crash,
 
     // Win/Lose sounds
     Win,

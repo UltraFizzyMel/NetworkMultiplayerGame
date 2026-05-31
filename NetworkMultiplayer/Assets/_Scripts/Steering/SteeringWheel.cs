@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class SteeringWheel : Interactable
 {
-    [SerializeField] private float steeringStrength = 1f;
-
     private Player currentPlayer;
 
     public Transform steeringPosition;

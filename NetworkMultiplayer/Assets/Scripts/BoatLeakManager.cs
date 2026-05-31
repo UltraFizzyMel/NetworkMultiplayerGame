@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
 using Unity.VisualScripting;
@@ -7,34 +7,100 @@ using System.Collections.Generic;
 public class BoatLeakManager : NetworkBehaviour
 {
     [Header("Water Settings")]
-    public float currentWaterLevel = 0f;
+    //public float currentWaterLevel = 0f;
     public float maxWaterLevel = 100f;
     public float minWaterLevel = 0f;
     public float leakRate = 0.01f;
-    public int activeLeaks = 0;
-    public GameObject waterPlane;    
+    //public int activeLeaks = 0;
+    public GameObject waterPlane;
 
+    [Header("Leak Spawning")]
     public GameObject leakPrefab;
     public float leakInterval = 15f;
-    public bool bucketUsed;
-    public bool bucketRebound;
+    //public bool bucketUsed;
+    //public bool bucketRebound;
     public BucketController bucketController;
-    private Leak leak;
+    //private Leak leak;
+
     [SerializeField] private List<LeakLocations> leakLocationsList;
-    private LeakLocations leakLocation;
+    private LeakLocations _leakLocation;
+
+    public NetworkVariable<float> currentWaterLevel = new(
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
+    public NetworkVariable<int> activeLeaks = new(
+        0,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
 
     private void Start()
     {
-        bucketController = GameObject.Find("TempBucket").GetComponent<BucketController>();
+        var bucket = GameObject.Find("TempBucket");
+        if (bucket != null)
+            bucketController = bucket.GetComponent<BucketController>();
     }
 
     public override void OnNetworkSpawn()
     {
+        currentWaterLevel.OnValueChanged += OnWaterLevelChanged;
+        UpdateWaterPlane(currentWaterLevel.Value);
+
         if (!IsServer) return;
         StartCoroutine(WaitForGameReady());
         //RequestLeakSpawnServerRpc();
     }
 
+    public override void OnNetworkDespawn()
+    {
+        currentWaterLevel.OnValueChanged -= OnWaterLevelChanged;
+    }
+
+    private void OnWaterLevelChanged(float _, float newValue) => UpdateWaterPlane(newValue);
+        
+    // Update is called once per frame
+    private void Update()
+    {
+        if (!IsServer || !IsSpawned) return;
+        RisingWater();
+    }
+
+    // ─── Water logic (server only, synced via NetworkVariable) ───────────────
+    private void RisingWater()
+    {
+        if (activeLeaks.Value <= 0) return;
+        if (currentWaterLevel.Value >= maxWaterLevel) return;
+
+        currentWaterLevel.Value = Mathf.Min(
+            currentWaterLevel.Value + activeLeaks.Value * leakRate * Time.deltaTime,
+            maxWaterLevel);
+    }
+
+    private void UpdateWaterPlane(float waterLevel)
+    {
+        if (waterPlane == null) return;
+        waterPlane.transform.position = new Vector3(
+            waterPlane.transform.position.x,
+            waterLevel,
+            waterPlane.transform.position.z);
+    }
+
+    // ─── Leak count ──────────────────────────────────────────────────────────
+    // used when a leak is spawned
+    public void AddLeak()
+    {
+        //activeLeaks++;
+        if (IsServer) activeLeaks.Value++;
+    }
+
+    public void RepairLeak()
+    {
+        //activeLeaks = Mathf.Max(0, activeLeaks - 1); 
+        if (IsServer) activeLeaks.Value = Mathf.Max(0, activeLeaks.Value - 1);
+    }
+
+    // ─── Leak spawning (server only) ─────────────────────────────────────────
     private IEnumerator WaitForGameReady()
     {
         yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.GameReady());
@@ -42,30 +108,60 @@ public class BoatLeakManager : NetworkBehaviour
         StartCoroutine(SpawnLeaks());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator SpawnLeaks()
     {
-        if (!IsServer) return;
-        if (IsSpawned)
-        { 
-            WaterLevelServerRpc();
-            RisingWaterServerRpc();
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(leakInterval, leakInterval + 5f));
+            SpawnSingleLeak();
         }
     }
 
-    // used when a leak is spawned
-    public void AddLeak()
-    { 
-        activeLeaks++; 
+    public void SpawnImmediateLeaks(int amount)
+    {
+        if (!IsServer) return;
+        for (int i = 0; i < amount; i++) SpawnSingleLeak();
+        Debug.Log($"[BoatLeakManager] Spawned {amount} collision leaks.");
     }
 
-    public void RepairLeak()
-    { 
-        activeLeaks = Mathf.Max(0, activeLeaks - 1); 
+    private void SpawnSingleLeak()
+    {
+        GameObject leakInstance = Instantiate(
+            leakPrefab, PickRandomSurface(), _leakLocation.SetLeakRotation());
+
+        leakInstance.transform.RotateAround(
+            _leakLocation.transform.position, Vector3.up, _leakLocation.rotationAdjustment);
+
+        Leak leakScript = leakInstance.GetComponent<Leak>();
+        leakInstance.GetComponent<NetworkObject>().Spawn();
+        leakScript.boatLeakManager = this;
+        AddLeak();
     }
+
+    // ─── Bucket integration ──────────────────────────────────────────────────
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RemoveWaterServerRpc(float bucketCapacity)
+    {
+        currentWaterLevel.Value = Mathf.Max(
+            minWaterLevel,
+            currentWaterLevel.Value - bucketCapacity);
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+    private Vector3 PickRandomSurface()
+    {
+        if (leakLocationsList.Count > 0)
+        {
+            _leakLocation = leakLocationsList[Random.Range(0, leakLocationsList.Count)];
+        }
+        return _leakLocation.FindRandomLeakLocation();
+    }
+
+    // CheckLossCondition is now read from NetworkVariable so it's correct on every machine, not just the host.
+    public bool CheckLossCondition() => currentWaterLevel.Value >= maxWaterLevel;
 
     //[ServerRpc]
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    /*[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void RequestLeakSpawnServerRpc()
     {
         //RequestLeakSpawnClientRpc();
@@ -76,7 +172,7 @@ public class BoatLeakManager : NetworkBehaviour
     public void RequestLeakSpawnClientRpc()
     {
         StartCoroutine(SpawnLeaks());
-    }*/
+    }/
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void WaterLevelServerRpc()
@@ -211,5 +307,5 @@ public class BoatLeakManager : NetworkBehaviour
         { return true; }
         else
         { return false; }
-    }
+    }*/
 }

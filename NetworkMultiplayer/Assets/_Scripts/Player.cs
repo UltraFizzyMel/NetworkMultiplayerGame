@@ -443,13 +443,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         float duration = teleportEffectDuration;
         float halfDuration = duration * 0.5f;
 
-        float startLens = -0.6f;
         float peakLens = lensChangeValue;
-
-        float startVignette = 0.65f;
         float peakVignette = vignetteChangeValue;
-
-        float startChromatic = 0.55f;
         float peakChromatic = chromaticChangeValue;
 
         float timer = 0f;

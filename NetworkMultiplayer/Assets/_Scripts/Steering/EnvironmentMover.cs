@@ -1,4 +1,4 @@
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine;
 
 public class EnvironmentMover : NetworkBehaviour
@@ -7,6 +7,8 @@ public class EnvironmentMover : NetworkBehaviour
 
     private BoatMovement boatMovement;
     private BoatSteeringManager _steering;
+
+    [SerializeField] private bool ignoreSteering;
 
     private void Update()
     {
@@ -23,9 +25,30 @@ public class EnvironmentMover : NetworkBehaviour
         float steering = _steering.SteeringAmount.Value;
 
         // FORWARD MOVEMENT
-        transform.position += Vector3.back * moveSpeed * Time.deltaTime;
+        // The boat "moves" in the +X direction, so the environment slides in -X.
+        //transform.position += Vector3.left * moveSpeed * Time.deltaTime;
 
         // STEERING OFFSET
-        transform.position += Vector3.right * (-steering * steeringInfluence * Time.deltaTime);
+        // D (right, positive steering) → environment moves +Z
+        // A (left,  negative steering) → environment moves -Z
+        //transform.position += Vector3.forward * (steering * steeringInfluence * Time.deltaTime);
+
+        //Combines foward and steering offset into one variable to change the direction of the transform only once
+        //Doesn't change steering influence for different environments (rocks vs lighthouse)
+        //Vector3 moveDirection = new Vector3(-moveSpeed, 0f, steering * steeringInfluence);
+
+        Vector3 moveDirection =
+            Vector3.left * moveSpeed;
+
+        //Only apply steering influence if not ignored, lighthouse will move forward without steering influence for now
+        //So player doesn't go too far right or too far left when approaching end point, but still moves forward
+        if (!ignoreSteering)
+        {
+            moveDirection +=
+                Vector3.forward *
+                (steering * steeringInfluence);
+        }
+
+        transform.position += moveDirection * Time.deltaTime;        
     }
 }

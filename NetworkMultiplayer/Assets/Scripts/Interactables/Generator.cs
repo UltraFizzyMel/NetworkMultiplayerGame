@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -15,8 +15,8 @@ public class Generator : Interactable
     }
 
     public float fuelMax = 5f;// The maxium amount of fuel
-    [SerializeField] private float fuelDecayProgess = -0.3f;//rate at which fuel bar will decrease
-    [SerializeField] private float fuelRate = 0.5f;//rate at which fuel bar will increase
+    [SerializeField] private float fuelDecayRate = -0.3f;//rate at which fuel bar will decrease
+    [SerializeField] private float fuelFillRate = 0.5f;//rate at which fuel bar will increase
     [SerializeField] private GameObject fuelUI;
 
     public NetworkVariable<float> fuelingProgress = new(
@@ -33,30 +33,72 @@ public class Generator : Interactable
 
     [SerializeField] private bool speedChange = false;
 
-    public void Update()
+    public override void OnNetworkSpawn()
     {
         if (!IsServer) return;
-        if (IsSpawned) { GeneratorServerRpc(); }
+
+        // Start with a full tank so the boat moves from the moment the game begins.
+        // Previously the default was 0, making GetFuelNormalized() always return 0 and netCurrentMoveSpeed always stay at 0.
+        fuelingProgress.Value = fuelMax;
     }
 
-    public override void Interact(Player player)
+    public void Update()
     {
+        if (!IsServer || !IsSpawned) return;
+        //if (IsSpawned) { GeneratorServerRpc(); }
 
-        if (player.HasObjectPickUp())// Checks to see if the player is holding an object
+        //SendTo.Server RPC  adds unnecessary message-system overhead.
+        //We already check to make sure it's the server so it's cheaper to just call the method directly.
+        UpdateFuel();
+    }
+
+    // ─── Fuel logic (server only) ────────────────────────────────────────────
+    private void UpdateFuel()
+    {
+        float fuelChange = 0f;
+
+        if (isFueling.Value)
         {
-           
-            Debug.Log("Player is holding Something");
-
+            if (fuelingProgress.Value < fuelMax)
+                fuelChange = fuelFillRate;
         }
         else
         {
-            // The player is not holding something
-            IsFuelingRpc();// The player fuels up the generator when they have no object in their hand
-            if (MusicManager.Instance != null)
-                MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
-            Debug.Log("Player has no item");
-            return;
+            if (fuelingProgress.Value > 0f)
+                fuelChange = fuelDecayRate;
         }
+
+        fuelingProgress.Value = Mathf.Clamp(
+            fuelingProgress.Value + fuelChange * Time.deltaTime,
+            0f,
+            fuelMax);
+
+        // Audio: active only while fuel is actually changing
+        if (generatorAudio != null)
+            generatorAudio.SetActive(fuelChange != 0f);
+
+        OnFuelChanged?.Invoke(this, new OnFuelChangedEventArgs
+        {
+            fuelNormalized = fuelingProgress.Value / fuelMax
+        });
+    }
+
+    // ─── Interactions ────────────────────────────────────────────────────────
+    public override void Interact(Player player)
+    {
+        // Checks to see if the player is holding an object
+        if (player.HasObjectPickUp())
+        {
+           
+            Debug.Log("Player is holding Something - cannot fuel");
+            return;
+
+        }
+        // The player is not holding something - player can fuel generator
+        IsFuelingRpc();
+
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
     }
 
     public override void Cancel(Player player)
@@ -65,15 +107,15 @@ public class Generator : Interactable
 
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    /*[Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void GeneratorServerRpc()
     {
         float fuelChange = 0;//The value of the fuel change
         if (isFueling.Value) // The player is fueling the generator
         {
-            if (fuelingProgress.Value < fuelMax) { fuelChange = fuelRate; }// if the current fuel level is less than max fuel then the fuel rate will be positive
+            if (fuelingProgress.Value < fuelMax) { fuelChange = fuelFillRate; }// if the current fuel level is less than max fuel then the fuel rate will be positive
         }
-        else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayProgess; } }// While player is not fueling generator the fuel level goes down until it reaches 0
+        else { if (fuelingProgress.Value > 0) { fuelChange = fuelDecayRate; } }// While player is not fueling generator the fuel level goes down until it reaches 0
         
         fuelingProgress.Value += fuelChange * Time.deltaTime;// The current fuel level changes over time based on the if-else statement above
         // Clamps the fuel level between 0 and the max fuel level
@@ -97,7 +139,7 @@ public class Generator : Interactable
         {
             return;
         }
-    }
+    }*/
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void IsFuelingRpc()
@@ -123,12 +165,7 @@ public class Generator : Interactable
     {
         if (speedChange)
             return Mathf.Clamp01(fuelingProgress.Value / fuelMax);
-        else
-        {
-            if (FuelCheck())
-                return 1f;
-            else
-                return 0f;
-        }
+
+        return FuelCheck() ? 1f : 0f;
     }
 }

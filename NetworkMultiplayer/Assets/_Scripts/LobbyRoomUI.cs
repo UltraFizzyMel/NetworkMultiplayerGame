@@ -43,11 +43,8 @@ public class LobbyRoomUI : MonoBehaviour
 
     private Lobby _currentLobby;
     private bool _isHost;
-    private bool _isReady;
     private bool _isTransitioning;
     private bool _hasUpdatedVisuals;
-    private bool _isUpdatingLobby;
-    private bool _stopUpdateLoop;
 
     private const string GameSceneName = "GameScene";
 
@@ -63,13 +60,9 @@ public class LobbyRoomUI : MonoBehaviour
             NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
         }
 
-        _stopUpdateLoop = true;
-        _isUpdatingLobby = false;
         _currentLobby = null;
         Instance = null;
     }
-
-    private void OnDisable() => _stopUpdateLoop = true;
 
     // ─── Open ────────────────────────────────────────────────────────────────
 
@@ -82,9 +75,7 @@ public class LobbyRoomUI : MonoBehaviour
     {
         _currentLobby = lobby;
         _isHost = AuthenticationService.Instance.PlayerId == lobby.HostId;
-        _isReady = false;
         _isTransitioning = false;
-        _stopUpdateLoop = false;
         _hasUpdatedVisuals = false;
 
         lobbyListParent.SetActive(false);
@@ -295,7 +286,6 @@ public class LobbyRoomUI : MonoBehaviour
 
         _currentLobby = null;
 
-        _isReady = false;
         _hasUpdatedVisuals = false;
         _isTransitioning = false;
 
@@ -360,8 +350,6 @@ public class LobbyRoomUI : MonoBehaviour
 
     private void StopAllBackgroundProcesses()
     {
-        _stopUpdateLoop = true;
-        _isUpdatingLobby = false;
         LobbyManager.Instance?.StopAllLobbyProcesses();
     }
 
@@ -382,8 +370,6 @@ public class LobbyRoomUI : MonoBehaviour
 
         btnReadyOne.interactable = false;
         btnReadyTwo.interactable = false;
-
-        _isReady = false;
     }
 
     public void LockLobbyUI()

@@ -37,7 +37,6 @@ using UnityEngine;
 
 public class BoatTiltVisual : MonoBehaviour
 {
-    [SerializeField] private Transform boatVisual;
     [SerializeField] private float tiltAmount = 10f;
     [SerializeField] private float tiltSpeed = 5f;
 
@@ -46,29 +45,27 @@ public class BoatTiltVisual : MonoBehaviour
 
     private void LateUpdate()
     {
-        // LateUpdate ensures all animation/physics has settled for this frame
-        // before we read the steering value and modify the rotation.
+        // LateUpdate ensures all animation/physics has settled for this frame] before reading the steering value and modify the rotation.
         if (NetworkManager.Singleton == null) return;
         if (!NetworkManager.Singleton.IsClient) return;
         if (BoatSteeringManager.Instance == null) return;
-        if (boatVisual == null) return;
 
-        // Capture once, on the first frame everything is ready, so we get the
-        // mesh's true resting pose rather than whatever Unity default-initialises.
+        // Capture once, on the first frame everything is ready, so we get the mesh's true resting pose rather than whatever Unity default-initialises.
         if (!_baseRotationCaptured)
         {
-            _baseRotation = boatVisual.localRotation;
+            _baseRotation = transform.localRotation;
             _baseRotationCaptured = true;
+            return;
         }
 
         float steering = BoatSteeringManager.Instance.SteeringAmount.Value;
+
         // Tilt offset only on Z. Positive steering → tilt right (negative Z).
-        Quaternion tiltOffset = Quaternion.Euler(0f, 0f, steering * -tiltAmount);
-        // Compose: base pose first, then tilt on top.
+        Quaternion tiltOffset = Quaternion.Euler(0f, 0f, steering * tiltAmount);
         Quaternion target = _baseRotation * tiltOffset;
 
-        boatVisual.localRotation = Quaternion.Lerp(
-            boatVisual.localRotation,
+        transform.localRotation = Quaternion.Lerp(
+            transform.localRotation,
             target,
             Time.deltaTime * tiltSpeed);
     }
