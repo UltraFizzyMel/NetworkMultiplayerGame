@@ -78,7 +78,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     [Header("UI Settings")]
     [SerializeField] private GameObject TentacleUI;
-    private Color tentacleTransparency;
     [SerializeField]private float maxTransparency = 250f;
 
     public override void OnNetworkSpawn()
@@ -164,7 +163,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             Debug.Log($"Chromatic: {chromatic}");
         }
         TentacleUI = GameObject.Find("TentacleUI");
-        Image tentacleImage = TentacleUI.GetComponent<Image>();
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -416,6 +414,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             timer += Time.deltaTime;
             float t = Mathf.Clamp01(timer / totalDuration); // 0 → 1 over the window
             float eased = Mathf.SmoothStep(0f, 1f, t);
+            //float extraEased = Mathf.SmoothStep(0f, 50f, t);
 
             // Steady ramp ────────────────────────────────────────────────────────
             float vignetteBase = Mathf.Lerp(baseVignette, peakVignette, eased);
@@ -435,10 +434,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             vignette.intensity.value = Mathf.Clamp01(vignetteBase + pulseAmt);
             chromatic.intensity.value = Mathf.Clamp01(chromaticBase);
             lens.intensity.value = lensBase;
+            
 
-            Image tentacleImage = TentacleUI.GetComponent<Image>();
+            RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
             Color colorVar = tentacleImage.color;
-            colorVar.a = transparencyvalue;
+            colorVar.a = Mathf.Clamp01(transparencyvalue);
             tentacleImage.color = colorVar;
 
             yield return null;
@@ -496,6 +496,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float t = timer / halfDuration;
 
             float eased = Mathf.SmoothStep(0f, 1f, t);
+            float extraEased = Mathf.SmoothStep(0f, 3f, t);
 
             lens.intensity.value =
                 Mathf.Lerp(peakLens, lensBaseValue, eased);
@@ -506,9 +507,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             chromatic.intensity.value =
                 Mathf.Lerp(peakChromatic, chromaticBaseValue, eased);
 
-            Image tentacleImage = TentacleUI.GetComponent<Image>();
+            RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
             Color colorVar = tentacleImage.color;
-            colorVar.a = Mathf.Lerp(maxTransparency, 0f, eased); 
+            colorVar.a = Mathf.Lerp(maxTransparency, 0f, extraEased); 
             tentacleImage.color = colorVar;
 
             yield return null;
