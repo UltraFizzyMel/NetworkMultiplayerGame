@@ -18,12 +18,12 @@ public class RockSetter : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        SelectActiveRocks();
+        StartCoroutine(SelectActiveRocks());
     }
 
     public IEnumerator SelectActiveRocks()
     {
-        yield return new WaitForSecondsRealtime(waitTime);
+        yield return new WaitForSeconds(waitTime);
 
         // if there are previous rocks set one of the new rocks based on the previous set rocks
         if (previousSetter != null)
