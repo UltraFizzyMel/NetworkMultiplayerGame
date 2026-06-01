@@ -7917,7 +7917,7 @@ GameObject:
   - component: {fileID: 492471318}
   - component: {fileID: 492471317}
   m_Layer: 5
-  m_Name: Tentacles
+  m_Name: TentacleUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
