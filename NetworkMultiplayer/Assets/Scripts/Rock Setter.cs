@@ -1,7 +1,8 @@
-using UnityEngine;
-using Unity.Netcode;
-using System.Security.Cryptography;
 using System.Collections;
+using System.Security.Cryptography;
+using Unity.Netcode;
+using UnityEditor.Overlays;
+using UnityEngine;
 
 public class RockSetter : NetworkBehaviour
 {
@@ -31,25 +32,29 @@ public class RockSetter : NetworkBehaviour
             int rockOne = 0;
             while (rockOne == 0 || rockOne == previousSetter.rockNo)
             {
-                rockNo = Random.Range(1, 4);
+                
+                rockOne = Random.Range(1, 4);
+                rockNo = rockOne;
+                yield return null;
             }
-            rocks[rockOne].SetActive(true);           
+            rocks[rockOne-1].SetActive(true);           
         }
         else
         {
             rockNo = Random.Range(1, 4);
-            rocks[rockNo].SetActive(true);
+            rocks[rockNo-1].SetActive(true);
         }
 
         
         if (rocksActive > 1)
         {
            int rockTwo = 0;
-            while (rockTwo == 0 || rockTwo == rockNo)
+            while (rockTwo == 0 || rockTwo == rockNo || rockTwo == previousSetter.rockNo)
             {
-               rockTwo = Random.Range(1, 4);
+                rockTwo = Random.Range(1, 4);
+                yield return null;
             }
-            rocks[rockTwo].SetActive(true);
+            rocks[rockTwo-1].SetActive(true);
         }
     }
 }

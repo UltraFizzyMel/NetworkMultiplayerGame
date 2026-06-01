@@ -394,6 +394,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         const float baseLens = 0f;
         const float peakLens = -0.6f;  // Slight squeeze
 
+       // const float baseTransparency = 0f;
+
         // ── How fast the pulse heartbeat beats (starts slow, quickens) ───────────
         // Pulse frequency ramps from 0.5 Hz to 3 Hz over the warning window.
         float minFreq = 0.5f;
