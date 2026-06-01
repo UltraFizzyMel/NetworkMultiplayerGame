@@ -856,6 +856,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1340329586}
   - component: {fileID: 1340329588}
+  - component: {fileID: 1340329589}
   - component: {fileID: 1340329587}
   m_Layer: 5
   m_Name: RawImage
@@ -918,6 +919,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1340329585}
   m_CullTransparentMesh: 1
+--- !u!114 &1340329589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340329585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221eeaba52eb3b94b893c4ed44f5f568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteCycler
+  images:
+  - {fileID: 2800000, guid: 2c9d10ec0e08754469645922234ebc54, type: 3}
+  - {fileID: 2800000, guid: 77f23738cb6e784479f2db635b821e8e, type: 3}
+  - {fileID: 2800000, guid: ad77e852f9db1a4468d96c51a1b6b076, type: 3}
+  - {fileID: 2800000, guid: 96ddf6b0409cf2b468ae2327e496cf0b, type: 3}
+  - {fileID: 2800000, guid: a45844fee18aea147ab02fc615fafdd4, type: 3}
+  cycleTime: 1
 --- !u!1 &1562164915
 GameObject:
   m_ObjectHideFlags: 0
