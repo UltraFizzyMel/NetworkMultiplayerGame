@@ -19,6 +19,18 @@ public class RockSetter : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        RequestSpawnServerRpc();
+        
+    }
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RequestSpawnServerRpc()
+    {
+        RequestSpawnClientRpc();
+    }
+
+    [ClientRpc]
+    public void RequestSpawnClientRpc()
+    {
         StartCoroutine(SelectActiveRocks());
     }
 
