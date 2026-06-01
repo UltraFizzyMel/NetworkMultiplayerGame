@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
+//using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : NetworkBehaviour, IObjectPickUpParent
@@ -74,6 +75,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private float chromaticBaseValue = 0f;
     [SerializeField] float chromaticChangeValue = 1f;
     [SerializeField] private float teleportEffectDuration = 0.8f;
+
+    [Header("UI Settings")]
+    [SerializeField] private GameObject TentacleUI;
+    private Color tentacleTransparency;
+    [SerializeField]private float maxTransparency = 250f;
 
     public override void OnNetworkSpawn()
     {
@@ -157,6 +163,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             Debug.Log($"Vignette: {vignette}");
             Debug.Log($"Chromatic: {chromatic}");
         }
+        TentacleUI = GameObject.Find("TentacleUI");
+        Image tentacleImage = TentacleUI.GetComponent<Image>();
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -394,7 +402,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         const float baseLens = 0f;
         const float peakLens = -0.6f;  // Slight squeeze
 
-       // const float baseTransparency = 0f;
+        const float baseTransparency = 0f;
 
         // ── How fast the pulse heartbeat beats (starts slow, quickens) ───────────
         // Pulse frequency ramps from 0.5 Hz to 3 Hz over the warning window.
@@ -413,6 +421,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float vignetteBase = Mathf.Lerp(baseVignette, peakVignette, eased);
             float chromaticBase = Mathf.Lerp(baseChromatic, peakChromatic, eased);
             float lensBase = Mathf.Lerp(baseLens, peakLens, eased);
+            float transparencyvalue = Mathf.Lerp(baseTransparency, maxTransparency, t);
 
             // Heartbeat pulse on top of the ramp ─────────────────────────────────
             // Frequency increases as t approaches 1
@@ -421,9 +430,16 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
                                                                          // Scale pulse magnitude up as the swap gets closer
             float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;
 
+            
+
             vignette.intensity.value = Mathf.Clamp01(vignetteBase + pulseAmt);
             chromatic.intensity.value = Mathf.Clamp01(chromaticBase);
             lens.intensity.value = lensBase;
+
+            Image tentacleImage = TentacleUI.GetComponent<Image>();
+            Color colorVar = tentacleImage.color;
+            colorVar.a = transparencyvalue;
+            tentacleImage.color = colorVar;
 
             yield return null;
         }
@@ -489,6 +505,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
             chromatic.intensity.value =
                 Mathf.Lerp(peakChromatic, chromaticBaseValue, eased);
+
+            Image tentacleImage = TentacleUI.GetComponent<Image>();
+            Color colorVar = tentacleImage.color;
+            colorVar.a = Mathf.Lerp(maxTransparency, 0f, eased); 
+            tentacleImage.color = colorVar;
 
             yield return null;
         }
