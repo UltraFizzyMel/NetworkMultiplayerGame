@@ -1,0 +1,55 @@
+using UnityEngine;
+using Unity.Netcode;
+using System.Security.Cryptography;
+using System.Collections;
+
+public class RockSetter : NetworkBehaviour
+{
+    [SerializeField] GameObject[] rocks;
+    
+
+    [SerializeField] private int rocksActive; 
+    [SerializeField] private int rockNo;
+    [SerializeField] private float waitTime;
+    [SerializeField] RockSetter previousSetter;
+    
+    
+
+
+    public override void OnNetworkSpawn()
+    {
+        SelectActiveRocks();
+    }
+
+    public IEnumerator SelectActiveRocks()
+    {
+        yield return new WaitForSecondsRealtime(waitTime);
+
+        // if there are previous rocks set one of the new rocks based on the previous set rocks
+        if (previousSetter != null)
+        {
+            int rockOne = 0;
+            while (rockOne == 0 || rockOne == previousSetter.rockNo)
+            {
+                rockNo = Random.Range(1, 4);
+            }
+            rocks[rockOne].SetActive(true);           
+        }
+        else
+        {
+            rockNo = Random.Range(1, 4);
+            rocks[rockNo].SetActive(true);
+        }
+
+        
+        if (rocksActive > 1)
+        {
+           int rockTwo = 0;
+            while (rockTwo == 0 || rockTwo == rockNo)
+            {
+               rockTwo = Random.Range(1, 4);
+            }
+            rocks[rockTwo].SetActive(true);
+        }
+    }
+}
