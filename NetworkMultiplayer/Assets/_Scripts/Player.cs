@@ -575,7 +575,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
             RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
             Color colorVar = tentacleImage.color;
-            colorVar.a = Mathf.Lerp(maxTransparency, 0f, extraEased); 
+            colorVar.a = Mathf.Lerp(1f, 0f, extraEased); 
             tentacleImage.color = colorVar;
 
             yield return null;
