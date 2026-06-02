@@ -18743,7 +18743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e16358aecdb2f4cbc3a09875ea33b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoatTiltVisual
-  tiltAmount: 3
+  tiltAmount: 1
   tiltSpeed: 2
 --- !u!64 &1144303781
 MeshCollider:
