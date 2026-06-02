@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 
-public class GeneratorProgressBar : MonoBehaviour
+public class GeneratorProgressBar : NetworkBehaviour
 {
     [SerializeField] private Generator generator;
     [SerializeField] private Image barImage;
