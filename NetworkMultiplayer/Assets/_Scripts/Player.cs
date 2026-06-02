@@ -508,7 +508,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private IEnumerator SwapWarningTntacles(float totalDuration)
     {
-        yield return new WaitForSeconds(tentacleWait);
+        //yield return new WaitForSeconds(tentacleWait);
         // ── Baseline values (match resting / TeleportSequence start values) ─
 
         const float baseTransparency = 0f;
@@ -525,7 +525,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         {
             timer += Time.deltaTime;
             float t = Mathf.Clamp01(timer / totalDuration); // 0 → 1 over the window
-            float eased = Mathf.SmoothStep(0f, 0.75f, t);
+            float eased = Mathf.SmoothStep(0f, 0.65f, t);
 
             // Steady ramp ────────────────────────────────────────────────────────
             float transparencyBase = Mathf.Lerp(baseTransparency, 1f, eased);
@@ -604,7 +604,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float t = timer / halfDuration;
 
             float eased = Mathf.SmoothStep(0f, 1f, t);
-            float extraEased = Mathf.SmoothStep(0f, 3f, timer/duration);
+            float extraEased = Mathf.SmoothStep(0f, 3f, t);
 
             lens.intensity.value =
                 Mathf.Lerp(peakLens, lensBaseValue, eased);
