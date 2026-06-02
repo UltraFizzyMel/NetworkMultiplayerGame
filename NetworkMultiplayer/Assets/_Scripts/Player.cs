@@ -76,8 +76,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private float chromaticBaseValue = 0f;
     [SerializeField] float chromaticChangeValue = 1f;
     [SerializeField] private float teleportEffectDuration = 0.8f;
+    [SerializeField] private float tentacleEffectDuration = 4f;
     //Fog effects
-    
+
     [Header("Fog Effects")]
     private ColorAdjustments _colorAdj;
     private Color _baseColor;
@@ -450,6 +451,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         if (!IsOwner) return;
         StopCoroutine(nameof(SwapWarningSequence)); // Prevent stacking
         StartCoroutine(SwapWarningSequence(duration));
+
+       
+        StartCoroutine(SwapWarningTntacles(tentacleEffectDuration));
     }
 
     private IEnumerator SwapWarningSequence(float totalDuration)
@@ -463,6 +467,47 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         const float baseLens = 0f;
         const float peakLens = -0.6f;  // Slight squeeze
+
+        RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
+
+        // ── How fast the pulse heartbeat beats (starts slow, quickens) ───────────
+        // Pulse frequency ramps from 0.5 Hz to 3 Hz over the warning window.
+        float minFreq = 0.5f;
+        float maxFreq = 3.0f;
+
+        float timer = 0f;
+
+        while (timer < totalDuration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / totalDuration); // 0 → 1 over the window
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+
+            // Steady ramp ────────────────────────────────────────────────────────
+            float vignetteBase = Mathf.Lerp(baseVignette, peakVignette, eased);
+            float chromaticBase = Mathf.Lerp(baseChromatic, peakChromatic, eased);
+            float lensBase = Mathf.Lerp(baseLens, peakLens, eased);
+
+            // Heartbeat pulse on top of the ramp ─────────────────────────────────
+            // Frequency increases as t approaches 1
+            float freq = Mathf.Lerp(minFreq, maxFreq, t);
+            float pulse = Mathf.Abs(Mathf.Sin(timer * freq * Mathf.PI)); // 0 → 1 → 0 …
+                                                                         // Scale pulse magnitude up as the swap gets closer
+            float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;            
+
+            vignette.intensity.value = Mathf.Clamp01(vignetteBase + pulseAmt);
+            chromatic.intensity.value = Mathf.Clamp01(chromaticBase);
+            lens.intensity.value = lensBase;
+
+          
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator SwapWarningTntacles(float totalDuration)
+    {
+        // ── Baseline values (match resting / TeleportSequence start values) ─
 
         const float baseTransparency = 0f;
         RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
@@ -479,12 +524,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             timer += Time.deltaTime;
             float t = Mathf.Clamp01(timer / totalDuration); // 0 → 1 over the window
             float eased = Mathf.SmoothStep(0f, 1f, t);
-            //float extraEased = Mathf.SmoothStep(0f, 50f, t);
 
             // Steady ramp ────────────────────────────────────────────────────────
-            float vignetteBase = Mathf.Lerp(baseVignette, peakVignette, eased);
-            float chromaticBase = Mathf.Lerp(baseChromatic, peakChromatic, eased);
-            float lensBase = Mathf.Lerp(baseLens, peakLens, eased);
             float transparencyBase = Mathf.Lerp(baseTransparency, maxTransparency, eased);
 
             // Heartbeat pulse on top of the ramp ─────────────────────────────────
@@ -492,11 +533,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float freq = Mathf.Lerp(minFreq, maxFreq, t);
             float pulse = Mathf.Abs(Mathf.Sin(timer * freq * Mathf.PI)); // 0 → 1 → 0 …
                                                                          // Scale pulse magnitude up as the swap gets closer
-            float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;            
-
-            vignette.intensity.value = Mathf.Clamp01(vignetteBase + pulseAmt);
-            chromatic.intensity.value = Mathf.Clamp01(chromaticBase);
-            lens.intensity.value = lensBase;
+            float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;
 
             // Pulse gets stronger over time
             float transparencyPulse = Mathf.Lerp(0.05f, 0.25f, t) * pulse;
@@ -504,12 +541,14 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             // Combine them
             float transparencyValue = Mathf.Clamp01(transparencyBase + transparencyPulse);
             Color colorVar = tentacleImage.color;
-            colorVar.a = transparencyValue;
+            colorVar.a = transparencyBase;
             tentacleImage.color = colorVar;
 
             yield return null;
         }
     }
+
+
 
     [ClientRpc]
     public void TeleportClientRpc(Vector3 pos, Quaternion rot)
@@ -524,6 +563,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private IEnumerator TeleportSequence(Vector3 pos, Quaternion rot)
     {
+        StopCoroutine(nameof(SwapWarningTntacles)); // Prevent stacking
         float duration = teleportEffectDuration;
         float halfDuration = duration * 0.5f;
 
@@ -562,7 +602,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float t = timer / halfDuration;
 
             float eased = Mathf.SmoothStep(0f, 1f, t);
-            float extraEased = Mathf.SmoothStep(0f, 3f, t);
+            float extraEased = Mathf.SmoothStep(0f, 3f, timer/duration);
 
             lens.intensity.value =
                 Mathf.Lerp(peakLens, lensBaseValue, eased);
@@ -586,6 +626,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         lens.intensity.value = lensBaseValue;
         vignette.intensity.value = vignetteBaseValue;
         chromatic.intensity.value = chromaticBaseValue;
+
     }
 
     private void HandleInteractions()
