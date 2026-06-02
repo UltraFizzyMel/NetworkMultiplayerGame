@@ -292,6 +292,7 @@ MonoBehaviour:
   chromaticChangeValue: 1
   teleportEffectDuration: 2
   tentacleEffectDuration: 4
+  tentacleWait: 2
   warningFogColor: {r: 0.4, g: 0.40784314, b: 0.50980395, a: 1}
   deathFogColor: {r: 0.29803923, g: 0.30588236, b: 0.40392157, a: 1}
   fogBlendSpeed: 2

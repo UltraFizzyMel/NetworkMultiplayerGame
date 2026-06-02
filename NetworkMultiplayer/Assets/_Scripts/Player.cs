@@ -77,6 +77,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] float chromaticChangeValue = 1f;
     [SerializeField] private float teleportEffectDuration = 0.8f;
     [SerializeField] private float tentacleEffectDuration = 4f;
+    [SerializeField] private float tentacleWait = 2f;
     //Fog effects
 
     [Header("Fog Effects")]
@@ -507,6 +508,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private IEnumerator SwapWarningTntacles(float totalDuration)
     {
+        yield return new WaitForSeconds(tentacleWait);
         // ── Baseline values (match resting / TeleportSequence start values) ─
 
         const float baseTransparency = 0f;
@@ -523,10 +525,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         {
             timer += Time.deltaTime;
             float t = Mathf.Clamp01(timer / totalDuration); // 0 → 1 over the window
-            float eased = Mathf.SmoothStep(0f, 1f, t);
+            float eased = Mathf.SmoothStep(0f, 0.75f, t);
 
             // Steady ramp ────────────────────────────────────────────────────────
-            float transparencyBase = Mathf.Lerp(baseTransparency, maxTransparency, eased);
+            float transparencyBase = Mathf.Lerp(baseTransparency, 1f, eased);
 
             // Heartbeat pulse on top of the ramp ─────────────────────────────────
             // Frequency increases as t approaches 1
@@ -541,7 +543,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             // Combine them
             float transparencyValue = Mathf.Clamp01(transparencyBase + transparencyPulse);
             Color colorVar = tentacleImage.color;
-            colorVar.a = transparencyBase;
+            colorVar.a = transparencyValue;
             tentacleImage.color = colorVar;
 
             yield return null;
