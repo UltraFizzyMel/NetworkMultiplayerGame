@@ -452,7 +452,8 @@ MonoBehaviour:
     our blasted boat!\n\nRegardless of what mental state we are in, or the disrepair
     of our vessel, we will make it to the lighthouse at all costs. Keep the generator
     running, course firm, and leaks repaired. \n\n\nOr else we will befall the same
-    fate as our comrades. \n\n\nSOS from the OBMEN... "
+    fate as our comrades. \n\n\nSOS from the OBMEN...\n\nSOS SOS SOS SOS SOS SOS
+    SOS SOS SOS "
   speed: 0.05
 --- !u!1 &576246912
 GameObject:
@@ -1652,7 +1653,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 17, y: -234}
+  m_AnchoredPosition: {x: 17, y: -230.8}
   m_SizeDelta: {x: 1900, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1292106530
@@ -2432,7 +2433,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 29d0f47224411844abb9a8e1726f8dab, type: 3}
+  m_Resource: {fileID: 8300000, guid: a1c9cab4a3b2df544a856e3ba414df67, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2561,7 +2562,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: a1c9cab4a3b2df544a856e3ba414df67, type: 3}
+  m_Resource: {fileID: 8300000, guid: 29d0f47224411844abb9a8e1726f8dab, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
