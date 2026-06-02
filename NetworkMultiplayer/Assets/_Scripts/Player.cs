@@ -94,6 +94,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private GameObject TentacleUI;
     [SerializeField]private float maxTransparency = 250f;
 
+    [Header("Animator Params")]
+    [SerializeField] private string speedParam = "Speed";
+    [SerializeField] private Animator animator;
+
     public override void OnNetworkSpawn()
     {
         Debug.Log($"=== PLAYER SPAWNED === OwnerClientId: {OwnerClientId}, IsOwner: {IsOwner}, IsServer: {IsServer}, IsClient: {IsClient}, IsHost: {IsHost}, NetworkObjectId: {NetworkObjectId}");
@@ -177,6 +181,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             Debug.Log($"Vignette: {vignette}");
             Debug.Log($"Chromatic: {chromatic}");
         }
+        animator = GetComponent<Animator>();
         TentacleUI = GameObject.Find("TentacleUI");
         _baseColor = _colorAdj.colorFilter.value;
         _targetFogColor = _baseColor;
@@ -214,6 +219,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             return;
 
         NormalMovementUpdate();
+        
 
         /*ApplyGravity();
 
@@ -264,6 +270,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         cameraPivot.localEulerAngles =
             new Vector3(pitch, 0f, 0f);
+
+        if (animator) animator.SetFloat(speedParam, m.magnitude);
     }
 
     private void HandleSteeringMode()

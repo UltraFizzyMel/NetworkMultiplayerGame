@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Security.Cryptography;
 using Unity.Netcode;
-using UnityEditor.Overlays;
 using UnityEngine;
 
 public class RockSetter : NetworkBehaviour
