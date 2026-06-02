@@ -9,6 +9,7 @@ public class EnvironmentMover : NetworkBehaviour
     private BoatSteeringManager _steering;
 
     [SerializeField] private bool ignoreSteering;
+    [SerializeField] private bool ignoreMovement;
 
     private void Update()
     {
@@ -37,18 +38,22 @@ public class EnvironmentMover : NetworkBehaviour
         //Doesn't change steering influence for different environments (rocks vs lighthouse)
         //Vector3 moveDirection = new Vector3(-moveSpeed, 0f, steering * steeringInfluence);
 
-        Vector3 moveDirection =
-            Vector3.left * moveSpeed;
+        Vector3 moveDirection = Vector3.zero;
 
-        //Only apply steering influence if not ignored, lighthouse will move forward without steering influence for now
-        //So player doesn't go too far right or too far left when approaching end point, but still moves forward
-        if (!ignoreSteering)
+        // FORWARD MOVEMENT (X AXIS)
+        // Objects with ignoreMovement enabled will stay near the boat instead of drifting away
+        if (!ignoreMovement || !FogZoneManager.BlockForwardMovement)
         {
-            moveDirection +=
-                Vector3.forward *
-                (steering * steeringInfluence);
+            moveDirection += Vector3.left * moveSpeed;
         }
 
-        transform.position += moveDirection * Time.deltaTime;        
+        // STEERING MOVEMENT (Z AXIS)
+        // Objects with ignoreSteering enabled won't sway left/right with the boat
+        if (!ignoreSteering)
+        {
+            moveDirection += Vector3.forward * (steering * steeringInfluence);
+        }
+
+        transform.position += moveDirection * Time.deltaTime;
     }
 }

@@ -39,4 +39,13 @@ public class BoatWinLoseController : NetworkBehaviour {
         Debug.Log("[WinLose] Game Won");
         NetworkManager.SceneManager.LoadScene("WonGame", LoadSceneMode.Single);
     }
+
+    // Called by FogZoneManager (death zone timeout) and water loss condition.
+    public void LoseGame()
+    {
+        if (!IsServer || _isGameOver) return;
+        _isGameOver = true;
+        Debug.Log("[WinLose] Lost");
+        NetworkManager.SceneManager.LoadScene("LostGame", LoadSceneMode.Single);
+    }
 }

@@ -65,6 +65,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     [Header("Global Volume Settings")]
     [SerializeField] private Volume globalVolume;
+    //Swapping effects
     private LensDistortion lens;
     [SerializeField] private float lensBaseValue = 0f;
     [SerializeField] float lensChangeValue = -0.45f;
@@ -75,6 +76,19 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private float chromaticBaseValue = 0f;
     [SerializeField] float chromaticChangeValue = 1f;
     [SerializeField] private float teleportEffectDuration = 0.8f;
+    //Fog effects
+    
+    [Header("Fog Effects")]
+    private ColorAdjustments _colorAdj;
+    private Color _baseColor;
+    [SerializeField] private Color warningFogColor = new Color32(102, 104, 130, 255);
+
+    [SerializeField] private Color deathFogColor = new Color32(76, 78, 103, 255);
+
+    [SerializeField] private float fogBlendSpeed = 2f;
+
+    private Color _targetFogColor = Color.white;
+    private Color currentFogColor = Color.white;
 
     [Header("UI Settings")]
     [SerializeField] private GameObject TentacleUI;
@@ -157,12 +171,15 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             globalVolume.profile.TryGet(out lens);
             globalVolume.profile.TryGet(out vignette);
             globalVolume.profile.TryGet(out chromatic);
+            globalVolume.profile.TryGet(out _colorAdj);
 
             Debug.Log($"Lens: {lens}");
             Debug.Log($"Vignette: {vignette}");
             Debug.Log($"Chromatic: {chromatic}");
         }
         TentacleUI = GameObject.Find("TentacleUI");
+        _baseColor = _colorAdj.colorFilter.value;
+        _targetFogColor = _baseColor;
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -292,6 +309,45 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cameraPivot.localRotation = Quaternion.Euler(steeringPitch, steeringYaw, 0f);
     }
 
+    public void SetFogVisuals(Color color)
+    {
+        _targetFogColor = color;
+    }
+
+    public void ResetFogVisuals()
+    {
+        _targetFogColor = _baseColor;
+    }
+
+    private void LateUpdate()
+    {
+        if (!IsOwner)
+            return;
+
+        if (_colorAdj)
+            UpdateFogVisuals();
+    }
+
+    private void UpdateFogVisuals()
+    {
+        currentFogColor = Color.Lerp(
+            currentFogColor,
+            _targetFogColor,
+            Time.deltaTime * fogBlendSpeed);
+
+        _colorAdj.colorFilter.value = currentFogColor;
+    }
+
+    public void SetWarningFogVisuals()
+    {
+        _targetFogColor = warningFogColor;
+    }
+
+    public void SetDeathFogVisuals()
+    {
+        _targetFogColor = deathFogColor;
+    }
+
     [ClientRpc]
     public void SpawnPlayerClientRpc(Vector3 position, Quaternion rotation, bool isDeck)
     {
@@ -401,6 +457,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         const float peakLens = -0.6f;  // Slight squeeze
 
         const float baseTransparency = 0f;
+        RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
 
         // ── How fast the pulse heartbeat beats (starts slow, quickens) ───────────
         // Pulse frequency ramps from 0.5 Hz to 3 Hz over the warning window.
@@ -420,25 +477,26 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             float vignetteBase = Mathf.Lerp(baseVignette, peakVignette, eased);
             float chromaticBase = Mathf.Lerp(baseChromatic, peakChromatic, eased);
             float lensBase = Mathf.Lerp(baseLens, peakLens, eased);
-            float transparencyvalue = Mathf.Lerp(baseTransparency, maxTransparency, t);
+            float transparencyBase = Mathf.Lerp(baseTransparency, maxTransparency, eased);
 
             // Heartbeat pulse on top of the ramp ─────────────────────────────────
             // Frequency increases as t approaches 1
             float freq = Mathf.Lerp(minFreq, maxFreq, t);
             float pulse = Mathf.Abs(Mathf.Sin(timer * freq * Mathf.PI)); // 0 → 1 → 0 …
                                                                          // Scale pulse magnitude up as the swap gets closer
-            float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;
-
-            
+            float pulseAmt = Mathf.Lerp(0.04f, 0.12f, t) * pulse;            
 
             vignette.intensity.value = Mathf.Clamp01(vignetteBase + pulseAmt);
             chromatic.intensity.value = Mathf.Clamp01(chromaticBase);
             lens.intensity.value = lensBase;
-            
 
-            RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
+            // Pulse gets stronger over time
+            float transparencyPulse = Mathf.Lerp(0.05f, 0.25f, t) * pulse;
+
+            // Combine them
+            float transparencyValue = Mathf.Clamp01(transparencyBase + transparencyPulse);
             Color colorVar = tentacleImage.color;
-            colorVar.a = Mathf.Clamp01(transparencyvalue);
+            colorVar.a = transparencyValue;
             tentacleImage.color = colorVar;
 
             yield return null;
