@@ -7,17 +7,26 @@ using UnityEngine;
 public class RockSetter : NetworkBehaviour
 {
     [SerializeField] GameObject[] rocks;
-    
 
     [SerializeField] private int rocksActive; 
     [SerializeField] private int rockNo;
     [SerializeField] private float waitTime;
-    [SerializeField] RockSetter previousSetter;
-    
-    
-
+    [SerializeField] RockSetter previousSetter; 
 
     public override void OnNetworkSpawn()
+    {
+        RequestSpawnServerRpc();
+        
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RequestSpawnServerRpc()
+    {
+        RequestSpawnClientRpc();
+    }
+
+    [ClientRpc]
+    public void RequestSpawnClientRpc()
     {
         StartCoroutine(SelectActiveRocks());
     }

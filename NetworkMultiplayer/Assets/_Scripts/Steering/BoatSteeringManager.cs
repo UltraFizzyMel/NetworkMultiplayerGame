@@ -76,6 +76,9 @@ public class BoatSteeringManager : NetworkBehaviour
 
     private float _targetSteering;
 
+    public bool blockLeftSteering;
+    public bool blockRightSteering;
+
     private void Awake() => Instance = this;
 
     public override void OnNetworkDespawn()
@@ -96,7 +99,22 @@ public class BoatSteeringManager : NetworkBehaviour
     // Call from any client or the server. Input is clamped to -1..1 for normal steering; ApplySteeringKnockback can push it beyond that temporarily
     public void SetSteering(float input)
     {
-        SetSteeringServerRpc(Mathf.Clamp(input, -1f, 1f));
+        //SetSteeringServerRpc(Mathf.Clamp(input, -1f, 1f));
+        input = Mathf.Clamp(input, -1f, 1f);
+
+        // Trying to steer LEFT while blocked
+        if (blockLeftSteering && input < 0f)
+        {
+            input = 0f;
+        }
+
+        // Trying to steer RIGHT while blocked
+        if (blockRightSteering && input > 0f)
+        {
+            input = 0f;
+        }
+
+        SetSteeringServerRpc(input);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
