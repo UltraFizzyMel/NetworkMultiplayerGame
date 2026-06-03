@@ -1,5 +1,4 @@
-﻿// ─── FogZoneManager.cs ───────────────────────────────────────────────────────
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -117,6 +116,17 @@ public class FogZoneManager : MonoBehaviour
         if (BoatSteeringManager.Instance == null) return;
         if (isRight) BoatSteeringManager.Instance.blockRightSteering = blocked;
         else BoatSteeringManager.Instance.blockLeftSteering = blocked;
+    }
+
+    public void ReapplySteeringBlocks()
+    {
+        if (BoatSteeringManager.Instance == null) return;
+
+        // _ignoreLeft/Right track whether each side's IgnoreSteering zone is active.
+        // Re-writing them forces the steering manager back to the correct state
+        // regardless of when the swap and the trigger happened relative to each other.
+        BoatSteeringManager.Instance.blockLeftSteering = _ignoreLeft;
+        BoatSteeringManager.Instance.blockRightSteering = _ignoreRight;
     }
 
     // ─── Death timer ──────────────────────────────────────────────────────────

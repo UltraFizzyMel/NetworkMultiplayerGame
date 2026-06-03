@@ -25,6 +25,8 @@ public class SteeringWheel : Interactable
         currentPlayer = player;
 
         player.EnterSteering(this);
+
+        FogZoneManager.Instance?.ReapplySteeringBlocks();
     }
 
     /*public override void Cancel(Player player)

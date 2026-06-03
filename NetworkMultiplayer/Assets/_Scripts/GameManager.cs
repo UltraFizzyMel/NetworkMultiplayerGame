@@ -28,6 +28,8 @@ public class GameManager : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
+    public bool HostIsDeck => netIsHostDeck.Value;
+
     private readonly NetworkVariable<bool> _gameReady = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
