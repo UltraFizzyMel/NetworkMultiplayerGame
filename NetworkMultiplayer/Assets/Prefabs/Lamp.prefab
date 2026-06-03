@@ -158,7 +158,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 2
-  m_Color: {r: 0.827451, g: 0.68137264, b: 0.1098039, a: 1}
+  m_Color: {r: 0.827451, g: 0.6177174, b: 0.1098039, a: 1}
   m_Intensity: 35
   m_Range: 13
   m_SpotAngle: 30
@@ -202,7 +202,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 1846
+  m_ColorTemperature: 1765
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -394,6 +394,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2303619249572213515, guid: f9d3eb8ee93254f458c6e9393e5ebf3f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755808831854094565, guid: f9d3eb8ee93254f458c6e9393e5ebf3f, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4787059698779798160, guid: f9d3eb8ee93254f458c6e9393e5ebf3f, type: 3}
