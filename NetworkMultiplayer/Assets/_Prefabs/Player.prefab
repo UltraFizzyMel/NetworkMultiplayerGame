@@ -299,8 +299,8 @@ MonoBehaviour:
   TentacleUI: {fileID: 0}
   maxTransparency: 250
   speedParam: Speed
-  animator: {fileID: 6132192482813377594}
-  networkAnimator: {fileID: 0}
+  animator: {fileID: 8464579338703630471}
+  networkAnimator: {fileID: 7618727227268637169}
 --- !u!114 &-1156579248354491240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,7 +331,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
-  m_Animator: {fileID: 6132192482813377594}
+  m_Animator: {fileID: 71263044690193694}
   TransitionStateInfoList: []
   AnimatorParameterEntries:
     ParameterEntries:
@@ -349,6 +349,10 @@ MonoBehaviour:
       ParameterType: 4
     - name: isUsingBucket
       NameHash: -340725789
+      Synchronize: 1
+      ParameterType: 4
+    - name: isFueling
+      NameHash: 128883688
       Synchronize: 1
       ParameterType: 4
   AnimatorParametersExpanded: 0
@@ -535,7 +539,7 @@ Transform:
   m_GameObject: {fileID: 5374817313668105850}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.70000005, z: 0.069}
+  m_LocalPosition: {x: 0, y: 0.77, z: 0.126}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1086,7 +1090,7 @@ Animator:
   m_GameObject: {fileID: 5094893940470488300}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e439d94163af8d0449869b985400c0ef, type: 2}
+  m_Controller: {fileID: 9100000, guid: ff5bb3f065b5f3649b154ab7f107f2a2, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
