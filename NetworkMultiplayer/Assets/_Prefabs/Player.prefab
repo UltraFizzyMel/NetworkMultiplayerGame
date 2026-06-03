@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2982419664
+  GlobalObjectIdHash: 2594804961
   InScenePlacedSourceGlobalObjectIdHash: 2594804961
   DeferredDespawnTick: 0
   Ownership: 1
@@ -299,7 +299,7 @@ MonoBehaviour:
   TentacleUI: {fileID: 0}
   maxTransparency: 250
   speedParam: Speed
-  animator: {fileID: 0}
+  animator: {fileID: 6132192482813377594}
 --- !u!114 &-1156579248354491240
 MonoBehaviour:
   m_ObjectHideFlags: 0

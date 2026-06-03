@@ -187,6 +187,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         TentacleUI = GameObject.Find("TentacleUI");
         _baseColor = _colorAdj.colorFilter.value;
         _targetFogColor = _baseColor;
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -273,7 +274,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cameraPivot.localEulerAngles =
             new Vector3(pitch, 0f, 0f);
 
-        if (animator) animator.SetFloat(speedParam, m.magnitude);
+        
+        animator.SetFloat(speedParam, m.magnitude);
     }
 
     private void HandleSteeringMode()
