@@ -300,6 +300,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         currentWheel.HandleSteeringInput(moveInput.x);*/
 
         float steeringInput = moveAction.ReadValue<Vector2>().x;
+        animator.SetFloat(speedParam, steeringInput);
 
         // Only fire the ServerRpc when input actually changes
         if (!Mathf.Approximately(steeringInput, _lastSentSteering))
@@ -704,6 +705,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     public void EnterSteering(SteeringWheel wheel)
     {
+        animator.SetBool("isSteering", true);
         if (isSteering)
             return;
 
@@ -737,6 +739,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     public void ExitSteering()
     {
+        animator.SetBool("isSteering", false);
         if (!isSteering)
             return;
 

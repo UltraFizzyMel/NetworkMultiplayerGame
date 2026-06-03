@@ -96,6 +96,8 @@ public class Generator : Interactable
         }
         // The player is not holding something - player can fuel generator
         IsFuelingRpc();
+        player.animator.SetBool("isFueling", true);
+        player.animator.Play("Captain|Generator");
 
         if (MusicManager.Instance != null)
             MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
@@ -103,6 +105,7 @@ public class Generator : Interactable
 
     public override void Cancel(Player player)
     {
+        player.animator.SetBool("isFueling", false);
         IsNotFuelingRpc();
 
     }

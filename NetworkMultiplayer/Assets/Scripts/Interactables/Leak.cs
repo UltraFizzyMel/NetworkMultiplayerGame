@@ -45,7 +45,7 @@ public class Leak : Interactable
                 //The player is holding tape
                 isFixing = true;
                 player.animator.SetBool("isFixing", true);
-                player.animator.Play("Deckhand|Fix");
+                player.animator.Play("Captain|Tape");
                 Debug.Log("Fixing");
             }
             
