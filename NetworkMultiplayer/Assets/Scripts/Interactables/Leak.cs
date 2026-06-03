@@ -18,6 +18,7 @@ public class Leak : Interactable
     [SerializeField] private float fixingRate = 0.5f;
     private bool isFixing;
     [SerializeField] private GameObject leakUI;
+    private Player Player;
 
     public void Update()
     {
@@ -35,7 +36,7 @@ public class Leak : Interactable
 
     public override void Interact(Player player)
     {
-
+        Player = player;
         if (player.HasObjectPickUp())
         {
             //The player is holding something
@@ -43,6 +44,8 @@ public class Leak : Interactable
             {
                 //The player is holding tape
                 isFixing = true;
+                player.animator.SetBool("isFixing", true);
+                player.animator.Play("Deckhand|Fix");
                 Debug.Log("Fixing");
             }
             
@@ -58,6 +61,7 @@ public class Leak : Interactable
 
     public override void Cancel(Player player)
     {
+        player.animator.SetBool("isFixing", false);
         isFixing = false;
        
     }
@@ -77,6 +81,7 @@ public class Leak : Interactable
     public void DestroySelf()
     {
         if (boatLeakManager == null || gameObject == null) return;
+        Player.animator.SetBool("isFixing", false);
         boatLeakManager.RepairLeak();
         Destroy(gameObject);
     }

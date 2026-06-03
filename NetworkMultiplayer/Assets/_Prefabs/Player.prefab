@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2594804961
+  GlobalObjectIdHash: 2982419664
   InScenePlacedSourceGlobalObjectIdHash: 2594804961
   DeferredDespawnTick: 0
   Ownership: 1
@@ -300,6 +300,7 @@ MonoBehaviour:
   maxTransparency: 250
   speedParam: Speed
   animator: {fileID: 6132192482813377594}
+  networkAnimator: {fileID: 0}
 --- !u!114 &-1156579248354491240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,6 +339,18 @@ MonoBehaviour:
       NameHash: -823668238
       Synchronize: 1
       ParameterType: 1
+    - name: isFixing
+      NameHash: -83847156
+      Synchronize: 1
+      ParameterType: 4
+    - name: isSteering
+      NameHash: 1672213631
+      Synchronize: 1
+      ParameterType: 4
+    - name: isUsingBucket
+      NameHash: -340725789
+      Synchronize: 1
+      ParameterType: 4
   AnimatorParametersExpanded: 0
 --- !u!1 &2457219218124793994
 GameObject:
@@ -364,7 +377,7 @@ Transform:
   m_GameObject: {fileID: 2457219218124793994}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.247, y: 0.106, z: 0.479}
+  m_LocalPosition: {x: 0.247, y: 0.106, z: 0.694}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

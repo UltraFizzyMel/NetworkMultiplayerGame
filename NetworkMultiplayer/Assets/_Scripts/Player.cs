@@ -2,6 +2,7 @@
 using System.Collections;
 using Unity.Multiplayer.Center.NetcodeForGameObjectsExample;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -98,7 +99,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     [Header("Animator Params")]
     [SerializeField] private string speedParam = "Speed";
-    [SerializeField] private Animator animator;
+    [SerializeField] public Animator animator;
+    [SerializeField] private NetworkAnimator networkAnimator;
 
     public override void OnNetworkSpawn()
     {
@@ -187,7 +189,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         TentacleUI = GameObject.Find("TentacleUI");
         _baseColor = _colorAdj.colorFilter.value;
         _targetFogColor = _baseColor;
+
         animator = GetComponentInChildren<Animator>();
+        networkAnimator.Animator = animator;
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
