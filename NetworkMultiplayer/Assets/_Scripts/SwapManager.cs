@@ -41,7 +41,7 @@ public class SwapManager : NetworkBehaviour
         // Wait until GameManager finishes spawning everybody
         yield return new WaitUntil(() =>
             GameManager.Instance != null &&
-            GameManager.Instance.PlayersSpawned
+            GameManager.Instance.GameReady()
         );
 
         while (_swapRunning && Application.isPlaying)
