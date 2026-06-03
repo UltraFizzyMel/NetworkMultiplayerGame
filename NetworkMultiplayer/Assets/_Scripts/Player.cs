@@ -64,6 +64,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private float _lastSentSteering = float.NaN;
 
+    public NetworkVariable<bool> IsDeckPlayer = new NetworkVariable<bool>(
+    false,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server);
+
     [Header("Global Volume Settings")]
     [SerializeField] private Volume globalVolume;
     //Swapping effects
@@ -495,6 +500,12 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         if (captain != null)
             captain.SetActive(!isDeck);
+    }
+
+    public void SetRole(bool isDeck)
+    {
+        if (!IsServer) return;
+        IsDeckPlayer.Value = isDeck;
     }
 
     // Called by SwapManager's ClientRpc on the owner client only.

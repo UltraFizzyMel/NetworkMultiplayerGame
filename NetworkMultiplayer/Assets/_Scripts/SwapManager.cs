@@ -137,6 +137,9 @@ public class SwapManager : NetworkBehaviour
 
         _playerAIsDeck = !_playerAIsDeck;
 
+        playerA.SetRole(_playerAIsDeck);
+        playerB.SetRole(!_playerAIsDeck);
+
         playerA.TeleportClientRpc(posA, rotA);
         playerB.TeleportClientRpc(posB, rotB);
 

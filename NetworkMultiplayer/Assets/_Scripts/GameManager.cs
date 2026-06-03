@@ -80,7 +80,7 @@ public class GameManager : NetworkBehaviour
 
             if (playerScript != null)
             {
-                //playerScript.ApplyRoleVisualsClientRpc(isDeck);
+                playerScript.SetRole(isDeck); // ← add this line
                 playerScript.SpawnPlayerClientRpc(spawn.position, spawn.rotation, isDeck);
             }
         }
