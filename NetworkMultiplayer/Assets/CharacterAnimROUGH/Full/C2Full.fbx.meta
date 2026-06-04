@@ -31,7 +31,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Deck|BucketThrow
+      name: Captain|BucketThrow
       takeName: Captain|BucketThrow
       internalID: 8745179336500412194
       firstFrame: 0
@@ -89,7 +89,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Deck|Idle
+      name: Captain|Idle
       takeName: Captain|Idle
       internalID: 4124483577488200374
       firstFrame: 0
@@ -100,7 +100,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -176,7 +176,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Deck|Tape
+      name: Captain|Tape
       takeName: Captain|Tape
       internalID: -887758804195943822
       firstFrame: 0
@@ -205,7 +205,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Deck|Walk
+      name: Captain|Walk
       takeName: Captain|Walk
       internalID: 5980768003317159875
       firstFrame: 0
@@ -294,7 +294,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.0037
+    globalScale: 0.37
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

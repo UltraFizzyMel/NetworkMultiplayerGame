@@ -32873,6 +32873,10 @@ PrefabInstance:
       propertyPath: interactText
       value: Hold E with empty hands
       objectReference: {fileID: 0}
+    - target: {fileID: 646433079346664451, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
+      propertyPath: fuelDecayRate
+      value: -0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 1768150017949143308, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -38776,11 +38780,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: leakRate
-      value: 0.004
+      value: 0.005
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: leakInterval
-      value: 20
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'
@@ -39015,7 +39019,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
       propertyPath: leakInterval
-      value: 25
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'

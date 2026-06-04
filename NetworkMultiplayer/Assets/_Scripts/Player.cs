@@ -123,6 +123,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private string speedParam = "Speed";
     [SerializeField] public Animator animator;
     [SerializeField] private NetworkAnimator networkAnimator;
+    [SerializeField] private Animator captainAnimator;
+    [SerializeField] private Animator crewAnimator;
+
 
     public override void OnNetworkSpawn()
     {
@@ -131,7 +134,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         cc = GetComponent<CharacterController>();
         cnt = GetComponent<ClientNetworkTransform>();
-        pi = GetComponent<PlayerInput>();
+        pi = GetComponent<PlayerInput>(); 
+        animator = GetComponentInChildren<Animator>();
+        networkAnimator.Animator = animator;
 
         if (globalVolume == null)
         {
@@ -231,11 +236,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         _currentExposure = _baseExposure;
         _targetExposure = _baseExposure;
 
-        animator = GetComponent<Animator>();
         TentacleUI = GameObject.Find("TentacleUI");
+        StartCoroutine(playerAnimationControllerReset());
 
-        animator = GetComponentInChildren<Animator>();
-        networkAnimator.Animator = animator;
+
+
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -841,6 +846,19 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         }
 
         cameraPivot.localPosition = originalPos;
+    }
+
+    private IEnumerator playerAnimationControllerReset()
+    {
+        yield return new WaitForSeconds(1f);
+        if (crew.activeSelf)
+        {
+            networkAnimator.Animator = crewAnimator;
+        }
+        else
+        {
+            networkAnimator.Animator = captainAnimator;
+        }
     }
 
     public override void OnNetworkDespawn()
