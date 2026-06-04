@@ -83,6 +83,6 @@ public class Leak : Interactable
         if (boatLeakManager == null || gameObject == null) return;
         Player.animator.SetBool("isFixing", false);
         boatLeakManager.RepairLeak();
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
 }

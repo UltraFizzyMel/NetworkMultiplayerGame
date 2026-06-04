@@ -1267,7 +1267,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 4
   m_Range: 1.387825
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1581,7 +1581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1808,7 +1808,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -4301,6 +4301,10 @@ PrefabInstance:
       value: Rock2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -4978,13 +4982,63 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2089206168}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 184178453}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 184178452}
   m_SourcePrefab: {fileID: 100100000, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
 --- !u!4 &184178450 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
   m_PrefabInstance: {fileID: 184178449}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &184178451 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+  m_PrefabInstance: {fileID: 184178449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &184178452
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184178451}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028966976, y: 0.021847354, z: 0.011747274}
+  m_Center: {x: 0.0020366444, y: -0.0005871918, z: 0.005259223}
+--- !u!114 &184178453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184178451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
+  instantLeakAmount: 2
+  speedDamage: 0.1
+  steeringKnockback: 0
+  cameraShakeStrength: 0.75
+  cameraShakeDuration: 0.5
+  wasHit: 0
 --- !u!1 &187713197
 GameObject:
   m_ObjectHideFlags: 0
@@ -5185,6 +5239,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_Name
       value: Rock1 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -7417,6 +7475,10 @@ PrefabInstance:
       value: Rock2 (8)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -9535,7 +9597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -10700,13 +10762,63 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1715635656}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 525656140}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 525656139}
   m_SourcePrefab: {fileID: 100100000, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
 --- !u!4 &525656137 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
   m_PrefabInstance: {fileID: 525656136}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &525656138 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+  m_PrefabInstance: {fileID: 525656136}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &525656139
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525656138}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028966976, y: 0.021847354, z: 0.011747274}
+  m_Center: {x: 0.0020366444, y: -0.0005871918, z: 0.005259223}
+--- !u!114 &525656140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525656138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
+  instantLeakAmount: 2
+  speedDamage: 0.1
+  steeringKnockback: 0
+  cameraShakeStrength: 0.75
+  cameraShakeDuration: 0.5
+  wasHit: 0
 --- !u!1001 &537174969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11894,6 +12006,10 @@ PrefabInstance:
       value: Rock1 (3)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -12194,7 +12310,7 @@ Transform:
   m_GameObject: {fileID: 596844023}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.21072, y: 0, z: -6.53051}
+  m_LocalPosition: {x: 8.210725, y: 0, z: -6.530513}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14479,13 +14595,63 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1899006122}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 728501320}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 728501319}
   m_SourcePrefab: {fileID: 100100000, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
 --- !u!4 &728501317 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
   m_PrefabInstance: {fileID: 728501316}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &728501318 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+  m_PrefabInstance: {fileID: 728501316}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &728501319
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728501318}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028966976, y: 0.021847354, z: 0.011747274}
+  m_Center: {x: 0.0020366444, y: -0.0005871918, z: 0.005259223}
+--- !u!114 &728501320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728501318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
+  instantLeakAmount: 2
+  speedDamage: 0.1
+  steeringKnockback: 0
+  cameraShakeStrength: 0.75
+  cameraShakeDuration: 0.5
+  wasHit: 0
 --- !u!1 &739643019
 GameObject:
   m_ObjectHideFlags: 0
@@ -16626,7 +16792,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -18836,6 +19002,10 @@ PrefabInstance:
       value: Rock2 (9)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -19909,6 +20079,10 @@ PrefabInstance:
       value: Rock1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -20239,6 +20413,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_Name
       value: Rock2 (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -25564,8 +25742,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2.2558017, z: 1}
-  m_Center: {x: 0, y: 0.34354195, z: 0}
+  m_Size: {x: 1.0187072, y: 1.6318154, z: 1}
+  m_Center: {x: -0.00935452, y: 0.6555353, z: 0.000000025006697}
 --- !u!114 &1514095973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26220,13 +26398,63 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 589895695}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1556302964}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1556302963}
   m_SourcePrefab: {fileID: 100100000, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
 --- !u!4 &1556302961 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
   m_PrefabInstance: {fileID: 1556302960}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1556302962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+  m_PrefabInstance: {fileID: 1556302960}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1556302963
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1556302962}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028966976, y: 0.021847354, z: 0.011747274}
+  m_Center: {x: 0.0020366444, y: -0.0005871918, z: 0.005259223}
+--- !u!114 &1556302964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1556302962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
+  instantLeakAmount: 2
+  speedDamage: 0.1
+  steeringKnockback: 0
+  cameraShakeStrength: 0.75
+  cameraShakeDuration: 0.5
+  wasHit: 0
 --- !u!1 &1557880647
 GameObject:
   m_ObjectHideFlags: 0
@@ -27243,13 +27471,63 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2106318156}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1602311837}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1602311836}
   m_SourcePrefab: {fileID: 100100000, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
 --- !u!4 &1602311834 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
   m_PrefabInstance: {fileID: 1602311833}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1602311835 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+  m_PrefabInstance: {fileID: 1602311833}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1602311836
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602311835}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028966976, y: 0.021847354, z: 0.011747274}
+  m_Center: {x: 0.0020366444, y: -0.0005871918, z: 0.005259223}
+--- !u!114 &1602311837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602311835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
+  instantLeakAmount: 2
+  speedDamage: 0.1
+  steeringKnockback: 0
+  cameraShakeStrength: 0.75
+  cameraShakeDuration: 0.5
+  wasHit: 0
 --- !u!1 &1605470564
 GameObject:
   m_ObjectHideFlags: 0
@@ -31240,7 +31518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -31281,6 +31559,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_Name
       value: Rock2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -32213,7 +32495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1819489564
 Transform:
   m_ObjectHideFlags: 0
@@ -32228,25 +32510,25 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1117956059}
-  - {fileID: 728501317}
   - {fileID: 575782437}
-  - {fileID: 1845416768}
   - {fileID: 861323803}
   - {fileID: 2141500488}
   - {fileID: 484953900}
   - {fileID: 62127166}
   - {fileID: 188233110}
-  - {fileID: 184178450}
-  - {fileID: 164951393}
   - {fileID: 1857182512}
-  - {fileID: 2084813224}
   - {fileID: 1138146182}
   - {fileID: 1764951757}
+  - {fileID: 346351027}
+  - {fileID: 1845416768}
+  - {fileID: 164951393}
+  - {fileID: 1053896046}
+  - {fileID: 728501317}
+  - {fileID: 184178450}
+  - {fileID: 2084813224}
   - {fileID: 1556302961}
   - {fileID: 525656137}
-  - {fileID: 346351027}
   - {fileID: 1602311834}
-  - {fileID: 1053896046}
   m_Father: {fileID: 739643020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1819489565
@@ -32539,6 +32821,10 @@ PrefabInstance:
       value: Rock1 (6)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -32739,6 +33025,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_Name
       value: Rock2 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -34883,7 +35173,7 @@ Light:
   serializedVersion: 12
   m_Type: 1
   m_Color: {r: 0.8392157, g: 0.933636, b: 1, a: 1}
-  m_Intensity: 4
+  m_Intensity: 5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -36863,13 +37153,63 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 429176398}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2084813227}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2084813226}
   m_SourcePrefab: {fileID: 100100000, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
 --- !u!4 &2084813224 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
   m_PrefabInstance: {fileID: 2084813223}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2084813225 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f0097ed778c5e264fa3f02d5ccf0e71e, type: 3}
+  m_PrefabInstance: {fileID: 2084813223}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2084813226
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084813225}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028966976, y: 0.021847354, z: 0.011747274}
+  m_Center: {x: 0.0020366444, y: -0.0005871918, z: 0.005259223}
+--- !u!114 &2084813227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084813225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
+  instantLeakAmount: 2
+  speedDamage: 0.1
+  steeringKnockback: 0
+  cameraShakeStrength: 0.75
+  cameraShakeDuration: 0.5
+  wasHit: 0
 --- !u!1001 &2088289880
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37596,7 +37936,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 4
   m_Range: 1.387825
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -37989,7 +38329,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 0.020754695, g: 0.9082287, b: 1, a: 1}
-  m_Intensity: 27
+  m_Intensity: 30
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -38294,7 +38634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b104b86ca07d051418fdb6c7c5ec85bc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -39094,8 +39434,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 974806489}
   - {fileID: 1988769657}
-  - {fileID: 596844024}
   - {fileID: 363558479}
+  - {fileID: 596844024}
   - {fileID: 543450652555728756}
   - {fileID: 1750364576}
   - {fileID: 9041894}
