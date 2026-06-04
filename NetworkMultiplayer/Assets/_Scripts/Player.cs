@@ -247,6 +247,9 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         if (IsDeckPlayer.Value == true)
         { animator = crewAnimator; }
         else { animator = captainAnimator; }
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)

@@ -15135,7 +15135,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 775216377}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.32}
+  m_LocalPosition: {x: 0, y: 0, z: 0.418}
   m_LocalScale: {x: 0.1, y: 0.09683144, z: 0.09683144}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -38842,7 +38842,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -3.2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4638619682002387158, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -39164,7 +39165,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: CabinWater
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5537382010700641331, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
