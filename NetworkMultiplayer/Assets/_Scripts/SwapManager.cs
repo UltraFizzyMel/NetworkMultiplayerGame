@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 public class SwapManager : NetworkBehaviour
@@ -139,6 +140,7 @@ public class SwapManager : NetworkBehaviour
 
         playerA.SetRole(_playerAIsDeck);
         playerB.SetRole(!_playerAIsDeck);
+        
 
         playerA.TeleportClientRpc(posA, rotA);
         playerB.TeleportClientRpc(posB, rotB);

@@ -122,9 +122,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [Header("Animator Params")]
     [SerializeField] private string speedParam = "Speed";
     [SerializeField] public Animator animator;
-    [SerializeField] private NetworkAnimator networkAnimator;
-    [SerializeField] private Animator captainAnimator;
-    [SerializeField] private Animator crewAnimator;
+    [SerializeField] public Animator captainAnimator;
+    [SerializeField] public Animator crewAnimator;
+
+  
 
 
     public override void OnNetworkSpawn()
@@ -134,9 +135,13 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         cc = GetComponent<CharacterController>();
         cnt = GetComponent<ClientNetworkTransform>();
-        pi = GetComponent<PlayerInput>(); 
-        animator = GetComponentInChildren<Animator>();
-        networkAnimator.Animator = animator;
+        pi = GetComponent<PlayerInput>();
+
+        if (IsDeckPlayer.Value == true)
+        { animator = crewAnimator; }
+        else {  animator = captainAnimator; }
+        //animator = GetComponentInChildren<Animator>();
+       
 
         if (globalVolume == null)
         {
@@ -237,10 +242,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         _targetExposure = _baseExposure;
 
         TentacleUI = GameObject.Find("TentacleUI");
-        StartCoroutine(playerAnimationControllerReset());
 
-
-
+        if (IsDeckPlayer.Value == true)
+        { animator = crewAnimator; }
+        else { animator = captainAnimator; }
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -275,7 +280,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             return;
 
         NormalMovementUpdate();
-        
+
 
         /*ApplyGravity();
 
@@ -295,7 +300,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
-        cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */       
+        cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */
+        if (IsDeckPlayer.Value == true)
+        { animator = crewAnimator; }
+        else { animator = captainAnimator; }
     }
 
     private void NormalMovementUpdate()
@@ -848,18 +856,6 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cameraPivot.localPosition = originalPos;
     }
 
-    private IEnumerator playerAnimationControllerReset()
-    {
-        yield return new WaitForSeconds(1f);
-        if (crew.activeSelf)
-        {
-            networkAnimator.Animator = crewAnimator;
-        }
-        else
-        {
-            networkAnimator.Animator = captainAnimator;
-        }
-    }
 
     public override void OnNetworkDespawn()
     {
