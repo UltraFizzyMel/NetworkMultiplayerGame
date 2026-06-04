@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8037910324204296399}
   - component: {fileID: 9135722880051944281}
   - component: {fileID: 5442239163017669406}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Leak
   m_TagString: Untagged
   m_Icon: {fileID: 0}

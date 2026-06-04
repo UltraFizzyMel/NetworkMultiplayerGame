@@ -35,6 +35,9 @@ public class BoatWinLoseController : NetworkBehaviour {
     {
         if (!IsServer || _isGameOver) return;
 
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         _isGameOver = true;
         Debug.Log("[WinLose] Game Won");
         NetworkManager.SceneManager.LoadScene("WonGame", LoadSceneMode.Single);
@@ -44,6 +47,10 @@ public class BoatWinLoseController : NetworkBehaviour {
     public void LoseGame()
     {
         if (!IsServer || _isGameOver) return;
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         _isGameOver = true;
         Debug.Log("[WinLose] Lost");
         NetworkManager.SceneManager.LoadScene("LostGame", LoadSceneMode.Single);

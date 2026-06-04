@@ -287,10 +287,11 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
+  interactText: 
   generatorAudio: {fileID: 191103848315045671}
   fuelMax: 5
-  fuelDecayProgess: -0.2
-  fuelRate: 0.5
+  fuelDecayRate: -0.2
+  fuelFillRate: 0.5
   fuelUI: {fileID: 1768150017949143308}
   fuelingProgress:
     UpdateTraits:
@@ -302,6 +303,7 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  speedChange: 0
 --- !u!65 &1199434321169283974
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -514,6 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e5bc03502bbf7478655c72bcbda09a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GeneratorProgressBar
+  ShowTopMostFoldoutHeaderGroup: 1
   generator: {fileID: 646433079346664451}
   barImage: {fileID: 3719390499257222561}
 --- !u!1 &5211610956943051714

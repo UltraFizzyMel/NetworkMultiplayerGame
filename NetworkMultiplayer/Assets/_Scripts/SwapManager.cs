@@ -1,6 +1,6 @@
-﻿// ─── SwapManager.cs ──────────────────────────────────────────────────────────
-using System.Collections;
+﻿using System.Collections;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 public class SwapManager : NetworkBehaviour
@@ -11,9 +11,15 @@ public class SwapManager : NetworkBehaviour
     [SerializeField] private float swapInterval = 30f;
     [SerializeField] private float warningDuration = 5f; // Must be <= swapInterval
 
+    [Header("Valid Swap Zones")]
+    [SerializeField] private SwapZone deckZone;
+    [SerializeField] private SwapZone cabinZone;
+
     // Surfaced so the UI countdown can read it (read-only from other scripts)
     public float TimeUntilNextSwap { get; private set; }
 
+    private bool _playerAIsDeck;
+    private bool _rolesInitialised = false;
     private bool _swapRunning;
 
     // ─── Network spawn ───────────────────────────────────────────────────────
@@ -40,9 +46,7 @@ public class SwapManager : NetworkBehaviour
 
         // Wait until GameManager finishes spawning everybody
         yield return new WaitUntil(() =>
-            GameManager.Instance != null &&
-            GameManager.Instance.PlayersSpawned
-        );
+            GameManager.Instance != null && GameManager.Instance.GameReady());
 
         while (_swapRunning && Application.isPlaying)
         {
@@ -84,12 +88,32 @@ public class SwapManager : NetworkBehaviour
         }
     }
 
+    // ─── Role initialisation ─────────────────────────────────────────────────
+
+    private void InitRolesIfNeeded()
+    {
+        if (_rolesInitialised) return;
+        if (GameManager.Instance == null) return;
+        if (PlayerRegistry.Players.Count < 2) return;
+
+        Player playerA = PlayerRegistry.Players[0];
+        bool playerAIsHost = playerA.OwnerClientId == NetworkManager.ServerClientId;
+
+        _playerAIsDeck = playerAIsHost
+            ? GameManager.Instance.HostIsDeck
+            : !GameManager.Instance.HostIsDeck;
+
+        _rolesInitialised = true;
+        Debug.Log($"[SwapManager] Roles initialised. PlayerA isDeck: {_playerAIsDeck}");
+    }
+
     // ─── Swap logic (server only) ────────────────────────────────────────────
 
     private void PerformSwap()
     {
-        PlayerRegistry.Players.Sort((a, b) =>
-            a.NetworkObjectId.CompareTo(b.NetworkObjectId));
+        PlayerRegistry.Players.Sort((a, b) => a.NetworkObjectId.CompareTo(b.NetworkObjectId));
+
+        InitRolesIfNeeded();
 
         Player playerA = PlayerRegistry.Players[0];
         Player playerB = PlayerRegistry.Players[1];
@@ -100,13 +124,30 @@ public class SwapManager : NetworkBehaviour
             return;
         }
 
-        Vector3 posA = playerA.transform.position;
-        Vector3 posB = playerB.transform.position;
-        Quaternion rotA = playerA.transform.rotation;
-        Quaternion rotB = playerB.transform.rotation;
+        Vector3 rawPosA = playerB.transform.position;
+        Vector3 rawPosB = playerA.transform.position;        
+        Quaternion rotA = playerB.transform.rotation;
+        Quaternion rotB = playerA.transform.rotation;
 
-        playerA.TeleportClientRpc(posB, rotB);
-        playerB.TeleportClientRpc(posA, rotA);
+        //After the swap A moves to the opposite zone, so clamp to that zone
+        SwapZone newZoneA = _playerAIsDeck ? cabinZone : deckZone;
+        SwapZone newZoneB = _playerAIsDeck ? deckZone : cabinZone;
+
+        Vector3 posA = newZoneA != null ? newZoneA.GetSafePosition(rawPosA) : rawPosA;
+        Vector3 posB = newZoneB != null ? newZoneB.GetSafePosition(rawPosB) : rawPosB;
+
+        _playerAIsDeck = !_playerAIsDeck;
+
+        playerA.SetRole(_playerAIsDeck);
+        playerB.SetRole(!_playerAIsDeck);
+        
+
+        playerA.TeleportClientRpc(posA, rotA);
+        playerB.TeleportClientRpc(posB, rotB);
+
+        // If we want to change visuals for roles
+        //playerA.ApplyRoleVisualsClientRpc(_playerAIsDeck);
+        //playerB.ApplyRoleVisualsClientRpc(!_playerAIsDeck);
 
         Debug.Log("[SwapManager] Swap complete.");
     }

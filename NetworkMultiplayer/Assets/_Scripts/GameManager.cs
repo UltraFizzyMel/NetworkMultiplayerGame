@@ -28,6 +28,8 @@ public class GameManager : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
+    public bool HostIsDeck => netIsHostDeck.Value;
+
     private readonly NetworkVariable<bool> _gameReady = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
@@ -78,7 +80,7 @@ public class GameManager : NetworkBehaviour
 
             if (playerScript != null)
             {
-                //playerScript.ApplyRoleVisualsClientRpc(isDeck);
+                playerScript.SetRole(isDeck); // ← add this line
                 playerScript.SpawnPlayerClientRpc(spawn.position, spawn.rotation, isDeck);
             }
         }

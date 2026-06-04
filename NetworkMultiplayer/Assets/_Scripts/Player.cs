@@ -29,6 +29,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     private InputAction lookAction;
     private InputAction interact;
     private InputAction interactAlternate;
+    [SerializeField] private LayerMask interactMask;
     private ClientNetworkTransform cnt;
     private CharacterController cc;
     public GameObject captain;
@@ -64,6 +65,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private float _lastSentSteering = float.NaN;
 
+    public NetworkVariable<bool> IsDeckPlayer = new NetworkVariable<bool>(
+    false,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server);
+
     [Header("Global Volume Settings")]
     [SerializeField] private Volume globalVolume;
     //Swapping effects
@@ -79,19 +85,36 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private float teleportEffectDuration = 0.8f;
     [SerializeField] private float tentacleEffectDuration = 4f;
     [SerializeField] private float tentacleWait = 2f;
-    //Fog effects
 
+    //Fog effects
     [Header("Fog Effects")]
     private ColorAdjustments _colorAdj;
-    private Color _baseColor;
-    [SerializeField] private Color warningFogColor = new Color32(102, 104, 130, 255);
 
+    // Base values captured from the volume on spawn so reset works correctly
+    private Color _baseColor;
+    private float _baseSaturation;
+    private float _baseExposure;
+
+    // Current and target values — Lerped every LateUpdate
+    private Color _currentFogColor;
+    private Color _targetFogColor;
+    private float _currentSaturation;
+    private float _targetSaturation;
+    private float _currentExposure;
+    private float _targetExposure;
+
+    [SerializeField] private Color warningFogColor = new Color32(102, 104, 130, 255);
     [SerializeField] private Color deathFogColor = new Color32(76, 78, 103, 255);
 
-    [SerializeField] private float fogBlendSpeed = 2f;
+    // Negative = desaturate. ColorAdjustments.saturation range is -100 to +100.
+    [SerializeField] private float warningSaturation = -30f;
+    [SerializeField] private float deathSaturation = -70f;
 
-    private Color _targetFogColor = Color.white;
-    private Color currentFogColor = Color.white;
+    // Negative = darken. PostExposure is in EV units, usually -2 to +2.
+    [SerializeField] private float deathExposure = -1.4f;
+
+    // Higher value = faster blend. At 3f, ~95% complete in ~1 second.
+    [SerializeField] private float fogBlendSpeed = 3f;
 
     [Header("UI Settings")]
     [SerializeField] private GameObject TentacleUI;
@@ -100,7 +123,11 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [Header("Animator Params")]
     [SerializeField] private string speedParam = "Speed";
     [SerializeField] public Animator animator;
-    [SerializeField] private NetworkAnimator networkAnimator;
+    [SerializeField] public Animator captainAnimator;
+    [SerializeField] public Animator crewAnimator;
+
+  
+
 
     public override void OnNetworkSpawn()
     {
@@ -110,6 +137,12 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc = GetComponent<CharacterController>();
         cnt = GetComponent<ClientNetworkTransform>();
         pi = GetComponent<PlayerInput>();
+
+        if (IsDeckPlayer.Value == true)
+        { animator = crewAnimator; }
+        else {  animator = captainAnimator; }
+        //animator = GetComponentInChildren<Animator>();
+       
 
         if (globalVolume == null)
         {
@@ -185,13 +218,38 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             Debug.Log($"Vignette: {vignette}");
             Debug.Log($"Chromatic: {chromatic}");
         }
-        animator = GetComponent<Animator>();
-        TentacleUI = GameObject.Find("TentacleUI");
-        _baseColor = _colorAdj.colorFilter.value;
-        _targetFogColor = _baseColor;
 
-        animator = GetComponentInChildren<Animator>();
-        networkAnimator.Animator = animator;
+        if (_colorAdj != null)
+        {
+            _baseColor = _colorAdj.colorFilter.value;
+            _baseSaturation = _colorAdj.saturation.value;
+            _baseExposure = _colorAdj.postExposure.value;
+        }
+        else
+        {
+            // ColorAdjustments override is missing from the player volume profile.
+            // Add it in the Inspector: Volume component → Add Override → Color Adjustments.
+            // Enable the checkboxes next to Color Filter, Saturation, and Post Exposure.
+            Debug.LogWarning("[Player] ColorAdjustments not found on volume profile.");
+            _baseColor = Color.white;
+            _baseSaturation = 0f;
+            _baseExposure = 0f;
+        }
+        _currentFogColor = _baseColor;
+        _targetFogColor = _baseColor;
+        _currentSaturation = _baseSaturation;
+        _targetSaturation = _baseSaturation;
+        _currentExposure = _baseExposure;
+        _targetExposure = _baseExposure;
+
+        TentacleUI = GameObject.Find("TentacleUI");
+
+        if (IsDeckPlayer.Value == true)
+        { animator = crewAnimator; }
+        else { animator = captainAnimator; }
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
@@ -226,7 +284,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             return;
 
         NormalMovementUpdate();
-        
+
 
         /*ApplyGravity();
 
@@ -246,7 +304,10 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
-        cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */       
+        cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */
+        if (IsDeckPlayer.Value == true)
+        { animator = crewAnimator; }
+        else { animator = captainAnimator; }
     }
 
     private void NormalMovementUpdate()
@@ -300,6 +361,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         currentWheel.HandleSteeringInput(moveInput.x);*/
 
         float steeringInput = moveAction.ReadValue<Vector2>().x;
+        animator.SetFloat(speedParam, steeringInput);
 
         // Only fire the ServerRpc when input actually changes
         if (!Mathf.Approximately(steeringInput, _lastSentSteering))
@@ -325,43 +387,48 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cameraPivot.localRotation = Quaternion.Euler(steeringPitch, steeringYaw, 0f);
     }
 
-    public void SetFogVisuals(Color color)
-    {
-        _targetFogColor = color;
-    }
-
-    public void ResetFogVisuals()
-    {
-        _targetFogColor = _baseColor;
-    }
-
     private void LateUpdate()
     {
-        if (!IsOwner)
-            return;
-
-        if (_colorAdj)
-            UpdateFogVisuals();
+        if (!IsOwner) return;
+        if (_colorAdj != null) UpdateFogVisuals();
     }
 
     private void UpdateFogVisuals()
     {
-        currentFogColor = Color.Lerp(
-            currentFogColor,
-            _targetFogColor,
-            Time.deltaTime * fogBlendSpeed);
+        float t = Time.deltaTime * fogBlendSpeed;
 
-        _colorAdj.colorFilter.value = currentFogColor;
+        _currentFogColor = Color.Lerp(_currentFogColor, _targetFogColor, t);
+        _currentSaturation = Mathf.Lerp(_currentSaturation, _targetSaturation, t);
+        _currentExposure = Mathf.Lerp(_currentExposure, _targetExposure, t);
+
+        _colorAdj.colorFilter.value = _currentFogColor;
+        _colorAdj.saturation.value = _currentSaturation;
+        _colorAdj.postExposure.value = _currentExposure;
     }
 
-    public void SetWarningFogVisuals()
+    // Called by FogZoneManager. Sets target values for all fog post-processing.
+    public void SetFogVisuals(FogVisualLevel level)
     {
-        _targetFogColor = warningFogColor;
-    }
+        switch (level)
+        {
+            case FogVisualLevel.Warning:
+                _targetFogColor = warningFogColor;
+                _targetSaturation = warningSaturation;
+                _targetExposure = _baseExposure;     // No exposure change in warning
+                break;
 
-    public void SetDeathFogVisuals()
-    {
-        _targetFogColor = deathFogColor;
+            case FogVisualLevel.Death:
+                _targetFogColor = deathFogColor;
+                _targetSaturation = deathSaturation;
+                _targetExposure = deathExposure;     // Darken in death zone
+                break;
+
+            default: // FogVisualLevel.None
+                _targetFogColor = _baseColor;
+                _targetSaturation = _baseSaturation;
+                _targetExposure = _baseExposure;
+                break;
+        }
     }
 
     [ClientRpc]
@@ -450,6 +517,12 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         if (captain != null)
             captain.SetActive(!isDeck);
+    }
+
+    public void SetRole(bool isDeck)
+    {
+        if (!IsServer) return;
+        IsDeckPlayer.Value = isDeck;
     }
 
     // Called by SwapManager's ClientRpc on the owner client only.
@@ -639,7 +712,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private void HandleInteractions()
     {
-        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance, interactMask))
         {
             if (raycastHit.transform.TryGetComponent(out Interactable interactable))
             {
@@ -704,6 +777,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     public void EnterSteering(SteeringWheel wheel)
     {
+        animator.SetBool("isSteering", true);
         if (isSteering)
             return;
 
@@ -737,6 +811,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     public void ExitSteering()
     {
+        animator.SetBool("isSteering", false);
         if (!isSteering)
             return;
 
@@ -784,6 +859,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
         cameraPivot.localPosition = originalPos;
     }
+
 
     public override void OnNetworkDespawn()
     {

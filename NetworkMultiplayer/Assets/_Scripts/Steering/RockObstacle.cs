@@ -14,4 +14,6 @@ public class RockObstacle : MonoBehaviour
     [Header("FX")]
     public float cameraShakeStrength = 1f;
     public float cameraShakeDuration = 0.5f;
+
+    public bool wasHit = false;
 }

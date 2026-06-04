@@ -42,9 +42,14 @@ public class BoatCollisionDetector : NetworkBehaviour
         if (rock == null)
             return;
 
+        if (rock.wasHit)
+            return;
+
         collisionCooldown = true;
 
         Debug.Log($"[Boat] Rock collision! +" + $"{rock.instantLeakAmount} leaks");
+
+        rock.wasHit = true;
 
         if (deckLeaks != null) deckLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
 

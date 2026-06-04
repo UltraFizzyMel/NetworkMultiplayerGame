@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 7448426681803307756}
   - component: {fileID: 7133703540028710463}
   - component: {fileID: -1156579248354491240}
-  - component: {fileID: 7618727227268637169}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -268,9 +267,12 @@ MonoBehaviour:
   cameraPivot: {fileID: 5341566302329490269}
   playerCamera: {fileID: 4148365070146029587}
   moveSpeed: 5
-  lookSensitivity: 0.5
+  lookSensitivity: 0.3
   maxPitch: 80
   gravity: -9.81
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 64
   captain: {fileID: 7783600342340823313}
   crew: {fileID: 4478941808299956587}
   bucketController: {fileID: 0}
@@ -282,7 +284,12 @@ MonoBehaviour:
   bucketHoldPoint: {fileID: 1181721550243166216}
   objectPickUp: {fileID: 0}
   steeringLookLimit: 35
-  steeringLookSensitivity: 1
+  steeringLookSensitivity: 0.2
+  IsDeckPlayer:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
   globalVolume: {fileID: 4028414198584995261}
   lensBaseValue: 0
   lensChangeValue: -0.45
@@ -295,12 +302,16 @@ MonoBehaviour:
   tentacleWait: 2
   warningFogColor: {r: 0.4, g: 0.40784314, b: 0.50980395, a: 1}
   deathFogColor: {r: 0.29803923, g: 0.30588236, b: 0.40392157, a: 1}
+  warningSaturation: -30
+  deathSaturation: -70
+  deathExposure: -1.4
   fogBlendSpeed: 2
   TentacleUI: {fileID: 0}
   maxTransparency: 250
   speedParam: Speed
-  animator: {fileID: 6132192482813377594}
-  networkAnimator: {fileID: 0}
+  animator: {fileID: 0}
+  captainAnimator: {fileID: 71263044690193694}
+  crewAnimator: {fileID: 8464579338703630471}
 --- !u!114 &-1156579248354491240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,43 +326,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractUI
   ShowTopMostFoldoutHeaderGroup: 1
   promptText: {fileID: 0}
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 64
   player: {fileID: 7133703540028710463}
---- !u!114 &7618727227268637169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1274580874432871458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
-  ShowTopMostFoldoutHeaderGroup: 1
-  NetworkAnimatorExpanded: 0
-  AuthorityMode: 1
-  m_Animator: {fileID: 6132192482813377594}
-  TransitionStateInfoList: []
-  AnimatorParameterEntries:
-    ParameterEntries:
-    - name: Speed
-      NameHash: -823668238
-      Synchronize: 1
-      ParameterType: 1
-    - name: isFixing
-      NameHash: -83847156
-      Synchronize: 1
-      ParameterType: 4
-    - name: isSteering
-      NameHash: 1672213631
-      Synchronize: 1
-      ParameterType: 4
-    - name: isUsingBucket
-      NameHash: -340725789
-      Synchronize: 1
-      ParameterType: 4
-  AnimatorParametersExpanded: 0
 --- !u!1 &2457219218124793994
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,7 +513,7 @@ Transform:
   m_GameObject: {fileID: 5374817313668105850}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.70000005, z: 0.069}
+  m_LocalPosition: {x: 0, y: 0.77, z: 0.126}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1070,6 +1048,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 872c66695e02ded48808d519755fff6c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8464579338703630471}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 872c66695e02ded48808d519755fff6c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1594617629752941471}
   m_SourcePrefab: {fileID: 100100000, guid: 872c66695e02ded48808d519755fff6c, type: 3}
 --- !u!1 &5094893940470488300 stripped
 GameObject:
@@ -1098,6 +1079,46 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1594617629752941471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5094893940470488300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 8464579338703630471}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: Speed
+      NameHash: -823668238
+      Synchronize: 1
+      ParameterType: 1
+    - name: isFixing
+      NameHash: -83847156
+      Synchronize: 1
+      ParameterType: 4
+    - name: isSteering
+      NameHash: 1672213631
+      Synchronize: 1
+      ParameterType: 4
+    - name: isUsingBucket
+      NameHash: -340725789
+      Synchronize: 1
+      ParameterType: 4
+    - name: isFueling
+      NameHash: 128883688
+      Synchronize: 1
+      ParameterType: 4
+  AnimatorParametersExpanded: 0
 --- !u!4 &5620320429307119190 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 872c66695e02ded48808d519755fff6c, type: 3}
@@ -1278,6 +1299,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7d9a41f16b6317b4aa5a52af9873915a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 71263044690193694}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7d9a41f16b6317b4aa5a52af9873915a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4394838465493891799}
   m_SourcePrefab: {fileID: 100100000, guid: 7d9a41f16b6317b4aa5a52af9873915a, type: 3}
 --- !u!4 &8642313526077846013 stripped
 Transform:
@@ -1311,3 +1335,43 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4394838465493891799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981438730071714631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 1
+  m_Animator: {fileID: 71263044690193694}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: Speed
+      NameHash: -823668238
+      Synchronize: 1
+      ParameterType: 1
+    - name: isFixing
+      NameHash: -83847156
+      Synchronize: 1
+      ParameterType: 4
+    - name: isSteering
+      NameHash: 1672213631
+      Synchronize: 1
+      ParameterType: 4
+    - name: isUsingBucket
+      NameHash: -340725789
+      Synchronize: 1
+      ParameterType: 4
+    - name: isFueling
+      NameHash: 128883688
+      Synchronize: 1
+      ParameterType: 4
+  AnimatorParametersExpanded: 0

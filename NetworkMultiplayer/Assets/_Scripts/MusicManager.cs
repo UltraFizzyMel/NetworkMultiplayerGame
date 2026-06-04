@@ -153,15 +153,15 @@ public class MusicManager : MonoBehaviour
         while (elapsed < duration)
         {
             float t = elapsed / duration;
-            _activeSource.volume = Mathf.Lerp(1f, 0f, t);
-            _inactiveSource.volume = Mathf.Lerp(0f, 1f, t);
+            _activeSource.volume = Mathf.Lerp(0.05f, 0f, t);
+            _inactiveSource.volume = Mathf.Lerp(0f, 0.05f, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         // Complete the swap
         _activeSource.Stop();
-        _activeSource.volume = 1f;
+        _activeSource.volume = 0.05f;
 
         // Swap references
         var temp = _activeSource;
