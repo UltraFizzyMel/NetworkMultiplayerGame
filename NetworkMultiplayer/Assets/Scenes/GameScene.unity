@@ -3327,6 +3327,10 @@ PrefabInstance:
       value: Tape Zone
       objectReference: {fileID: 0}
     - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -6760,7 +6764,7 @@ GameObject:
   - component: {fileID: 282198911}
   - component: {fileID: 282198913}
   - component: {fileID: 282198912}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OffBoat (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10323,6 +10327,10 @@ PrefabInstance:
       value: CounterZone 1
       objectReference: {fileID: 0}
     - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -11689,7 +11697,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 6bb296b3d6e2f5f4199669333861b4e7, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -11877,7 +11885,7 @@ GameObject:
   - component: {fileID: 575721029}
   - component: {fileID: 575721031}
   - component: {fileID: 575721030}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OffBoat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14973,7 +14981,7 @@ GameObject:
   - component: {fileID: 768462713}
   - component: {fileID: 768462715}
   - component: {fileID: 768462714}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OffBoat (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20568,6 +20576,10 @@ PrefabInstance:
       value: Bucket Zone
       objectReference: {fileID: 0}
     - target: {fileID: 9108891445818656899, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9108891445818656899, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -21249,7 +21261,7 @@ GameObject:
   - component: {fileID: 1215553600}
   - component: {fileID: 1215553599}
   - component: {fileID: 1215553598}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cabin Deck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24447,7 +24459,7 @@ GameObject:
   - component: {fileID: 1441165376}
   - component: {fileID: 1441165378}
   - component: {fileID: 1441165377}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OffBoat (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24731,6 +24743,10 @@ PrefabInstance:
     - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
       propertyPath: m_Name
       value: Counter Zone 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5496540232194456605, guid: 239ac0bd74841f648993541b863831a4, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -25701,7 +25717,7 @@ GameObject:
   - component: {fileID: 1514095971}
   - component: {fileID: 1514095973}
   - component: {fileID: 1514095972}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OffBoat (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28897,7 +28913,7 @@ GameObject:
   - component: {fileID: 1644770523}
   - component: {fileID: 1644770525}
   - component: {fileID: 1644770524}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: OffBoat (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32857,6 +32873,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Generator
       objectReference: {fileID: 0}
+    - target: {fileID: 195893971432296293, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 521375913715268703, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.72
@@ -36458,7 +36478,7 @@ GameObject:
   - component: {fileID: 2040722290}
   - component: {fileID: 2040722293}
   - component: {fileID: 2040722294}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Deck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38191,6 +38211,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 9d160725e31139b4ba7a8b078ffd1054, type: 3}
       propertyPath: m_Name
       value: Wheel
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9d160725e31139b4ba7a8b078ffd1054, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -13,13 +13,14 @@ public class OffBoat : Interactable
             if (player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
             {
                 //The player has a bucket
-                if (bucketController.isFull)
+                if (bucketController.isFull.Value)
                 {
-                    Debug.Log("Player Bucket Emptied");
+                    //Debug.Log("Player Bucket Emptied");
+                    Debug.Log($"[OffBoat]: Bucket full state after emptying: {bucketController.isFull.Value}");
                     //MusicManager.Instance.PlaySFX(SFXType.WaterOutBucket);
                     player.animator.Play("Captain|BucketThrow");
-                    bucketController.isFull = false;
-                    
+                    //bucketController.isFull.Value = false;
+                    bucketController.EmptyServerRpc();
                 }
                 else
                 {

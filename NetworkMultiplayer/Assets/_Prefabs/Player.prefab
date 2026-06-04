@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2982419664
+  GlobalObjectIdHash: 2594804961
   InScenePlacedSourceGlobalObjectIdHash: 2594804961
   DeferredDespawnTick: 0
   Ownership: 1
@@ -267,9 +267,12 @@ MonoBehaviour:
   cameraPivot: {fileID: 5341566302329490269}
   playerCamera: {fileID: 4148365070146029587}
   moveSpeed: 5
-  lookSensitivity: 0.5
+  lookSensitivity: 0.3
   maxPitch: 80
   gravity: -9.81
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 64
   captain: {fileID: 7783600342340823313}
   crew: {fileID: 4478941808299956587}
   bucketController: {fileID: 0}
@@ -281,7 +284,7 @@ MonoBehaviour:
   bucketHoldPoint: {fileID: 1181721550243166216}
   objectPickUp: {fileID: 0}
   steeringLookLimit: 35
-  steeringLookSensitivity: 1
+  steeringLookSensitivity: 0.2
   IsDeckPlayer:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -307,7 +310,6 @@ MonoBehaviour:
   maxTransparency: 250
   speedParam: Speed
   animator: {fileID: 0}
-  networkAnimator: {fileID: 0}
   captainAnimator: {fileID: 71263044690193694}
   crewAnimator: {fileID: 8464579338703630471}
 --- !u!114 &-1156579248354491240
@@ -324,6 +326,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractUI
   ShowTopMostFoldoutHeaderGroup: 1
   promptText: {fileID: 0}
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 64
   player: {fileID: 7133703540028710463}
 --- !u!1 &2457219218124793994
 GameObject:

@@ -12,6 +12,8 @@ public class InteractUI : NetworkBehaviour
     [SerializeField]
     private TextMeshProUGUI promptText;
 
+    [SerializeField] private LayerMask interactMask;
+
     //public GameObject UIPrompt;
 
     public Player player;
@@ -116,7 +118,8 @@ public class InteractUI : NetworkBehaviour
             player.cameraPivot.position,
             player.cameraPivot.forward,
             out RaycastHit hitInfo,
-            player.interactionDistance))
+            player.interactionDistance,
+            interactMask))
         {
             if (hitInfo.collider.TryGetComponent(out Interactable interactable))
             {

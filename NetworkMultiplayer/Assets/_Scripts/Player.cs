@@ -29,6 +29,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     private InputAction lookAction;
     private InputAction interact;
     private InputAction interactAlternate;
+    [SerializeField] private LayerMask interactMask;
     private ClientNetworkTransform cnt;
     private CharacterController cc;
     public GameObject captain;
@@ -708,7 +709,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
 
     private void HandleInteractions()
     {
-        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance))
+        if (Physics.Raycast(cameraPivot.position, cameraPivot.forward, out RaycastHit raycastHit, interactionDistance, interactMask))
         {
             if (raycastHit.transform.TryGetComponent(out Interactable interactable))
             {

@@ -3,22 +3,28 @@ using Unity.Netcode;
 
 public class BucketController : NetworkBehaviour
 {
-    public bool isFull = false;
+    public NetworkVariable<bool> isFull = new(
+    false,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server);
+    //public bool isFull = false;
     public bool isHoldingBucket;
 
     public GameObject waterVisual;
     public float bucketCapacity = 0.5f;
     public float waterAmount;
 
-    public void Fill()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void FillServerRpc()
     {
-        isFull = true;
+        isFull.Value = true;
         if (waterVisual != null) waterVisual.SetActive(true);
     }
 
-    public void Empty()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void EmptyServerRpc()
     {
-        isFull = false;
+        isFull.Value = false;
         if (waterVisual != null) waterVisual.SetActive(false);
     }
 

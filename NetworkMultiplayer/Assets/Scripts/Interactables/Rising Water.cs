@@ -11,10 +11,10 @@ public class RisingWater : Interactable
         if (player.HasObjectPickUp())
         {
             //The player is holding something
-           if(player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucketController))
+           if(player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController heldBucket))
            {
                 //The player has a bucket
-                if (bucketController.isFull)
+                if (heldBucket.isFull.Value)
                 {
                     Debug.Log("Player has full Bucket");
                     return;
@@ -22,11 +22,13 @@ public class RisingWater : Interactable
                 else
                 {
                     TryGetComponent<BoatLeakManager>(out BoatLeakManager boatLeakManager);
-                    DeckManager.RemoveWaterServerRpc(bucketController.bucketCapacity);
-                    bucketController.isFull = true;
+                    DeckManager.RemoveWaterServerRpc(heldBucket.bucketCapacity);
+                    //heldBucket.isFull.Value = true;
+                    heldBucket.FillServerRpc();
                     if (MusicManager.Instance != null)
                         MusicManager.Instance.PlaySFX(SFXType.WaterInBucket);
-                    Debug.Log("Player bucket has been Filled");
+                    Debug.Log($"[RisingWater]: Bucket full state: {heldBucket.isFull.Value}");
+                    //Debug.Log("Player bucket has been Filled");
                 }
            }
            else
