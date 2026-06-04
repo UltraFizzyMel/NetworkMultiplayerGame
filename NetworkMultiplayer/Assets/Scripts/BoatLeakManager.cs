@@ -35,6 +35,14 @@ public class BoatLeakManager : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
 
+    [Header("Water Visuals")]
+    // Assign all Renderer components on the waterblock child objects in the Inspector
+    [SerializeField] private Renderer[] waterRenderers;
+
+    // Water level below this value hides the mesh entirely.
+    // 0.01f avoids a single-frame flash when RemoveWater drops the level to exactly 0.
+    [SerializeField] private float hideWaterBelowLevel = 0.01f;
+
     private void Start()
     {
         var bucket = GameObject.Find("TempBucket");
@@ -46,6 +54,7 @@ public class BoatLeakManager : NetworkBehaviour
     {
         currentWaterLevel.OnValueChanged += OnWaterLevelChanged;
         UpdateWaterPlane(currentWaterLevel.Value);
+        UpdateWaterVisibility(currentWaterLevel.Value);
 
         if (!IsServer) return;
         StartCoroutine(WaitForGameReady());
@@ -57,7 +66,11 @@ public class BoatLeakManager : NetworkBehaviour
         currentWaterLevel.OnValueChanged -= OnWaterLevelChanged;
     }
 
-    private void OnWaterLevelChanged(float _, float newValue) => UpdateWaterPlane(newValue);
+    private void OnWaterLevelChanged(float _, float newValue)
+    {
+        UpdateWaterPlane(newValue);
+        UpdateWaterVisibility(newValue);
+    }
         
     // Update is called once per frame
     private void Update()
@@ -84,6 +97,19 @@ public class BoatLeakManager : NetworkBehaviour
             waterPlane.transform.position.x,
             waterLevel,
             waterPlane.transform.position.z);
+    }
+
+    private void UpdateWaterVisibility(float waterLevel)
+    {
+        if (waterRenderers == null) return;
+
+        bool shouldShow = waterLevel > hideWaterBelowLevel;
+
+        foreach (Renderer r in waterRenderers)
+        {
+            if (r != null && r.enabled != shouldShow)
+                r.enabled = shouldShow;
+        }
     }
 
     // ─── Leak count ──────────────────────────────────────────────────────────

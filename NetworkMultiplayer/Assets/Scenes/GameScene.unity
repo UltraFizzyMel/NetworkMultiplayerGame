@@ -3535,15 +3535,15 @@ RectTransform:
   m_GameObject: {fileID: 133753946}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6816, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2008810045}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 0, y: -4}
+  m_SizeDelta: {x: 465.9654, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &133753948
 MonoBehaviour:
@@ -3567,8 +3567,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d389b38c7d0a6ff43ab7b53d96ca3c5a, type: 2}
+  m_sharedMaterial: {fileID: -4825002664635672520, guid: d389b38c7d0a6ff43ab7b53d96ca3c5a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -38228,7 +38228,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E to Steer
+  interactText: Press [E] To\nTake The Wheel
   steeringPosition: {fileID: 522972746}
   wheelVisual: {fileID: 2119975806}
   maxWheelRotation: 720
@@ -38787,6 +38787,22 @@ PrefabInstance:
       value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+      propertyPath: waterRenderers.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+      propertyPath: 'waterRenderers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1951697295489578308}
+    - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+      propertyPath: 'waterRenderers.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1951697295489578307}
+    - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+      propertyPath: 'waterRenderers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1951697295489578306}
+    - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'
       value: 
       objectReference: {fileID: 898728417}
@@ -38807,6 +38823,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+--- !u!23 &1951697295489578306 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3452662299081458939, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+  m_PrefabInstance: {fileID: 1951697295489578305}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1951697295489578307 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8732651397393628347, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+  m_PrefabInstance: {fileID: 1951697295489578305}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1951697295489578308 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9156555509095467070, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
+  m_PrefabInstance: {fileID: 1951697295489578305}
+  m_PrefabAsset: {fileID: 0}
 --- !u!33 &2155261462261808720
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -39022,6 +39053,14 @@ PrefabInstance:
       value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
+      propertyPath: waterRenderers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
+      propertyPath: 'waterRenderers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 5562046552955914543}
+    - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
       propertyPath: 'leakLocationsList.Array.data[0]'
       value: 
       objectReference: {fileID: 1914637275}
@@ -39160,6 +39199,11 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!23 &5562046552955914543 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2324272940050524103, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
+  m_PrefabInstance: {fileID: 5562046552955914540}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5845375463425163268
 GameObject:
   m_ObjectHideFlags: 0
