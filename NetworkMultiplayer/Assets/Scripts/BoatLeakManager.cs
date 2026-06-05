@@ -19,6 +19,7 @@ public class BoatLeakManager : NetworkBehaviour
     [Header("Leak Spawning")]
     public GameObject leakPrefab;
     public float leakInterval = 15f;
+    [SerializeField] private Transform leakParent;
     //public bool bucketUsed;
     //public bool bucketRebound;
     public BucketController bucketController;
@@ -165,7 +166,7 @@ public class BoatLeakManager : NetworkBehaviour
     private void SpawnSingleLeak()
     {
         GameObject leakInstance = Instantiate(
-            leakPrefab, PickRandomSurface(), _leakLocation.SetLeakRotation());
+            leakPrefab, PickRandomSurface(), _leakLocation.SetLeakRotation(), leakParent);
 
         leakInstance.transform.RotateAround(
             _leakLocation.transform.position, Vector3.up, _leakLocation.rotationAdjustment);

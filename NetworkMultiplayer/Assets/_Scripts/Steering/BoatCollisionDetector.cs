@@ -12,6 +12,8 @@ public class BoatCollisionDetector : NetworkBehaviour
 
     private BoatWinLoseController winLoseController;
 
+    [SerializeField] private bool onlyDestroy;
+
     private void Start()
     {
         winLoseController = BoatWinLoseController.Instance;
@@ -45,25 +47,30 @@ public class BoatCollisionDetector : NetworkBehaviour
         if (rock.wasHit)
             return;
 
-        collisionCooldown = true;
+        if (!onlyDestroy)
+        {
+            collisionCooldown = true;
 
-        Debug.Log($"[Boat] Rock collision! +" + $"{rock.instantLeakAmount} leaks");
+            Debug.Log($"[Boat] Rock collision! +" + $"{rock.instantLeakAmount} leaks");
 
-        rock.wasHit = true;
+            rock.wasHit = true;
 
-        if (deckLeaks != null) deckLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
+            if (deckLeaks != null) deckLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
 
-        if (cabinLeaks != null) cabinLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
+            if (cabinLeaks != null) cabinLeaks.SpawnImmediateLeaks(rock.instantLeakAmount);
 
-        //Damage Systems
-        BoatMovement.Instance?.ApplyPermanentSlow(rock.speedDamage);
+            //Damage Systems
+            BoatMovement.Instance?.ApplyPermanentSlow(rock.speedDamage);
 
-        BoatSteeringManager.Instance?.ApplySteeringKnockback(rock.steeringKnockback);
+            BoatSteeringManager.Instance?.ApplySteeringKnockback(rock.steeringKnockback);
 
-        TriggerCameraShakeClientRpc(rock.cameraShakeStrength, rock.cameraShakeDuration);
+            TriggerCameraShakeClientRpc(rock.cameraShakeStrength, rock.cameraShakeDuration);
 
-        if (MusicManager.Instance != null)
-            MusicManager.Instance.PlaySFX(SFXType.Crash);
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlaySFX(SFXType.Crash);
+
+            StartCoroutine(CollisionCooldownRoutine());
+        }
 
         //Destroy rock after collision
         NetworkObject no = rock.GetComponent<NetworkObject>();
@@ -72,8 +79,6 @@ public class BoatCollisionDetector : NetworkBehaviour
             no.Despawn();
         else
             Destroy(rock.gameObject);
-
-        StartCoroutine(CollisionCooldownRoutine());
     }
 
     private IEnumerator CollisionCooldownRoutine()
