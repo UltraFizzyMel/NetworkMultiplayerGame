@@ -9,25 +9,18 @@ public class RockSetter : NetworkBehaviour
     [SerializeField] private int rocksActive; 
     [SerializeField] private int rockNo;
     [SerializeField] private float waitTime;
-    [SerializeField] RockSetter previousSetter; 
+    [SerializeField] RockSetter previousSetter;
+    [SerializeField] private GameObject[] activeRocks;
 
     public override void OnNetworkSpawn()
     {
-        RequestSpawnServerRpc();
+        if(IsServer)
+        { StartCoroutine(SelectActiveRocks()); } 
+       
         
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void RequestSpawnServerRpc()
-    {
-        RequestSpawnClientRpc();
-    }
-
-    [ClientRpc]
-    public void RequestSpawnClientRpc()
-    {
-        StartCoroutine(SelectActiveRocks());
-    }
+ 
 
     public IEnumerator SelectActiveRocks()
     {
@@ -44,12 +37,14 @@ public class RockSetter : NetworkBehaviour
                 rockNo = rockOne;
                 yield return null;
             }
-            rocks[rockOne-1].SetActive(true);           
+            rocks[rockOne-1].SetActive(true);
+            RequestSpawnClientRpc(rockOne - 1);
         }
         else
         {
             rockNo = Random.Range(1, 4);
             rocks[rockNo-1].SetActive(true);
+            RequestSpawnClientRpc(rockNo - 1);
         }
 
         
@@ -62,6 +57,14 @@ public class RockSetter : NetworkBehaviour
                 yield return null;
             }
             rocks[rockTwo-1].SetActive(true);
+            RequestSpawnClientRpc(rockTwo - 1);
         }
+    }
+
+    [ClientRpc]
+    public void RequestSpawnClientRpc(int index)
+    {
+       if(!IsServer)
+        { rocks[index].SetActive(true); }
     }
 }
