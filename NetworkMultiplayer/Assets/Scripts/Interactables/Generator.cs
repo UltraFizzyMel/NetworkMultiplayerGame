@@ -114,7 +114,8 @@ public class Generator : Interactable
 
     public override void Cancel(Player player)
     {
-        player.animator.SetBool("isFueling", false);
+        if (player != null && player.animator != null)
+            player.animator.SetBool("isFueling", false);
         IsNotFuelingRpc();
 
     }

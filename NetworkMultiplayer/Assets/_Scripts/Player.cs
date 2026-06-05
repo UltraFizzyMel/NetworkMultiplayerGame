@@ -698,6 +698,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
             Color colorVar = tentacleImage.color;
             colorVar.a = Mathf.Lerp(1f, 0f, extraEased); 
             tentacleImage.color = colorVar;
+            HandleCancel();
 
             yield return null;
         }
