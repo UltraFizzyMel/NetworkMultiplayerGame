@@ -33059,7 +33059,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 646433079346664451, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: fuelDecayRate
-      value: -0.2
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1768150017949143308, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: m_IsActive
@@ -38979,7 +38979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: leakInterval
-      value: 17
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7516320587494018543, guid: ffa22e75cf29e724fad93c73d9bafb04, type: 3}
       propertyPath: waterRenderers.Array.size
@@ -39246,7 +39246,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
       propertyPath: leakInterval
-      value: 23
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1439652811527995514, guid: 957d41d7c825b9146be60887950fe37d, type: 3}
       propertyPath: waterRenderers.Array.size

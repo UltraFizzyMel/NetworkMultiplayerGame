@@ -292,7 +292,7 @@ MonoBehaviour:
   generatorAudio: {fileID: 191103848315045671}
   fuelMax: 5
   fuelDecayRate: -0.2
-  fuelFillRate: 0.5
+  fuelFillRate: 0.7
   fuelUI: {fileID: 1768150017949143308}
   fuelingProgress:
     UpdateTraits:

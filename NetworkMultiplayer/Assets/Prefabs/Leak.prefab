@@ -143,7 +143,7 @@ MonoBehaviour:
   fixingProgressMax: 5
   fixingProgress: 0
   decayProgess: -1
-  fixingRate: 1.5
+  fixingRate: 2.2
   leakUI: {fileID: 7250991559563576684}
 --- !u!64 &8037910324204296399
 MeshCollider:
