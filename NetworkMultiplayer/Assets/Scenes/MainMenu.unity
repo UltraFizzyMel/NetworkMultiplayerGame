@@ -4057,6 +4057,7 @@ MonoBehaviour:
   - {fileID: 2074691968}
   - {fileID: 2074691967}
   - {fileID: 2074691964}
+  isGame: 0
 --- !u!1 &1617721933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5871,6 +5872,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1334631687748110427, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1401378783705499700, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -5927,6 +5932,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1962318875309752194, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2069499535999598614, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -5955,6 +5964,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2685876743875447937, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3616629161042572926, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -5982,6 +5995,10 @@ PrefabInstance:
     - target: {fileID: 3616629161042572926, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4543455436357517421, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5142422525823538833, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_Name
@@ -6018,6 +6035,10 @@ PrefabInstance:
     - target: {fileID: 5667534209764177838, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6045909299539776200, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6258722488350266866, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -6131,6 +6152,12 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 7083202093698405450, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_text
+      value: "The sea will continue forcing its \nway inside the hull.\nFill the
+        bucket from the floor, then give it back to the sea.\n\nA full bucket cannot
+        collect more water."
+      objectReference: {fileID: 0}
     - target: {fileID: 7379285561357221470, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -6218,6 +6245,20 @@ PrefabInstance:
     - target: {fileID: 8036101015507915283, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8379673020417137295, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_text
+      value: 'Watch the water level carefully.
+
+
+        If the boat floods completely,
+        it will not stay afloat for long.
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 9087105320261867016, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9191875197460609321, guid: eb6f4148845d7e745989350dd6c8fdbd, type: 3}
       propertyPath: m_text
