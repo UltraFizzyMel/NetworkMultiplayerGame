@@ -11783,6 +11783,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a05150594e1faeb468dff92bb61669cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 565992739}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a05150594e1faeb468dff92bb61669cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 565992741}
   m_SourcePrefab: {fileID: 100100000, guid: a05150594e1faeb468dff92bb61669cd, type: 3}
 --- !u!4 &565992737 stripped
 Transform:
@@ -11939,6 +11942,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &565992741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565992738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ee9f80272f1f034ebc568894fb3e12d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Radio
+  ShowTopMostFoldoutHeaderGroup: 1
+  bucketPlacement: {fileID: 0}
+  objectPickUp: {fileID: 0}
+  interactText: 
+  altText: 
 --- !u!1001 &573718081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38503,7 +38523,7 @@ Light:
   serializedVersion: 12
   m_Type: 2
   m_Color: {r: 0.020754695, g: 0.9082287, b: 1, a: 1}
-  m_Intensity: 30
+  m_Intensity: 35
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

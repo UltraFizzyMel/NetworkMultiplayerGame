@@ -1,16 +1,17 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Radio : MonoBehaviour
+public class Radio : Interactable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Interact(Player player)
     {
-        
+
+       
     }
 
-    // Update is called once per frame
-    void Update()
+    public override string GetInteractText(Player player)
     {
-        
+                return interactText;  
     }
 }
