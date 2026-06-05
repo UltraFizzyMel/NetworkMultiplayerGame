@@ -1,6 +1,8 @@
 using System;
 using Unity.Netcode;
+using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Leak : Interactable
 {
@@ -20,6 +22,8 @@ public class Leak : Interactable
     [SerializeField] private GameObject leakUI;
     private Player Player;
 
+    
+
     public void Update()
     {
         float progress = 0;
@@ -32,6 +36,8 @@ public class Leak : Interactable
         {
            RequestDestroyServerRpc();
         }
+
+        EndSceneCheck();
     }
 
     public override void Interact(Player player)
@@ -97,5 +103,14 @@ public class Leak : Interactable
 
         boatLeakManager.RepairLeak();
         Destroy(this.gameObject);
+    }
+
+    public void EndSceneCheck()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+        if(currentScene == "WonGame" || currentScene == "LostGame")
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

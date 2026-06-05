@@ -156,6 +156,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 3541990359234286849}
   objectPickUp: {fileID: 6641305257677426825}
+  interactText: 
+  altText: 
   objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
 --- !u!1 &8937022262174668424
 GameObject:
@@ -242,15 +244,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4679984428165612247, guid: 3ffa746f35dfffc428a4864526bb114b, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 406783230
+      value: 3217723580
       objectReference: {fileID: 0}
     - target: {fileID: 4679984428165612247, guid: 3ffa746f35dfffc428a4864526bb114b, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 3666788897
       objectReference: {fileID: 0}
+    - target: {fileID: 6486004242553488117, guid: 3ffa746f35dfffc428a4864526bb114b, type: 3}
+      propertyPath: objectPickUpSO
+      value: 
+      objectReference: {fileID: 11400000, guid: 082e1c46b39d99146930e04fb21acce7, type: 2}
     - target: {fileID: 7482909232609929235, guid: 3ffa746f35dfffc428a4864526bb114b, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 1794139582
+      value: 3830190250
       objectReference: {fileID: 0}
     - target: {fileID: 7482909232609929235, guid: 3ffa746f35dfffc428a4864526bb114b, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash

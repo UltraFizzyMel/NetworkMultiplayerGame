@@ -17,6 +17,11 @@ public class BucketController : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void FillServerRpc()
     {
+        FillClientRpc();
+    }
+    [ClientRpc]
+    public void FillClientRpc()
+    {
         isFull.Value = true;
         if (waterVisual != null) waterVisual.SetActive(true);
     }
@@ -24,10 +29,14 @@ public class BucketController : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void EmptyServerRpc()
     {
+        EmptyClientRpc();
+    }
+
+    [ClientRpc]
+    public void EmptyClientRpc()
+    {
         isFull.Value = false;
         if (waterVisual != null) waterVisual.SetActive(false);
     }
-
-
 
 }

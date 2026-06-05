@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3105010763
+  GlobalObjectIdHash: 2644568190
   InScenePlacedSourceGlobalObjectIdHash: 3105010763
   DeferredDespawnTick: 0
   Ownership: 1
@@ -187,6 +187,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 1616730571923847228}
   objectPickUp: {fileID: 2929511079871425230}
+  interactText: 
+  altText: 
   objectPickUpSO: {fileID: 11400000, guid: b94bb2408da43644fb9ebc73b78ae105, type: 2}
 --- !u!1001 &7066986558424055804
 PrefabInstance:

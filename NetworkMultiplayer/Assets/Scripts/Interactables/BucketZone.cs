@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using Unity.VectorGraphics;
 using UnityEngine;
 
 public class BucketZone : Interactable, IObjectPickUpParent
@@ -52,6 +53,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
                 //player not carrying pickup
                 GetObjectPickUp().SetObjectPickUpParent(player);
                 ClearObjectPickUp();
+                ClearServerRpc();
                 Debug.Log("Empty!!");
             }
         }
@@ -86,4 +88,14 @@ public class BucketZone : Interactable, IObjectPickUpParent
         return "";
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ClearServerRpc()
+    {
+       ClearClientRpc();
+    }
+    [ClientRpc]
+    public void ClearClientRpc()
+    {
+        ClearObjectPickUp();
+    }
 }
