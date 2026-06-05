@@ -6,6 +6,7 @@ using UnityEngine;
 public class BucketZone : Interactable, IObjectPickUpParent
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
+    [SerializeField] private ObjectPickUp pendingObjectPickUp;
 
     public NetworkVariable<bool> isItemBeingPlaced = new(
       false,
@@ -98,6 +99,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         return "";
     }
 
+    //Clear serever RPC ensures players deparent the object they are picking up from tyhe llocation they are picking it up from.
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void ClearServerRpc()
     {
@@ -108,6 +110,8 @@ public class BucketZone : Interactable, IObjectPickUpParent
     {
         ClearObjectPickUp();
     }
+
+
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void ItemPlacementTrueServerRpc()

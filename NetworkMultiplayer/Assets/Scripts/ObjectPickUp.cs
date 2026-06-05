@@ -37,7 +37,13 @@ public class ObjectPickUp : NetworkBehaviour
         objectPickUpParentNetworkObjectReference.TryGet(out NetworkObject objectPickUpNetworkObject);
         IObjectPickUpParent objectPickUpParent = objectPickUpNetworkObject.GetComponent<IObjectPickUpParent>();
 
-        
+        //make sure the new location is empty before placing item there.
+        if (objectPickUpParent.HasObjectPickUp())
+        {
+            Debug.LogError("objectPickUpParent already has a objectPickup");
+            return;
+        }
+
         if (this.objectPickUpParent != null)// clears the old parent
         {
             this.objectPickUpParent.ClearObjectPickUp();
@@ -45,11 +51,7 @@ public class ObjectPickUp : NetworkBehaviour
         }
         this.objectPickUpParent = objectPickUpParent; //adds the new parent
 
-        //make sure the new location is empty before placing item there.
-        if (objectPickUpParent.HasObjectPickUp())
-        {
-            Debug.LogError("objectPickUpParent already has a objectPickup");
-        }
+        
         objectPickUpParent.SetObjectPickUp(this);
 
         Debug.Log("Set transform Parent");
