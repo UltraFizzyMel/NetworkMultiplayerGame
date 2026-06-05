@@ -6,7 +6,12 @@ using UnityEngine;
 public class BucketZone : Interactable, IObjectPickUpParent
 {
     [SerializeField] private ObjectPickUpSO objectPickUpSO;
-    
+
+    public NetworkVariable<bool> isItemBeingPlaced = new(
+      false,
+      NetworkVariableReadPermission.Everyone,
+      NetworkVariableWritePermission.Server);
+
     //[SerializeField] private Player player;
     //[SerializeField] private BucketController bucketController;
 
@@ -15,6 +20,11 @@ public class BucketZone : Interactable, IObjectPickUpParent
 
     public override void Interact(Player player)
     {
+        if (isItemBeingPlaced.Value == true)
+        {
+            return;
+        }
+        ItemPlacementTrueRpc();
         Debug.Log("Interact!!");
         if (!HasObjectPickUp())
         {
@@ -59,6 +69,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         }
         //Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketHoldPoint); //Instantiate object
         //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
+        ItemPlacementFalseRpc();
     }
 
     public override string GetInteractText(Player player)
@@ -97,5 +108,17 @@ public class BucketZone : Interactable, IObjectPickUpParent
     public void ClearClientRpc()
     {
         ClearObjectPickUp();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ItemPlacementTrueRpc()
+    {
+        isItemBeingPlaced.Value = true;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ItemPlacementFalseRpc()
+    {
+        isItemBeingPlaced.Value = false;
     }
 }
