@@ -15,7 +15,10 @@ public class BucketZone : Interactable, IObjectPickUpParent
     //[SerializeField] private Player player;
     //[SerializeField] private BucketController bucketController;
 
-
+    public void Update()
+    {
+        
+    }
 
 
     public override void Interact(Player player)
@@ -24,7 +27,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         {
             return;
         }
-        ItemPlacementTrueRpc();
+       // ItemPlacementTrueServerRpc();
         Debug.Log("Interact!!");
         if (!HasObjectPickUp())
         {
@@ -69,7 +72,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         }
         //Transform objectPickUpTransform = Instantiate(objectPickUpSO.prefab, bucketHoldPoint); //Instantiate object
         //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
-        ItemPlacementFalseRpc();
+        ItemPlacementFalseServerRpc();
     }
 
     public override string GetInteractText(Player player)
@@ -111,14 +114,28 @@ public class BucketZone : Interactable, IObjectPickUpParent
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void ItemPlacementTrueRpc()
+    public void ItemPlacementTrueServerRpc()
     {
+        //ItemPlacementTrueClientRpc();
         isItemBeingPlaced.Value = true;
     }
+    /*[ClientRpc]
+    public void ItemPlacementTrueClientRpc()
+    {
+        isItemBeingPlaced.Value = true;
+    }*/
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void ItemPlacementFalseRpc()
+    public void ItemPlacementFalseServerRpc()
     {
+        //ItemPlacementFalseClientRpc();
         isItemBeingPlaced.Value = false;
     }
+    /*[ClientRpc]
+    public void ItemPlacementFalseClientRpc()
+    {
+        isItemBeingPlaced.Value = false;
+    }*/
+
+    
 }

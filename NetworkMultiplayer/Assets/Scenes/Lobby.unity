@@ -4818,6 +4818,8 @@ MonoBehaviour:
   settingsPanel: {fileID: 0}
   controlsPanel: {fileID: 0}
   howToPanel: {fileID: 0}
+  pnlTutorial: []
+  isGame: 0
 --- !u!4 &1108521514
 Transform:
   m_ObjectHideFlags: 0
