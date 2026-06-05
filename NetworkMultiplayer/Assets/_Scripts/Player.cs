@@ -675,7 +675,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         // Ramp DOWN after teleport
 
         timer = 0f;
-
+        moveAction.Disable();
         while (timer < halfDuration)
         {
             timer += Time.deltaTime;
@@ -704,7 +704,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         }
 
         // FINAL RESET
-
+        moveAction.Enable();
         lens.intensity.value = lensBaseValue;
         vignette.intensity.value = vignetteBaseValue;
         chromatic.intensity.value = chromaticBaseValue;
