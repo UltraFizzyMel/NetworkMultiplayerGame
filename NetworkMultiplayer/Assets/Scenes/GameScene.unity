@@ -3200,6 +3200,7 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   interactText: Press E to Steer
+  altText: 
   steeringPosition: {fileID: 522972746}
   wheelVisual: {fileID: 0}
   maxWheelRotation: 720
@@ -6158,6 +6159,7 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   interactText: Press E to Steer
+  altText: 
   steeringPosition: {fileID: 522972746}
   wheelVisual: {fileID: 0}
   maxWheelRotation: 720
@@ -6801,7 +6803,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with a full Bucket
+  interactText: Press [E] To Throw\nWater Overboard
+  altText: 
   bucketController: {fileID: 0}
 --- !u!65 &282198913
 BoxCollider:
@@ -8811,6 +8814,133 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 736064815840450522, guid: 239ac0bd74841f648993541b863831a4, type: 3}
   m_PrefabInstance: {fileID: 426700873}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &427779931
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 427779932}
+  - component: {fileID: 427779934}
+  - component: {fileID: 427779933}
+  m_Layer: 0
+  m_Name: Point Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &427779932
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427779931}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 1.26, z: 0.02}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7740640063660912630}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &427779933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427779931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
+--- !u!108 &427779934
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427779931}
+  m_Enabled: 1
+  serializedVersion: 12
+  m_Type: 0
+  m_Color: {r: 1, g: 0.35587806, b: 0.20188677, a: 1}
+  m_Intensity: 10
+  m_Range: 1.344944
+  m_SpotAngle: 90.61181
+  m_InnerSpotAngle: 80.07893
+  m_CookieSize2D: {x: 0.5, y: 0.5}
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!1001 &429176397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11551,6 +11681,7 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   interactText: Press E to Steer
+  altText: 
   steeringPosition: {fileID: 522972746}
   wheelVisual: {fileID: 0}
   maxWheelRotation: 720
@@ -11922,7 +12053,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with a full Bucket
+  interactText: Press [E] To Throw\nWater Overboard
+  altText: 
   bucketController: {fileID: 0}
 --- !u!65 &575721031
 BoxCollider:
@@ -12543,6 +12675,7 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   interactText: Press E to Steer
+  altText: 
   steeringPosition: {fileID: 522972746}
   wheelVisual: {fileID: 0}
   maxWheelRotation: 720
@@ -12995,8 +13128,8 @@ Transform:
   m_GameObject: {fileID: 637027041}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -19.9281, y: 0.71, z: -3.977}
-  m_LocalScale: {x: 1.1810366, y: 0.31508416, z: 2.6381536}
+  m_LocalPosition: {x: -19.7297, y: 0.71, z: -3.977}
+  m_LocalScale: {x: 0.78420824, y: 0.31508416, z: 2.6381536}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1279441865}
@@ -13599,7 +13732,7 @@ Transform:
   - {fileID: 431885362}
   - {fileID: 112666263}
   - {fileID: 1851173056}
-  - {fileID: 1144231376}
+  - {fileID: 1636440071641333775}
   - {fileID: 128290119}
   - {fileID: 505336570}
   - {fileID: 1444911629}
@@ -14366,7 +14499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.02
+      value: -1.24
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -14374,23 +14507,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 15.542
+      value: -2.91
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.008706958
+      value: -0.24390967
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.00058594777
+      value: -0.016414266
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.9977053
+      value: 0.96747077
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.06714207
+      value: -0.06510739
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -14398,7 +14531,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -539
+      value: -511.7
       objectReference: {fileID: 0}
     - target: {fileID: 8982372994137285608, guid: 527bf15cf28a4404fb0e3a2f04ad5eb1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -15039,7 +15172,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with a full Bucket
+  interactText: Press [E] To Throw\nWater Overboard
+  altText: 
   bucketController: {fileID: 0}
 --- !u!1001 &768820411
 PrefabInstance:
@@ -20519,6 +20653,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1911306415160311140, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: 88f0e85df173f9845bd0be3521282f0c, type: 3}
     - target: {fileID: 2014285046976072986, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -20589,14 +20727,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7740640062653200953, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 427779932}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
---- !u!4 &1144231376 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1636440072646956480, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
-  m_PrefabInstance: {fileID: 1144231375}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1144303780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21298,7 +21434,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E while holding an empty bucket
+  interactText: Press [E] To\nFill Bucket
+  altText: 
   bucketController: {fileID: 0}
   DeckManager: {fileID: 1474814221}
 --- !u!114 &1215553599
@@ -24517,7 +24654,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with a full Bucket
+  interactText: Press [E] To Throw\nWater Overboard
+  altText: 
   bucketController: {fileID: 0}
 --- !u!1 &1444456349
 GameObject:
@@ -25775,7 +25913,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with a full Bucket
+  interactText: Press [E] To Throw\nWater Overboard
+  altText: 
   bucketController: {fileID: 0}
 --- !u!1001 &1517211066
 PrefabInstance:
@@ -28971,7 +29110,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with a full Bucket
+  interactText: Press [E] To Throw\nWater Overboard
+  altText: 
   bucketController: {fileID: 0}
 --- !u!4 &1646220754 stripped
 Transform:
@@ -32886,12 +33026,16 @@ PrefabInstance:
       value: -0.04
       objectReference: {fileID: 0}
     - target: {fileID: 646433079346664451, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
+      propertyPath: altText
+      value: Don't Let The\nBoat Dirft...
+      objectReference: {fileID: 0}
+    - target: {fileID: 646433079346664451, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: speedChange
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 646433079346664451, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: interactText
-      value: Hold E with empty hands
+      value: 'Hold [E] To Keep\nThe Engine Alive '
       objectReference: {fileID: 0}
     - target: {fileID: 646433079346664451, guid: 778eadf1be62c3d49aedd10aa4fde2ff, type: 3}
       propertyPath: fuelDecayRate
@@ -36380,8 +36524,8 @@ Transform:
   m_GameObject: {fileID: 2029491290}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -19.8093, y: 0.71, z: 2.8369}
-  m_LocalScale: {x: 1.7265676, y: 0.31508416, z: 2.8383207}
+  m_LocalPosition: {x: -19.5686, y: 0.71, z: 2.8369}
+  m_LocalScale: {x: 1.2450279, y: 0.31508416, z: 2.8383207}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1279441865}
@@ -36618,7 +36762,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
-  interactText: Press E with an empty bucket
+  interactText: Press [E] to Fill\nBucket
+  altText: 
   bucketController: {fileID: 0}
   DeckManager: {fileID: 1901160223}
 --- !u!1 &2048408318 stripped
@@ -38253,6 +38398,7 @@ MonoBehaviour:
   bucketPlacement: {fileID: 0}
   objectPickUp: {fileID: 0}
   interactText: Press [E] To\nTake The Wheel
+  altText: 
   steeringPosition: {fileID: 522972746}
   wheelVisual: {fileID: 2119975806}
   maxWheelRotation: 720
@@ -38746,6 +38892,11 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &1636440071641333775 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1636440072646956480, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
+  m_PrefabInstance: {fileID: 1144231375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1951697295489578305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39502,6 +39653,11 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!4 &7740640063660912630 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7740640062653200953, guid: d3c79f9975be91c49a40880574dd4235, type: 3}
+  m_PrefabInstance: {fileID: 1144231375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

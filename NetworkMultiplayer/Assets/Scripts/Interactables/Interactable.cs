@@ -8,10 +8,17 @@ public class Interactable : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] private ObjectPickUp objectPickUp;
 
     [SerializeField] public string interactText;
-    
+
+    [SerializeField] public string altText;
+
 
     public virtual void Interact(Player player)
     { }
+
+    public virtual string GetInteractText(Player player)
+    {
+        return interactText;
+    }
 
     public virtual void InteractAlternate(Player player)
     { }

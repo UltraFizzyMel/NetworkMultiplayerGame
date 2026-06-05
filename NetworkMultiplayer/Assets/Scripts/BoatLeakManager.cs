@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 public class BoatLeakManager : NetworkBehaviour
 {
+    public static BoatLeakManager Instance { get; private set; }
+
     [Header("Water Settings")]
     //public float currentWaterLevel = 0f;
     public float maxWaterLevel = 100f;
@@ -43,6 +45,13 @@ public class BoatLeakManager : NetworkBehaviour
     // 0.01f avoids a single-frame flash when RemoveWater drops the level to exactly 0.
     [SerializeField] private float hideWaterBelowLevel = 0.01f;
 
+    public bool shouldShowWater => currentWaterLevel.Value > hideWaterBelowLevel;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         var bucket = GameObject.Find("TempBucket");
@@ -64,6 +73,9 @@ public class BoatLeakManager : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         currentWaterLevel.OnValueChanged -= OnWaterLevelChanged;
+
+        if (Instance == this)
+            Instance = null;
     }
 
     private void OnWaterLevelChanged(float _, float newValue)

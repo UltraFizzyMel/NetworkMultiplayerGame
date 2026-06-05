@@ -123,7 +123,8 @@ public class InteractUI : NetworkBehaviour
         {
             if (hitInfo.collider.TryGetComponent(out Interactable interactable))
             {
-                UpdateText(interactable.interactText);
+                //UpdateText(interactable.interactText);
+                UpdateText(interactable.GetInteractText(player));
             }
         }
     }
@@ -132,7 +133,13 @@ public class InteractUI : NetworkBehaviour
     {
         if (promptText == null)
             return;
-        promptText.text = promptMessage;
+
+        bool hasText = !string.IsNullOrWhiteSpace(promptMessage);
+
+        promptText.enabled = hasText;
+
+        if (hasText)
+            promptText.text = promptMessage;
     }
 
 }

@@ -46,4 +46,26 @@ public class RisingWater : Interactable
             return;
         }
     }
+
+    public override string GetInteractText(Player player)
+    {
+        if (BoatLeakManager.Instance == null || !BoatLeakManager.Instance.shouldShowWater)
+            return "";
+
+        if (!player.HasObjectPickUp())
+        {
+            if (BoatLeakManager.Instance.currentWaterLevel.Value > 5f)
+                return altText;
+
+            return "";
+        }
+
+        if (player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucket))
+        {
+            if (!bucket.isFull.Value)
+                return interactText;
+        }
+
+        return "";
+    }
 }

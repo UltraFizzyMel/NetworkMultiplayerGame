@@ -59,6 +59,17 @@ public class Leak : Interactable
         }
     }
 
+    public override string GetInteractText(Player player)
+    {
+        if (!player.HasObjectPickUp())
+            return altText;
+
+        if (player.GetObjectPickUp().TryGetComponent<TapeController>(out _))
+            return interactText;
+
+        return "";
+    }
+
     public override void Cancel(Player player)
     {
         player.animator.SetBool("isFixing", false);
@@ -81,7 +92,9 @@ public class Leak : Interactable
     public void DestroySelf()
     {
         if (boatLeakManager == null || gameObject == null) return;
-        Player.animator.SetBool("isFixing", false);
+        if (Player != null && Player.animator != null)
+            Player.animator.SetBool("isFixing", false);
+
         boatLeakManager.RepairLeak();
         Destroy(this.gameObject);
     }

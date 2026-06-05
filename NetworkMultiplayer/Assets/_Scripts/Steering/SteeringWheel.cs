@@ -44,9 +44,23 @@ public class SteeringWheel : Interactable
             return;
         }
 
+        if (player.HasObjectPickUp())
+            return;
+
         _currentPlayer = player;
         player.EnterSteering(this);
         FogZoneManager.Instance?.ReapplySteeringBlocks();
+    }
+
+    public override string GetInteractText(Player player)
+    {
+        if (player.HasObjectPickUp())
+            return "";
+
+        if (player.IsDeckPlayer.Value)
+            return "";
+
+        return interactText;
     }
 
     /*public override void Cancel(Player player)

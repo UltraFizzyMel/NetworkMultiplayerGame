@@ -540,13 +540,13 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     {
         // ── Baseline values (match resting / TeleportSequence start values) ─
         const float baseVignette = 0.4f;
-        const float peakVignette = 0.65f; // Noticeably dark but not blinding
+        const float peakVignette = 0.7f; // Noticeably dark but not blinding
 
         const float baseChromatic = 0f;
-        const float peakChromatic = 0.55f;
+        const float peakChromatic = 1f;
 
         const float baseLens = 0f;
-        const float peakLens = -0.6f;  // Slight squeeze
+        const float peakLens = -0.75f;  // Slight squeeze
 
         RawImage tentacleImage = TentacleUI.GetComponent<RawImage>();
 

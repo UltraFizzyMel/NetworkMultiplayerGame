@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Generator : Interactable
 {
@@ -101,6 +102,14 @@ public class Generator : Interactable
 
         if (MusicManager.Instance != null)
             MusicManager.Instance.PlaySFX(SFXType.GeneratorFixed);
+    }
+
+    public override string GetInteractText(Player player)
+    {
+        if (player.HasObjectPickUp())
+            return "";
+
+        return interactText;
     }
 
     public override void Cancel(Player player)

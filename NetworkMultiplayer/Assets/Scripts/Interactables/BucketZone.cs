@@ -59,4 +59,31 @@ public class BucketZone : Interactable, IObjectPickUpParent
         //objectPickUpTransform.GetComponent<ObjectPickUp>().SetBucketZone(this);
     }
 
+    public override string GetInteractText(Player player)
+    {
+        // Empty zone
+        if (!HasObjectPickUp())
+        {
+            if (!player.HasObjectPickUp())
+                return "";
+
+            if (player.GetObjectPickUp().TryGetComponent<BucketController>(out _))
+                return "Press [E] To\nPlace Bucket";
+
+            if (player.GetObjectPickUp().TryGetComponent<TapeController>(out _))
+                return "Press [E] To\nPlace Tape";
+
+            return "";
+        }
+
+        // Zone has item
+        if (GetObjectPickUp().TryGetComponent<BucketController>(out _))
+            return "Press [E] To\nPick Up Bucket";
+
+        if (GetObjectPickUp().TryGetComponent<TapeController>(out _))
+            return "Press [E] To\nPick Up Tape";
+
+        return "";
+    }
+
 }

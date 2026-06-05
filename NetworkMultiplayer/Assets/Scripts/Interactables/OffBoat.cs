@@ -44,4 +44,18 @@ public class OffBoat : Interactable
             return;
         }
     }
+
+    public override string GetInteractText(Player player)
+    {
+        if (!player.HasObjectPickUp())
+            return "";
+
+        if (player.GetObjectPickUp().TryGetComponent<BucketController>(out BucketController bucket))
+        {
+            if (bucket.isFull.Value)
+                return interactText;
+        }
+
+        return "";
+    }
 }
