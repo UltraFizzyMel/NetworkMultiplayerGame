@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -40,13 +41,28 @@ public class Generator : Interactable
 
         // Start with a full tank so the boat moves from the moment the game begins.
         // Previously the default was 0, making GetFuelNormalized() always return 0 and netCurrentMoveSpeed always stay at 0.
+        fuelingProgress.Value = 0f;
+        generatorAudio.SetActive(false);
+
+        StartCoroutine(WaitForGameReadyThenInitFuel());
+    }
+
+    private IEnumerator WaitForGameReadyThenInitFuel()
+    {
+        yield return new WaitUntil(() =>
+            GameManager.Instance != null && GameManager.Instance.GameReady());
+
         fuelingProgress.Value = fuelMax;
+        generatorAudio.SetActive(true);
+        Debug.Log("[Generator] Game ready — fuel initialised to full.");
     }
 
     public void Update()
     {
         if (!IsServer || !IsSpawned) return;
         //if (IsSpawned) { GeneratorServerRpc(); }
+
+        if (GameManager.Instance == null || !GameManager.Instance.GameReady()) return;
 
         //SendTo.Server RPC  adds unnecessary message-system overhead.
         //We already check to make sure it's the server so it's cheaper to just call the method directly.

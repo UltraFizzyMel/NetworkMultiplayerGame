@@ -24,7 +24,11 @@ public enum SFXType
 
     // Win/Lose sounds
     Win,
-    Lose
+    Lose,
+
+    // UI Sounds
+    Start,
+    Click
 }
 
 public enum LoopType
@@ -130,17 +134,17 @@ public class MusicManager : MonoBehaviour
         // If different song is playing, crossfade
         else if (_currentSongName != songID)
         {
-            CrossfadeToNewSong(clip, songID);
+            CrossfadeToNewSong(clip, songID, 0.05f, 0.05f);
         }
     }
 
-    public void CrossfadeToNewSong(AudioClip newClip, string newSongID)
+    public void CrossfadeToNewSong(AudioClip newClip, string newSongID, float startVolume, float endVolume)
     {
         if (_isCrossfading) return;
-        StartCoroutine(CrossfadeCoroutine(newClip, newSongID, _duration));
+        StartCoroutine(CrossfadeCoroutine(newClip, newSongID, _duration, startVolume, endVolume));
     }
 
-    private IEnumerator CrossfadeCoroutine(AudioClip newClip, string newSongID, float duration)
+    private IEnumerator CrossfadeCoroutine(AudioClip newClip, string newSongID, float duration, float startVolume, float endVolume)
     {
         _isCrossfading = true;
 
@@ -153,15 +157,15 @@ public class MusicManager : MonoBehaviour
         while (elapsed < duration)
         {
             float t = elapsed / duration;
-            _activeSource.volume = Mathf.Lerp(0.05f, 0f, t);
-            _inactiveSource.volume = Mathf.Lerp(0f, 0.05f, t);
+            _activeSource.volume = Mathf.Lerp(startVolume, 0f, t);
+            _inactiveSource.volume = Mathf.Lerp(0f, endVolume, t);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         // Complete the swap
         _activeSource.Stop();
-        _activeSource.volume = 0.05f;
+        _activeSource.volume = endVolume;
 
         // Swap references
         var temp = _activeSource;

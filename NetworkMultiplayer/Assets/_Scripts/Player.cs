@@ -248,6 +248,14 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         { animator = crewAnimator; }
         else { animator = captainAnimator; }
 
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void DisableCursor()
+    {
+        if (!IsOwner) return;
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -273,6 +281,8 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     {
         if (!IsOwner || !IsSpawned)// || cc.enabled == false)
             return;
+
+        if (GameManager.Instance == null || !GameManager.Instance.GameReady()) return;
 
         if (isSteering)
         {

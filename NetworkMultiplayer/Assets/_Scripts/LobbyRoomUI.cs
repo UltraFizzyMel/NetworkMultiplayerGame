@@ -82,7 +82,7 @@ public class LobbyRoomUI : MonoBehaviour
         lobbyRoomPanel.SetActive(true);
 
         if (MusicManager.Instance != null)
-            MusicManager.Instance.CrossfadeToNewSong(radioStaticSong, "RadioStatic");
+            MusicManager.Instance.CrossfadeToNewSong(radioStaticSong, "RadioStatic", 0.05f, 0.05f);
 
         txtLobbyName.text = lobby.Name;
 
@@ -172,6 +172,8 @@ public class LobbyRoomUI : MonoBehaviour
             return;
         }
 
+        MusicManager.Instance.PlaySFX(SFXType.Click);
+
         ReadyManager.Instance.ToggleReady();
     }
 
@@ -203,7 +205,7 @@ public class LobbyRoomUI : MonoBehaviour
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
 
         if (MusicManager.Instance != null)
-            MusicManager.Instance.CrossfadeToNewSong(ambientSong, "AmbientEnvironment");
+            MusicManager.Instance.CrossfadeToNewSong(ambientSong, "AmbientEnvironment", 0.05f, 0.05f);
     }
 
     // ─── Leave lobby ─────────────────────────────────────────────────────────
@@ -263,6 +265,8 @@ public class LobbyRoomUI : MonoBehaviour
 
         _isTransitioning = true;
 
+        MusicManager.Instance.PlaySFX(SFXType.Click);
+
         if (ReadyManager.Instance != null &&
             NetworkManager.Singleton != null &&
             NetworkManager.Singleton.IsHost)
@@ -274,9 +278,7 @@ public class LobbyRoomUI : MonoBehaviour
 
         if (MusicManager.Instance != null)
         {
-            MusicManager.Instance.CrossfadeToNewSong(
-                ambientSong,
-                "SeaAmbience");
+            MusicManager.Instance.CrossfadeToNewSong(ambientSong, "SeaAmbience", 0.05f, 0.05f);
         }
 
         lobbyRoomPanel.SetActive(false);

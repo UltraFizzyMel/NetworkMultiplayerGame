@@ -91,6 +91,7 @@ public class LobbyManager : MonoBehaviour
         _stopLobbyList = true;
         lobbyListParent.SetActive(false);
         lobbyCreationParent.SetActive(true);
+        MusicManager.Instance.PlaySFX(SFXType.Click);
     }
 
     public void ExitLobbyCreationPanel()
@@ -98,12 +99,14 @@ public class LobbyManager : MonoBehaviour
         lobbyCreationParent.SetActive(false);
         lobbyListParent.SetActive(true);
         TryStartLobbyList();
+        MusicManager.Instance.PlaySFX(SFXType.Click);
     }
 
     public void TogglePasswordField()
     {
         createLobbyPasswordField.interactable = isPrivate.isOn;
         if (!isPrivate.isOn) createLobbyPasswordField.text = string.Empty;
+        MusicManager.Instance.PlaySFX(SFXType.Click);
     }
 
     public async void CreateLobby()
@@ -117,6 +120,8 @@ public class LobbyManager : MonoBehaviour
 
         bool privateLobby = isPrivate.isOn;
         string hostRole = Random.Range(0, 2) == 0 ? "Deck" : "Cabin";
+
+        MusicManager.Instance.PlaySFX(SFXType.Click);
 
         try
         {
@@ -190,6 +195,8 @@ public class LobbyManager : MonoBehaviour
         if (_isJoiningLobby) return;
 
         _selectedLobbyID = lobbyID;
+
+        MusicManager.Instance.PlaySFX(SFXType.Click);
 
         if (needPassword)
         {
@@ -359,6 +366,8 @@ public class LobbyManager : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(_selectedLobbyID)) return;
 
+        MusicManager.Instance.PlaySFX(SFXType.Click);
+
         try
         {
             Lobby lobby = await LobbyService.Instance.GetLobbyAsync(_selectedLobbyID);
@@ -394,6 +403,7 @@ public class LobbyManager : MonoBehaviour
         pnlPassword.SetActive(false);
         txtPassword.text = string.Empty;
         SetJoinControlsInteractable(true);
+        MusicManager.Instance.PlaySFX(SFXType.Click);
     }
 
     public void CloseFailedToJoinPanel()
@@ -402,6 +412,7 @@ public class LobbyManager : MonoBehaviour
         pnlPassword.SetActive(true);
         btnClose.interactable = true;
         btnSubmit.interactable = true;
+        MusicManager.Instance.PlaySFX(SFXType.Click);
     }
 
     // ─── Lobby list ──────────────────────────────────────────────────────────

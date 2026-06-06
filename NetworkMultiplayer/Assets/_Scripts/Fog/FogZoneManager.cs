@@ -21,6 +21,9 @@ public class FogZoneManager : MonoBehaviour
     [SerializeField] private GameObject leftDeathFog;
     [SerializeField] private GameObject rightDeathFog;
 
+    [SerializeField] private GameObject WarningSound;
+    [SerializeField] private GameObject DeathSound;
+
     private void Awake() => Instance = this;
     private void OnDestroy() { if (Instance == this) Instance = null; }
 
@@ -68,6 +71,7 @@ public class FogZoneManager : MonoBehaviour
 
         BlockForwardMovement = _deathLeft || _deathRight;
         UpdateFogVFX();
+        UpdateMusic();
     }
 
     private void UpdateFogVFX()
@@ -77,6 +81,14 @@ public class FogZoneManager : MonoBehaviour
 
         if (rightDeathFog != null)
             rightDeathFog.SetActive(_deathRight);
+    }
+
+    private void UpdateMusic()
+    {
+        if (WarningSound != null)
+            WarningSound.SetActive(_warnLeft || _warnRight || _deathLeft || _deathRight);
+        if (DeathSound != null)
+            DeathSound.SetActive(_deathLeft || _deathRight);
     }
 
     // ─── Visual targets ───────────────────────────────────────────────────────

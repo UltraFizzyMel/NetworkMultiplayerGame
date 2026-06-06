@@ -16,8 +16,10 @@ public class GameManager : NetworkBehaviour
 
     [Header("UI")]
     [SerializeField] private GameObject loadingOverlay;
-
     public GameObject LoadingOverlay => loadingOverlay;
+
+    public Transform DeckSpawn => deckSpawn;
+    public Transform CabinSpawn => cabinSpawn;
 
     public bool PlayersSpawned { get; private set; }
 
@@ -38,11 +40,21 @@ public class GameManager : NetworkBehaviour
 
     public bool GameReady() => _gameReady.Value;
 
+    private readonly NetworkVariable<int> _tutorialReadyCount = new(
+        0,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
     private const int PhysicsSettleFrames = 8;
+    private const int RequiredPlayers = 2;
+
+    [SerializeField] private GameObject Radio;
 
     public override void OnNetworkSpawn()
     {
         Instance = this;
+
+        Radio.SetActive(false);
 
         if (loadingOverlay != null)
             loadingOverlay.SetActive(true);
@@ -80,7 +92,7 @@ public class GameManager : NetworkBehaviour
 
             if (playerScript != null)
             {
-                playerScript.SetRole(isDeck); // ← add this line
+                playerScript.SetRole(isDeck);
                 playerScript.SpawnPlayerClientRpc(spawn.position, spawn.rotation, isDeck);
             }
         }
@@ -88,11 +100,46 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < PhysicsSettleFrames; i++)
             yield return new WaitForFixedUpdate();
 
-        _gameReady.Value = true;
+        //_gameReady.Value = true;
         PlayersSpawned = true;
         Debug.Log("[GameManager] All players spawned.");
 
         //HideLoadingOverlayClientRpc();
+    }
+
+    // ─── Tutorial completion ─────────────────────────────────────────────────
+    public void ReportTutorialComplete()
+    {
+        ReportTutorialCompleteRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ReportTutorialCompleteRpc()
+    {
+        _tutorialReadyCount.Value++;
+        Debug.Log($"[GameManager] Tutorial ready: {_tutorialReadyCount.Value}/{RequiredPlayers}");
+
+        if (_tutorialReadyCount.Value >= RequiredPlayers)
+        {
+            _gameReady.Value = true;
+            Radio.SetActive(true);
+            HideLoadingOverlayClientRpc();
+            DisableCursorClientRpc();
+            Debug.Log("[GameManager] Both players ready — game starting.");
+        }
+    }
+
+    [ClientRpc]
+    private void DisableCursorClientRpc()
+    {
+        foreach (Player player in PlayerRegistry.Players)
+        {
+            if (!player.IsOwner)
+                continue;
+
+            player.DisableCursor();
+            break;
+        }
     }
 
     [ClientRpc]
