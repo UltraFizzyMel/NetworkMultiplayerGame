@@ -73,12 +73,8 @@ public class BoatCollisionDetector : NetworkBehaviour
         }
 
         //Destroy rock after collision
-        NetworkObject no = rock.GetComponent<NetworkObject>();
-
-        if (no != null && no.IsSpawned)
-            no.Despawn();
-        else
-            Destroy(rock.gameObject);
+        rock.RequestDestroyServerRpc();
+        
     }
 
     private IEnumerator CollisionCooldownRoutine()
