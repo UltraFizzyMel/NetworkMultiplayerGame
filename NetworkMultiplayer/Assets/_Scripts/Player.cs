@@ -315,7 +315,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         pitch -= look.y;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */
-        if (IsDeckPlayer.Value == true)
+        if (IsServer)
         { animator = crewAnimator; }
         else { animator = captainAnimator; }
     }
