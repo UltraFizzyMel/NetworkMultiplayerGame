@@ -72,13 +72,9 @@ public class BoatCollisionDetector : NetworkBehaviour
             StartCoroutine(CollisionCooldownRoutine());
         }
 
-        //Destroy rock after collision
-        NetworkObject no = rock.GetComponent<NetworkObject>();
+       
+        RequestDestroyServerRpc(rock);
 
-        if (no != null && no.IsSpawned)
-            no.Despawn();
-        else
-            Destroy(rock.gameObject);
     }
 
     private IEnumerator CollisionCooldownRoutine()
@@ -96,5 +92,28 @@ public class BoatCollisionDetector : NetworkBehaviour
             player.StartCameraShake(intensity, duration);
             break;
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RequestDestroyServerRpc(RockObstacle rock)
+    {
+        RequestDestroyClientRpc(rock);
+    }
+
+    [ClientRpc]
+    public void RequestDestroyClientRpc(RockObstacle rock)
+    {
+        DestroySelf(rock);
+    }
+
+    public void DestroySelf(RockObstacle rock)
+    {
+        //Destroy rock after collision
+        NetworkObject no = rock.GetComponent<NetworkObject>();
+
+        if (no != null && no.IsSpawned)
+            no.Despawn();
+        else
+            Destroy(rock.gameObject);
     }
 }
