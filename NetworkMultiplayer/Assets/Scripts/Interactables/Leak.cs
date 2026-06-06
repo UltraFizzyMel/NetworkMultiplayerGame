@@ -22,7 +22,8 @@ public class Leak : Interactable
     [SerializeField] private GameObject leakUI;
     private Player Player;
 
-    
+    private bool isDestroyed;
+
 
     public void Update()
     {
@@ -32,9 +33,15 @@ public class Leak : Interactable
         fixingProgress += progress * Time.deltaTime;
         OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs { progressNormalized = fixingProgress/fixingProgressMax });
         
-        if (fixingProgress >= fixingProgressMax)
+        if (fixingProgress >= fixingProgressMax && !isDestroyed)
         {
-           RequestDestroyServerRpc();
+            isFixing = false;
+            isDestroyed = true;
+
+            if (Player != null && Player.animator != null)
+                Player.animator.SetBool("isFixing", false);
+
+            RequestDestroyServerRpc();
         }
 
         EndSceneCheck();
@@ -78,9 +85,8 @@ public class Leak : Interactable
 
     public override void Cancel(Player player)
     {
-        player.animator.SetBool("isFixing", false);
         isFixing = false;
-       
+        player.animator.SetBool("isFixing", false);       
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
