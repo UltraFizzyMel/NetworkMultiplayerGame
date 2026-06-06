@@ -125,6 +125,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     [SerializeField] public Animator animator;
     [SerializeField] public Animator captainAnimator;
     [SerializeField] public Animator crewAnimator;
+    private SessionData sessionData;
 
   
 
@@ -137,6 +138,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         cc = GetComponent<CharacterController>();
         cnt = GetComponent<ClientNetworkTransform>();
         pi = GetComponent<PlayerInput>();
+        sessionData = GameObject.Find("SessionData").GetComponent<SessionData>();
 
         if (IsDeckPlayer.Value == true)
         { animator = crewAnimator; }
@@ -316,8 +318,26 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         cameraPivot.localEulerAngles = new Vector3(pitch, 0f, 0f); */
         if (IsServer)
-        { animator = crewAnimator; }
-        else { animator = captainAnimator; }
+        {
+            if (sessionData.isHostDeck)
+            {
+                animator = crewAnimator;
+            }
+            else 
+            {
+                animator = captainAnimator;
+            }
+        }
+
+        else
+        {
+            if (sessionData.isHostDeck)
+            {
+                animator = captainAnimator;
+            }
+            else { animator = crewAnimator; }
+        }
+        
     }
 
     private void NormalMovementUpdate()
