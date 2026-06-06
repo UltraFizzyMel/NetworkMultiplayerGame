@@ -43,8 +43,8 @@ public class RockSetter : NetworkBehaviour
         else
         {
             rockNo = Random.Range(1, 4);
-            rocks[rockNo-1].SetActive(true);
-            RequestSpawnClientRpc(rockNo - 1);
+            rocks[0].SetActive(true);
+            RequestSpawnClientRpc(0);
         }
 
         
