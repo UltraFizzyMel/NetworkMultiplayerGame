@@ -175,15 +175,37 @@ public class BoatLeakManager : NetworkBehaviour
     private void SpawnSingleLeak()
     {
         GameObject leakInstance = Instantiate(
-            leakPrefab, PickRandomSurface(), _leakLocation.SetLeakRotation(), leakParent);
+            leakPrefab, PickRandomSurface(), _leakLocation.SetLeakRotation());
 
         leakInstance.transform.RotateAround(
             _leakLocation.transform.position, Vector3.up, _leakLocation.rotationAdjustment);
 
         Leak leakScript = leakInstance.GetComponent<Leak>();
-        leakInstance.GetComponent<NetworkObject>().Spawn();
+        NetworkObject no = leakInstance.GetComponent<NetworkObject>();
+
+        //leakInstance.GetComponent<NetworkObject>().Spawn();
+        no.Spawn();
+
         leakScript.boatLeakManager = this;
         AddLeak();
+
+        if (leakParent != null)
+        {
+            // Get the NetworkObject on the parent — required for TrySetParent to succeed.
+            // Without it NGO cannot track the parent relationship across clients.
+            NetworkObject parentNo = leakParent.GetComponent<NetworkObject>();
+
+            if (parentNo != null)
+            {
+                if (!no.TrySetParent(parentNo, worldPositionStays: true))
+                    Debug.LogWarning("[BoatLeakManager] TrySetParent failed.");
+            }
+            else
+            {
+                Debug.LogError("[BoatLeakManager] leakParent has no NetworkObject component. " +
+                               "Add one in the Inspector.");
+            }
+        }
     }
 
     private IEnumerator DifficultyRamp()

@@ -33,6 +33,8 @@ public class ButtonManager : MonoBehaviour
     {
         if (isGame)
             ShowIntro();
+        else
+            HideEverything();
 
         if (isEnd)
         {
@@ -267,6 +269,21 @@ public class ButtonManager : MonoBehaviour
             MusicManager.Instance.CrossfadeToNewSong(menuSong, "Menu Song", 0.05f, 0.2f);
 
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void PlayNarrative()
+    {
+        PlayClickSound();
+
+        MusicManager.Instance.CrossfadeToNewSong(lobbySong, "Sea Noise", 0.2f, 0.05f);
+        SceneManager.LoadScene("NarrativeScene");
+    }
+
+    public void HideEverything()
+    {
+        settingsPanel.SetActive(false);
+        controlsPanel.SetActive(false);
+        howToPanel.SetActive(false);
     }
 
     public void Quit()
