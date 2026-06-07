@@ -30,7 +30,7 @@ public class BucketZone : Interactable, IObjectPickUpParent
         {
             //There is no pickup here
             Debug.Log("No Pick-up");
-            if (player.HasObjectPickUp()) {
+            /*if (player.HasObjectPickUp()) {
                 //Player has an object in their hands                
                 player.GetObjectPickUp().SetObjectPickUpParent(this);
 
@@ -42,6 +42,29 @@ public class BucketZone : Interactable, IObjectPickUpParent
                         MusicManager.Instance.PlaySFX(SFXType.PickupDuctTape);
                 }                 
                 
+                Debug.Log("Carrying!!");
+            }*/
+            if (player.HasObjectPickUp())
+            {
+                ObjectPickUp heldObject = player.GetObjectPickUp();
+
+                if (heldObject == null)
+                {
+                    Debug.LogWarning("[BucketZone] Player says they have item but object is null.");
+                    return;
+                }
+
+                heldObject.SetObjectPickUpParent(this);
+
+                if (MusicManager.Instance != null)
+                {
+                    if (heldObject.TryGetComponent<BucketController>(out BucketController bucketController))
+                        MusicManager.Instance.PlaySFX(SFXType.PickupBucket);
+
+                    else if (heldObject.TryGetComponent<TapeController>(out TapeController tapeController))
+                        MusicManager.Instance.PlaySFX(SFXType.PickupDuctTape);
+                }
+
                 Debug.Log("Carrying!!");
             }
             else {

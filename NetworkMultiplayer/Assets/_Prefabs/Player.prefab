@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2982419664
+  GlobalObjectIdHash: 2594804961
   InScenePlacedSourceGlobalObjectIdHash: 2594804961
   DeferredDespawnTick: 0
   Ownership: 1
@@ -306,6 +306,8 @@ MonoBehaviour:
   deathSaturation: -70
   deathExposure: -1.4
   fogBlendSpeed: 2
+  backFogColor: {r: 0.32156864, g: 0.105882354, b: 0.101960786, a: 1}
+  backFogSaturation: -50
   TentacleUI: {fileID: 0}
   maxTransparency: 250
   speedParam: Speed

@@ -162,6 +162,8 @@ public class FogZoneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(deathZoneTimeout);
         Debug.Log("[FogZoneManager] Death zone timeout — boat lost in fog.");
+        //BoatWinLoseController.Instance.CurrentLossType.Value = LossType.Fog;
+        SessionData.Instance.currentLossType = LossType.Fog;
         BoatWinLoseController.Instance?.LoseGame();
         _deathTimer = null;
     }

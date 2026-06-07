@@ -48,6 +48,14 @@ public class BoatLeakManager : NetworkBehaviour
 
     public bool shouldShowWater => currentWaterLevel.Value > hideWaterBelowLevel;
 
+    [Header("Difficulty Ramp")]
+    // How often (in seconds) the difficulty increases
+    [SerializeField] private float difficultyRampInterval = 60f;
+    // How much leakInterval shrinks each ramp step
+    [SerializeField] private float leakIntervalReduction = 2f;
+    // Hard floor — prevents the interval reaching zero or going negative
+    [SerializeField] private float minLeakInterval = 3f;
+
     private void Awake()
     {
         Instance = this;
@@ -145,6 +153,7 @@ public class BoatLeakManager : NetworkBehaviour
         yield return new WaitUntil(() => GameManager.Instance != null && GameManager.Instance.GameReady());
 
         StartCoroutine(SpawnLeaks());
+        StartCoroutine(DifficultyRamp());
     }
 
     private IEnumerator SpawnLeaks()
@@ -175,6 +184,18 @@ public class BoatLeakManager : NetworkBehaviour
         leakInstance.GetComponent<NetworkObject>().Spawn();
         leakScript.boatLeakManager = this;
         AddLeak();
+    }
+
+    private IEnumerator DifficultyRamp()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(difficultyRampInterval);
+
+            if (leakInterval <= minLeakInterval) yield break;
+
+            leakInterval = Mathf.Max(minLeakInterval, leakInterval - leakIntervalReduction);
+        }
     }
 
     // ─── Bucket integration ──────────────────────────────────────────────────

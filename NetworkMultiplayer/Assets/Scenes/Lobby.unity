@@ -4824,7 +4824,10 @@ MonoBehaviour:
   btnBack: {fileID: 0}
   isGame: 0
   btnSkip: {fileID: 0}
-  lobbySong: {fileID: 0}
+  lobbySong: {fileID: 8300000, guid: a62b6267d43aa4445ad1519ecb6f9a43, type: 3}
+  menuSong: {fileID: 8300000, guid: d9a331f1678291943bd0174593b93f3e, type: 3}
+  isEnd: 0
+  hasLost: 0
 --- !u!4 &1108521514
 Transform:
   m_ObjectHideFlags: 0

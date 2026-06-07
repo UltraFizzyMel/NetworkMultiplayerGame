@@ -116,6 +116,15 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     // Higher value = faster blend. At 3f, ~95% complete in ~1 second.
     [SerializeField] private float fogBlendSpeed = 3f;
 
+    // Tracks the current side-fog state so RecomputeFogTargets can combine it
+    // with back fog without FogZoneManager and BackFogManager fighting each other.
+    private FogVisualLevel _sideFogLevel = FogVisualLevel.None;
+    private bool _backFogVisualActive;
+    private float _fogSpeedMultiplier = 1f; // 1 = full speed; set by BackFogManager
+
+    [SerializeField] private Color backFogColor = new Color32(180, 150, 80, 255); // Warm amber
+    [SerializeField] private float backFogSaturation = -50f; // Desaturation, compounds with side fog
+
     [Header("UI Settings")]
     [SerializeField] private GameObject TentacleUI;
     [SerializeField]private float maxTransparency = 250f;
@@ -437,7 +446,7 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
     }
 
     // Called by FogZoneManager. Sets target values for all fog post-processing.
-    public void SetFogVisuals(FogVisualLevel level)
+    /*public void SetFogVisuals(FogVisualLevel level)
     {
         switch (level)
         {
@@ -459,6 +468,59 @@ public class Player : NetworkBehaviour, IObjectPickUpParent
                 _targetExposure = _baseExposure;
                 break;
         }
+    }*/
+
+    public void SetFogVisuals(FogVisualLevel level)
+    {
+        _sideFogLevel = level;
+        RecomputeFogTargets();
+    }
+
+    public void SetBackFogState(bool visualActive, float speedMultiplier)
+    {
+        _backFogVisualActive = visualActive;
+        _fogSpeedMultiplier = speedMultiplier;
+        RecomputeFogTargets();
+    }
+
+    // Single source of truth for all fog visual targets.
+    // Called any time either side fog or back fog state changes.
+    // Side fog and back fog stack — both active means the player is in real trouble.
+    private void RecomputeFogTargets()
+    {
+        if (_colorAdj == null) return; // Not yet initialised (non-owner)
+
+        Color targetColor = _baseColor;
+        float targetSat = _baseSaturation;
+        float targetExp = _baseExposure;
+
+        // ── Side fog ──────────────────────────────────────────────────────────────
+        switch (_sideFogLevel)
+        {
+            case FogVisualLevel.Warning:
+                targetColor = warningFogColor;
+                targetSat = warningSaturation;
+                break;
+            case FogVisualLevel.Death:
+                targetColor = deathFogColor;
+                targetSat = deathSaturation;
+                targetExp = deathExposure;
+                break;
+        }
+
+        // ── Back fog ──────────────────────────────────────────────────────────────
+        // Compounds with side fog rather than overriding it:
+        //   colour blends toward the back fog tint (warm amber ≠ cool grey so they
+        //   feel like different threats), saturation takes the more desaturated value.
+        if (_backFogVisualActive)
+        {
+            targetColor = Color.Lerp(targetColor, backFogColor, 0.4f);
+            targetSat = Mathf.Min(targetSat, backFogSaturation);
+        }
+
+        _targetFogColor = targetColor;
+        _targetSaturation = targetSat;
+        _targetExposure = targetExp;
     }
 
     [ClientRpc]

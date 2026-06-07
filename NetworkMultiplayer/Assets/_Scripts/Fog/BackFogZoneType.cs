@@ -1,0 +1,1 @@
+public enum BackFogZoneType { Visual, Slow, Stop }

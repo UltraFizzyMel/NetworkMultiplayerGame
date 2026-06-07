@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,11 +24,21 @@ public class ButtonManager : MonoBehaviour
     [SerializeField] private GameObject btnSkip;
 
     [SerializeField] private AudioClip lobbySong;
+    [SerializeField] private AudioClip menuSong;
+
+    [SerializeField] private bool isEnd;
+    [SerializeField] private bool hasLost;
 
     public void Start()
     {
         if (isGame)
             ShowIntro();
+
+        if (isEnd)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     private void PlayClickSound()
@@ -244,8 +255,18 @@ public class ButtonManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
         PlayClickSound();
+
+        if (isEnd)
+            if (NetworkManager.Singleton.IsListening)
+                NetworkManager.Singleton.Shutdown();
+
+        if (hasLost)
+            MusicManager.Instance.CrossfadeToNewSong(menuSong, "Menu Song", 0.7f, 0.2f);
+        else
+            MusicManager.Instance.CrossfadeToNewSong(menuSong, "Menu Song", 0.05f, 0.2f);
+
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void Quit()

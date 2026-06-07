@@ -6,6 +6,8 @@ public class SessionData : MonoBehaviour
 
     public bool isHostDeck;
 
+    public LossType currentLossType = LossType.None;
+
     private void Awake()
     {
         if (Instance == null)
