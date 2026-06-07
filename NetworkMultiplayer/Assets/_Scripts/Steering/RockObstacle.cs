@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RockObstacle : MonoBehaviour
+public class RockObstacle : NetworkBehaviour
 {
     [Header("Leaks")]
     public int instantLeakAmount = 2;
@@ -22,20 +22,21 @@ public class RockObstacle : MonoBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void RequestDestroyServerRpc()
     {
-        //RequestDestroyClientRpc();
+        RequestDestroyClientRpc();
 
-        NetworkObject no = GetComponent<NetworkObject>();
+        //NetworkObject no = GetComponent<NetworkObject>();
 
-        if (no != null && no.IsSpawned)
+        /*if (no != null && no.IsSpawned)
             no.Despawn(true);   // true = destroy the GameObject, not just unregister it
         else
-            Destroy(gameObject);
+            Destroy(gameObject);*/
     }
 
     [ClientRpc]
     public void RequestDestroyClientRpc()
     {
-        DestroySelf();
+        Destroy(gameObject);
+        //DestroySelf();
     }
 
     public void DestroySelf()

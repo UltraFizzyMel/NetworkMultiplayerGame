@@ -8263,6 +8263,7 @@ MonoBehaviour:
   tutorialPanel: {fileID: 0}
   btnBack: {fileID: 990802283}
   isGame: 0
+  isMenu: 1
   btnSkip: {fileID: 0}
   lobbySong: {fileID: 8300000, guid: a62b6267d43aa4445ad1519ecb6f9a43, type: 3}
   menuSong: {fileID: 0}

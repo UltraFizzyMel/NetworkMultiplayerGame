@@ -18,6 +18,7 @@ public class ButtonManager : MonoBehaviour
     [SerializeField] private GameObject btnBack;
 
     [SerializeField] private bool isGame = false;
+    [SerializeField] private bool isMenu = false;
     private bool _tutorialComplete;
     private bool _gameStarted;
 
@@ -33,7 +34,7 @@ public class ButtonManager : MonoBehaviour
     {
         if (isGame)
             ShowIntro();
-        else
+        else if (isMenu)
             HideEverything();
 
         if (isEnd)
