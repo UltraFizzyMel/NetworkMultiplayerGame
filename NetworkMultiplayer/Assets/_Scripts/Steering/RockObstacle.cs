@@ -22,7 +22,14 @@ public class RockObstacle : MonoBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void RequestDestroyServerRpc()
     {
-        RequestDestroyClientRpc();
+        //RequestDestroyClientRpc();
+
+        NetworkObject no = GetComponent<NetworkObject>();
+
+        if (no != null && no.IsSpawned)
+            no.Despawn(true);   // true = destroy the GameObject, not just unregister it
+        else
+            Destroy(gameObject);
     }
 
     [ClientRpc]

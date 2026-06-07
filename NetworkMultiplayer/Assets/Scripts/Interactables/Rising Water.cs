@@ -64,6 +64,8 @@ public class RisingWater : Interactable
         {
             if (!bucket.isFull.Value)
                 return interactText;
+            else
+                return "Empty Bucket";
         }
 
         return "";

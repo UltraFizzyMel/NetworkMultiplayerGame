@@ -21073,7 +21073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fd2694dca3b83e469d3ee2824a6a9c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RockObstacle
-  instantLeakAmount: 2
+  instantLeakAmount: 3
   speedDamage: 0.1
   steeringKnockback: 0
   cameraShakeStrength: 1
