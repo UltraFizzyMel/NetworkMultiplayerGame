@@ -33,8 +33,7 @@ public class BoatCollisionDetector : NetworkBehaviour
             return;
         }
 
-        if (collisionCooldown)
-            return;       
+        //if (collisionCooldown) return;       
 
         if (!other.CompareTag("Obstacle"))
             return;
@@ -49,6 +48,9 @@ public class BoatCollisionDetector : NetworkBehaviour
 
         if (!onlyDestroy)
         {
+            if (collisionCooldown)
+                return;
+
             collisionCooldown = true;
 
             Debug.Log($"[Boat] Rock collision! +" + $"{rock.instantLeakAmount} leaks");
@@ -72,9 +74,7 @@ public class BoatCollisionDetector : NetworkBehaviour
             StartCoroutine(CollisionCooldownRoutine());
         }
 
-        //Destroy rock after collision
-        rock.RequestDestroyServerRpc();
-        
+        rock.DestroyRock();
     }
 
     private IEnumerator CollisionCooldownRoutine()

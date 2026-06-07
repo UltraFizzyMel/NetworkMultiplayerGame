@@ -13,6 +13,9 @@ public class EnvironmentMover : NetworkBehaviour
 
     private void Update()
     {
+        if (!IsServer)
+            return;
+
         if (boatMovement == null) boatMovement = BoatMovement.Instance;
         if (_steering == null) _steering = BoatSteeringManager.Instance;
 

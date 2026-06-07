@@ -813,8 +813,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 450.74268}
-  m_SizeDelta: {x: 476.1501, y: 91.85}
+  m_AnchoredPosition: {x: 0, y: 448}
+  m_SizeDelta: {x: 779.0847, y: 91.85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &76586896
 MonoBehaviour:
@@ -4823,6 +4823,7 @@ MonoBehaviour:
   tutorialPanel: {fileID: 0}
   btnBack: {fileID: 0}
   isGame: 0
+  isMenu: 0
   btnSkip: {fileID: 0}
   lobbySong: {fileID: 8300000, guid: a62b6267d43aa4445ad1519ecb6f9a43, type: 3}
   menuSong: {fileID: 8300000, guid: d9a331f1678291943bd0174593b93f3e, type: 3}
@@ -7373,6 +7374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SessionData
   isHostDeck: 0
+  currentLossType: 0
 --- !u!4 &1507921953
 Transform:
   m_ObjectHideFlags: 0

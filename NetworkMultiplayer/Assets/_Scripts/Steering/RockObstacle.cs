@@ -1,3 +1,4 @@
+using System.Data;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,34 +20,45 @@ public class RockObstacle : NetworkBehaviour
 
     public bool wasHit = false;
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void RequestDestroyServerRpc()
+    public NetworkVariable<bool> IsEnabled = new(
+    false,
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server);
+
+    public bool stateChange = true;
+
+    public override void OnNetworkSpawn()
     {
-        RequestDestroyClientRpc();
-
-        //NetworkObject no = GetComponent<NetworkObject>();
-
-        /*if (no != null && no.IsSpawned)
-            no.Despawn(true);   // true = destroy the GameObject, not just unregister it
-        else
-            Destroy(gameObject);*/
+        IsEnabled.OnValueChanged += OnEnabledChanged;
+        ApplyState(IsEnabled.Value);
     }
 
-    [ClientRpc]
-    public void RequestDestroyClientRpc()
+    public override void OnNetworkDespawn()
     {
-        Destroy(gameObject);
-        //DestroySelf();
+        IsEnabled.OnValueChanged -= OnEnabledChanged;
     }
 
-    public void DestroySelf()
+    private void OnEnabledChanged(bool oldValue, bool newValue)
     {
-        NetworkObject no = gameObject.GetComponent<NetworkObject>();
+        ApplyState(newValue);
+    }
 
-        if (no != null && no.IsSpawned)
-            no.Despawn();
-        else
-            Destroy(gameObject);
+    private void ApplyState(bool enabled)
+    {
+        if (!stateChange)
+            return;
+
+        GetComponent<Collider>().enabled = enabled;
+        GetComponent<MeshRenderer>().enabled = enabled;
+    }
+
+
+    public void DestroyRock()
+    {
+        if (!IsServer)
+            return;
+
+        NetworkObject.Despawn(true);
     }
 
     public void EndSceneCheck()
