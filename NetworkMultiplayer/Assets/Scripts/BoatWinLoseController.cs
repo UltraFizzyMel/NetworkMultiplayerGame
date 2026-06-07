@@ -42,11 +42,13 @@ public class BoatWinLoseController : NetworkBehaviour {
     {
         if (!IsServer || _isGameOver) return;
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
 
         _isGameOver = true;
         Debug.Log("[WinLose] Game Won");
+
+        UnlockCursorClientRpc();
 
         MusicManager.Instance.CrossfadeToNewSong(wonMusic, "Won Music", 0.05f, 0.05f);
         NetworkManager.SceneManager.LoadScene("WonGame", LoadSceneMode.Single);
@@ -57,16 +59,24 @@ public class BoatWinLoseController : NetworkBehaviour {
     {
         if (!IsServer || _isGameOver) return;
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
 
         _isGameOver = true;
         Debug.Log("[WinLose] Lost");
 
         SetLossTypeClientRpc((int)SessionData.Instance.currentLossType);
+        UnlockCursorClientRpc();
 
         MusicManager.Instance.CrossfadeToNewSong(loseMusic, "Lose Music", 0.05f, 0.7f);
         NetworkManager.SceneManager.LoadScene("LostGame", LoadSceneMode.Single);
+    }
+
+    [ClientRpc]
+    private void UnlockCursorClientRpc()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     [ClientRpc]
